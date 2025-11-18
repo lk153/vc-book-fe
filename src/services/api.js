@@ -180,15 +180,9 @@ export const ordersAPI = {
 export const CATEGORIES = [
   "All",
   "Fiction",
-  "Non-Fiction",
   "Science Fiction",
-  "Mystery",
-  "Romance",
-  "Programming",
   "Business",
-  "History",
   "Biography",
-  "Other"
 ];
 
 // Combined API object
