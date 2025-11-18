@@ -183,6 +183,7 @@ export const CATEGORIES = [
   "Science Fiction",
   "Business",
   "Biography",
+  "Self-Help"
 ];
 
 // Combined API object
