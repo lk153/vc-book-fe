@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { categories } from '../data/booksData';
 
-export default function CategoryFilter({ selectedCategory, setSelectedCategory }) {
+export default function CategoryFilter({ categories, selectedCategory, setSelectedCategory }) {
   const [isExpanded, setIsExpanded] = useState(true);
   
   return (

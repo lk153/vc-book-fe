@@ -44,7 +44,19 @@ cd vc-book-fe
 npm install
 ```
 
-### 3. Start the Development Server
+### 3. Configure Environment Variables
+
+Create a .env file in your project root:
+```bash
+REACT_APP_API_URL=https://vc-book-api.onrender.com/api/v1
+```
+
+For local development with backend running on localhost:
+```bash
+REACT_APP_API_URL=http://localhost:3000/api/v1
+```
+
+### 4. Start the Development Server
 ```bash
 npm start
 ```
