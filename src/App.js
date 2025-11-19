@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import HomePage from './pages/HomePage';
 import BookDetailPage from './pages/BookDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -16,11 +16,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-
-  // Refs to prevent duplicate API calls
-  const hasFetchedBooks = useRef(false);
-  const hasFetchedCart = useRef(false);
-
+  
   // Get user ID (from logged in user or guest)
   const userId = user?.id || user?._id || 'guest';
 
@@ -32,75 +28,78 @@ function App() {
     }
   }, []);
 
-  const fetchBooks = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await booksAPI.getAll({
-        category: selectedCategory,
-        limit: 50
-      });
-      setBooks(response.data || []);
-      hasFetchedBooks.current = true;
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching books:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchCart = async () => {
-    // Don't fetch cart for guest users
-    if (userId === 'guest' || !userId) {
-      setCart([]);
-      return;
-    }
-
-    try {
-      const response = await cartAPI.get(userId);
-      if (response.data && response.data.items) {
-        const transformedCart = response.data.items.map(item => ({
-          id: item.book._id || item.book,
-          title: item.book.title,
-          author: item.book.author,
-          price: item.price,
-          quantity: item.quantity,
-          image: item.book.coverImage || item.book.image,
-          category: item.book.category,
-        }));
-        setCart(transformedCart);
-      }
-      hasFetchedCart.current = true;
-    } catch (err) {
-      console.error('Error fetching cart:', err);
-      setCart([]);
-    }
-  };
-
   // Fetch books on mount and when category changes
   useEffect(() => {
-    // Reset flag when category changes
-    if (hasFetchedBooks.current && selectedCategory !== 'All') {
-      hasFetchedBooks.current = false;
-    }
+    let isMounted = true;
+    
+    const loadBooks = async () => {
+      if (!isMounted) return;
+      
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await booksAPI.getAll({
+          category: selectedCategory,
+          limit: 50
+        });
+        if (isMounted) {
+          setBooks(response.data || []);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message);
+          console.error('Error fetching books:', err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
 
-    if (!hasFetchedBooks.current) {
-      fetchBooks();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadBooks();
+
+    return () => {
+      isMounted = false;
+    };
   }, [selectedCategory]);
 
   // Fetch cart only when user logs in (not for guest)
   useEffect(() => {
-    if (user && userId !== 'guest' && !hasFetchedCart.current) {
-      fetchCart();
-    } else if (!user) {
-      setCart([]);
-      hasFetchedCart.current = false;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    let isMounted = true;
+
+    const loadCart = async () => {
+      if (!user || userId === 'guest' || !isMounted) {
+        if (isMounted) setCart([]);
+        return;
+      }
+
+      try {
+        const response = await cartAPI.get(userId);
+        if (response.data && response.data.items && isMounted) {
+          const transformedCart = response.data.items.map(item => ({
+            id: item.book._id || item.book,
+            title: item.book.title,
+            author: item.book.author,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.book.coverImage || item.book.image,
+            category: item.book.category,
+          }));
+          setCart(transformedCart);
+        }
+      } catch (err) {
+        console.error('Error fetching cart:', err);
+        if (isMounted) setCart([]);
+      }
+    };
+
+    loadCart();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, userId]);
 
   const addToCart = async (book, quantity) => {
     // Check if user is logged in for cart operations
@@ -113,10 +112,10 @@ function App() {
     try {
       setLoading(true);
       await cartAPI.addItem(userId, book._id || book.id, quantity);
-
+      
       const existingItem = cart.find(item => item.id === (book._id || book.id));
       if (existingItem) {
-        setCart(cart.map(item =>
+        setCart(cart.map(item => 
           item.id === (book._id || book.id)
             ? { ...item, quantity: item.quantity + quantity }
             : item
@@ -132,8 +131,21 @@ function App() {
           category: book.category,
         }]);
       }
-
-      await fetchCart();
+      
+      // Refresh cart from server to ensure sync
+      const response = await cartAPI.get(userId);
+      if (response.data && response.data.items) {
+        const transformedCart = response.data.items.map(item => ({
+          id: item.book._id || item.book,
+          title: item.book.title,
+          author: item.book.author,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.book.coverImage || item.book.image,
+          category: item.book.category,
+        }));
+        setCart(transformedCart);
+      }
     } catch (err) {
       setError(err.message);
       console.error('Error adding to cart:', err);
@@ -150,12 +162,25 @@ function App() {
         setCart(cart.filter(item => item.id !== bookId));
       } else {
         await cartAPI.updateItem(userId, bookId, newQuantity);
-        setCart(cart.map(item =>
+        setCart(cart.map(item => 
           item.id === bookId ? { ...item, quantity: newQuantity } : item
         ));
       }
-
-      await fetchCart();
+      
+      // Refresh cart from server
+      const response = await cartAPI.get(userId);
+      if (response.data && response.data.items) {
+        const transformedCart = response.data.items.map(item => ({
+          id: item.book._id || item.book,
+          title: item.book.title,
+          author: item.book.author,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.book.coverImage || item.book.image,
+          category: item.book.category,
+        }));
+        setCart(transformedCart);
+      }
     } catch (err) {
       setError(err.message);
       console.error('Error updating cart:', err);
@@ -181,11 +206,11 @@ function App() {
         shippingAddress: shippingAddress,
         paymentMethod: paymentMethod || 'Credit Card',
       };
-
+      
       const response = await ordersAPI.place(orderData);
-
+      
       setCart([]);
-
+      
       return response.data;
     } catch (err) {
       setError(err.message);
@@ -207,19 +232,19 @@ function App() {
   return (
     <>
       {currentPage === 'login' && (
-        <LoginPage
+        <LoginPage 
           setCurrentPage={setCurrentPage}
           setUser={setUser}
         />
       )}
       {currentPage === 'register' && (
-        <RegisterPage
+        <RegisterPage 
           setCurrentPage={setCurrentPage}
           setUser={setUser}
         />
       )}
       {currentPage === 'home' && (
-        <HomePage
+        <HomePage 
           books={books}
           cart={cart}
           selectedCategory={selectedCategory}
@@ -234,7 +259,7 @@ function App() {
         />
       )}
       {currentPage === 'detail' && selectedBook && (
-        <BookDetailPage
+        <BookDetailPage 
           book={selectedBook}
           cart={cart}
           addToCart={addToCart}
@@ -244,7 +269,7 @@ function App() {
         />
       )}
       {currentPage === 'checkout' && (
-        <CheckoutPage
+        <CheckoutPage 
           cart={cart}
           updateCartQuantity={updateCartQuantity}
           getTotalPrice={getTotalPrice}
