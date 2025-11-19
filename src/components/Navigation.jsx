@@ -1,15 +1,42 @@
-// components/Navigation.jsx
-import React, { useState } from 'react';
-import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn, Settings, Package, ChevronDown } from 'lucide-react';
 
 export default function Navigation({ cart, setCurrentPage, showBackButton = false, user, onLogout }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    const name = user?.name || user?.fullName || user?.email || 'U';
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-10">
+    <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {showBackButton ? (
-          <button 
+          <button
             onClick={() => setCurrentPage('home')}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
           >
@@ -28,59 +55,128 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
 
         <div className="flex items-center gap-4">
           {/* Cart Button */}
-          <button 
+          <button
             onClick={() => setCurrentPage('checkout')}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             <ShoppingCart size={20} />
-            <span>Cart ({cart.length})</span>
+            <span className="hidden sm:inline">Cart</span>
+            <span className="bg-white text-blue-600 px-2 py-0.5 rounded-full text-sm font-bold">
+              {cart.length}
+            </span>
           </button>
 
-          {/* User Menu */}
+          {/* User Profile Menu */}
           {user ? (
-            <div className="relative">
+            <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition"
               >
-                <User size={20} className="text-gray-600" />
-                <span className="text-gray-700 font-medium">{user.name || user.fullName || 'User'}</span>
+                {/* User Avatar */}
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                  {getUserInitials()}
+                </div>
+                <span className="hidden md:inline text-gray-700 font-medium">
+                  {user.name || user.fullName || 'User'}
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`text-gray-500 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
+                />
               </button>
 
+              {/* Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2">
-                  <div className="px-4 py-2 border-b border-gray-200">
-                    <p className="text-sm font-medium text-gray-800">{user.name || user.fullName}</p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
+                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50 animate-slideDown">
+                  {/* User Info Section */}
+                  <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                        {getUserInitials()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-800 truncate">
+                          {user.name || user.fullName || 'User'}
+                        </p>
+                        <p className="text-xs text-gray-600 truncate">
+                          {user.email || 'No email'}
+                        </p>
+                        {user.phone && (
+                          <p className="text-xs text-gray-500 truncate">
+                            {user.phone}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Menu Items */}
+                  <div className="py-2">
+                    {/* Profile */}
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        setCurrentPage('profile');
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
+                    >
+                      <User size={18} className="text-gray-500 group-hover:text-blue-600" />
+                      <div>
+                        <p className="font-medium group-hover:text-blue-600">My Profile</p>
+                        <p className="text-xs text-gray-500">View and edit profile</p>
+                      </div>
+                    </button>
+
+                    {/* Orders */}
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        setCurrentPage('orders');
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
+                    >
+                      <Package size={18} className="text-gray-500 group-hover:text-blue-600" />
+                      <div>
+                        <p className="font-medium group-hover:text-blue-600">My Orders</p>
+                        <p className="text-xs text-gray-500">Track your orders</p>
+                      </div>
+                    </button>
+
+                    {/* Settings */}
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        setCurrentPage('settings');
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
+                    >
+                      <Settings size={18} className="text-gray-500 group-hover:text-blue-600" />
+                      <div>
+                        <p className="font-medium group-hover:text-blue-600">Settings</p>
+                        <p className="text-xs text-gray-500">Account preferences</p>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Divider */}
+                  <hr className="my-2 border-gray-200" />
+
+                  {/* Logout */}
                   <button
                     onClick={() => {
                       setShowUserMenu(false);
-                      alert('Profile page coming soon!');
+                      if (window.confirm('Are you sure you want to logout?')) {
+                        onLogout();
+                      }
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition flex items-center gap-3 group"
                   >
-                    My Profile
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      alert('Orders page coming soon!');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
-                  >
-                    My Orders
-                  </button>
-                  <hr className="my-2" />
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      onLogout();
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition flex items-center gap-2"
-                  >
-                    <LogOut size={16} />
-                    Logout
+                    <LogOut size={18} className="text-red-500" />
+                    <div>
+                      <p className="font-medium">Logout</p>
+                      <p className="text-xs text-red-400">Sign out of your account</p>
+                    </div>
                   </button>
                 </div>
               )}
@@ -88,22 +184,30 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
           ) : (
             <button
               onClick={() => setCurrentPage('login')}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition font-medium"
             >
               <LogIn size={20} />
-              <span className="font-medium">Login</span>
+              <span>Login</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Close dropdown when clicking outside */}
-      {showUserMenu && (
-        <div 
-          className="fixed inset-0 z-0" 
-          onClick={() => setShowUserMenu(false)}
-        ></div>
-      )}
+      <style jsx>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slideDown {
+          animation: slideDown 0.2s ease-out;
+        }
+      `}</style>
     </nav>
   );
 }

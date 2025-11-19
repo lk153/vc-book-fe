@@ -4,6 +4,7 @@ import BookDetailPage from './pages/BookDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 import { booksAPI, cartAPI, ordersAPI, CATEGORIES } from './services/api';
 import { tokenManager, userManager } from './services/authAPI';
 
@@ -231,6 +232,15 @@ function App() {
 
   return (
     <>
+      {currentPage === 'profile' && (
+        <ProfilePage 
+          user={user}
+          setUser={setUser}
+          cart={cart} 
+          setCurrentPage={setCurrentPage}
+          onLogout={handleLogout}
+        />
+      )}
       {currentPage === 'login' && (
         <LoginPage 
           setCurrentPage={setCurrentPage}
@@ -266,6 +276,7 @@ function App() {
           setCurrentPage={setCurrentPage}
           loading={loading}
           user={user}
+          onLogout={handleLogout}
         />
       )}
       {currentPage === 'checkout' && (

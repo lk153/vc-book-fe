@@ -14,12 +14,14 @@ export default function HomePage({
   setSelectedBook,
   loading,
   error,
-  categories
+  categories,
+  user,
+  onLogout,
 }) {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <Navigation cart={cart} setCurrentPage={setCurrentPage} />
+        <Navigation cart={cart} setCurrentPage={setCurrentPage} user={user} onLogout={onLogout} />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <h2 className="text-xl font-bold text-red-700 mb-2">Error Loading Books</h2>
@@ -38,7 +40,7 @@ export default function HomePage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation cart={cart} setCurrentPage={setCurrentPage} />
+      <Navigation cart={cart} setCurrentPage={setCurrentPage} user={user} onLogout={onLogout} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">Discover Your Next Great Read</h1>
