@@ -1,21 +1,21 @@
+// src/pages/ProfilePage.jsx
 import React, { useState } from 'react';
-import { User, Mail, Phone, Lock, Save, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { User, Mail, Phone, Lock, Save, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import { authAPI, userManager } from '../services/authAPI';
 
-export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLogout }) {
+export default function ProfilePage({ user, setUser, cart, onLogout }) {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     name: user?.name || user?.fullName || '',
     email: user?.email || '',
     phone: user?.phone || '',
   });
 
-  // Password change state
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -47,37 +47,37 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
 
-    // Validate
     if (!formData.name || !formData.email) {
-      setError('Name and email are required');
+      const msg = 'Name and email are required';
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
+      const msg = 'Please enter a valid email address';
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     try {
       setLoading(true);
-      
-      // Call update profile API
+
       await authAPI.updateProfile(formData);
-      
-      // Update user in state and localStorage
+
       const updatedUser = { ...user, ...formData };
       userManager.setUser(updatedUser);
       setUser(updatedUser);
-      
-      setSuccess('Profile updated successfully!');
+
+      toast.success('Profile updated successfully!');
       setIsEditing(false);
-      
-      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError(err.message || 'Failed to update profile');
+      const msg = err.message || 'Failed to update profile';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -86,43 +86,47 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
 
-    // Validate
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      setError('All password fields are required');
+      const msg = 'All password fields are required';
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
-      setError('New password must be at least 6 characters');
+      const msg = 'New password must be at least 6 characters';
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError('New passwords do not match');
+      const msg = 'New passwords do not match';
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     try {
       setLoading(true);
-      
+
       await authAPI.changePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
       });
-      
-      setSuccess('Password changed successfully!');
+
+      toast.success('Password changed successfully!');
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
       });
       setShowPasswordSection(false);
-      
-      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError(err.message || 'Failed to change password');
+      const msg = err.message || 'Failed to change password';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -139,20 +143,11 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation cart={cart} setCurrentPage={setCurrentPage} user={user} onLogout={onLogout} showBackButton={true} />
+      <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">My Profile</h1>
 
-        {/* Success Message */}
-        {success && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-            <CheckCircle className="text-green-500" size={20} />
-            <p className="text-green-700">{success}</p>
-          </div>
-        )}
-
-        {/* Error Message */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
             <AlertCircle className="text-red-500" size={20} />
@@ -194,7 +189,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
               <h3 className="text-xl font-bold text-gray-800 mb-6">Profile Information</h3>
 
               <form onSubmit={handleUpdateProfile}>
-                {/* Name */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name *
@@ -212,7 +206,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
                   </div>
                 </div>
 
-                {/* Email */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address *
@@ -230,7 +223,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
                   </div>
                 </div>
 
-                {/* Phone */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Phone Number
@@ -248,7 +240,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
                   </div>
                 </div>
 
-                {/* Save Button */}
                 {isEditing && (
                   <button
                     type="submit"
@@ -279,7 +270,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
                   </h3>
 
                   <form onSubmit={handleChangePassword}>
-                    {/* Current Password */}
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Current Password *
@@ -304,7 +294,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
                       </div>
                     </div>
 
-                    {/* New Password */}
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         New Password *
@@ -329,7 +318,6 @@ export default function ProfilePage({ user, setUser, cart, setCurrentPage, onLog
                       </div>
                     </div>
 
-                    {/* Confirm New Password */}
                     <div className="mb-6">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Confirm New Password *

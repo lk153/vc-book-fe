@@ -1,16 +1,21 @@
+// src/pages/CheckoutPage.jsx
 import React, { useState } from 'react';
-import { ShoppingCart, Home, Loader2, CheckCircle } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { ShoppingCart, Home, Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import CartItem from '../components/CartItem';
 
-export default function CheckoutPage({ 
-  cart, 
-  updateCartQuantity, 
-  getTotalPrice, 
-  setCurrentPage,
+export default function CheckoutPage({
+  cart,
+  updateCartQuantity,
+  getTotalPrice,
   placeOrder,
   loading,
-  userId
+  userId,
+  user,
+  isGuest
 }) {
+  const navigate = useNavigate();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderData, setOrderData] = useState(null);
@@ -20,7 +25,7 @@ export default function CheckoutPage({
     city: '',
     state: '',
     postalCode: '',
-    country: 'USA',
+    country: 'VN',
     phone: ''
   });
   const [paymentMethod, setPaymentMethod] = useState('Credit Card');
@@ -37,10 +42,10 @@ export default function CheckoutPage({
     e.preventDefault();
     setOrderError(null);
 
-    // Validate form
-    if (!shippingAddress.fullName || !shippingAddress.address || 
-        !shippingAddress.city || !shippingAddress.postalCode || !shippingAddress.phone) {
+    if (!shippingAddress.fullName || !shippingAddress.address ||
+      !shippingAddress.city || !shippingAddress.postalCode || !shippingAddress.phone) {
       setOrderError('Please fill in all required fields');
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -59,10 +64,10 @@ export default function CheckoutPage({
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <nav className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <button 
+            <button
               onClick={() => {
                 setOrderSuccess(false);
-                setCurrentPage('home');
+                navigate('/');
               }}
               className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
             >
@@ -77,7 +82,7 @@ export default function CheckoutPage({
             <CheckCircle size={64} className="mx-auto text-green-500 mb-4" />
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Order Placed Successfully!</h1>
             <p className="text-gray-600 mb-6">Thank you for your order</p>
-            
+
             <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left">
               <h2 className="font-bold text-lg mb-3">Order Details</h2>
               <p className="text-gray-700 mb-2">
@@ -98,7 +103,7 @@ export default function CheckoutPage({
             <button
               onClick={() => {
                 setOrderSuccess(false);
-                setCurrentPage('home');
+                navigate('/');
               }}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition"
             >
@@ -116,7 +121,7 @@ export default function CheckoutPage({
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <nav className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <button 
+            <button
               onClick={() => setShowOrderForm(false)}
               className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
             >
@@ -284,8 +289,8 @@ export default function CheckoutPage({
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <button 
-            onClick={() => setCurrentPage('home')}
+          <button
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
           >
             <Home size={20} />
@@ -297,13 +302,29 @@ export default function CheckoutPage({
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">Shopping Cart</h1>
 
+        {/* Guest Warning */}
+        {isGuest && cart.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+            <AlertTriangle className="text-yellow-600 flex-shrink-0 mt-0.5" size={24} />
+            <div>
+              <p className="text-yellow-800 font-medium mb-1">Guest Cart</p>
+              <p className="text-yellow-700 text-sm">
+                You're browsing as a guest. Your cart is saved locally.
+                <Link to="/login" className="font-medium underline ml-1">
+                  Login
+                </Link> to sync your cart and place orders.
+              </p>
+            </div>
+          </div>
+        )}
+
         {cart.length === 0 ? (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
             <ShoppingCart size={64} className="mx-auto text-gray-300 mb-4" />
             <h2 className="text-2xl font-semibold text-gray-700 mb-2">Your cart is empty</h2>
             <p className="text-gray-500 mb-6">Add some books to get started!</p>
             <button
-              onClick={() => setCurrentPage('home')}
+              onClick={() => navigate('/')}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Browse Books
@@ -313,9 +334,9 @@ export default function CheckoutPage({
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="divide-y divide-gray-200">
               {cart.map(item => (
-                <CartItem 
-                  key={item.id} 
-                  item={item} 
+                <CartItem
+                  key={item.id}
+                  item={item}
                   updateCartQuantity={updateCartQuantity}
                 />
               ))}
@@ -326,12 +347,22 @@ export default function CheckoutPage({
                 <span className="text-2xl font-bold text-gray-800">Total</span>
                 <span className="text-3xl font-bold text-blue-600">${getTotalPrice()}</span>
               </div>
-              <button 
-                onClick={() => setShowOrderForm(true)}
-                className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition"
-              >
-                Proceed to Checkout
-              </button>
+
+              {isGuest ? (
+                <Link
+                  to="/login"
+                  className="block w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition text-center"
+                >
+                  Login to Checkout
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setShowOrderForm(true)}
+                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition"
+                >
+                  Proceed to Checkout
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-// components/BookCard.jsx
+// src/components/BookCard.jsx
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 

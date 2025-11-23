@@ -1,30 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Navigation from '../components/Navigation';
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { booksAPI } from '../services/api';
+import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
-export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, loading }) {
+export default function BookDetailPage({ cart, addToCart, loading, user, onLogout }) {
+  const navigate = useNavigate();
+  const { bookId } = useParams(); // Get bookId from URL
+
+  const [book, setBook] = useState(null);
+  const [bookLoading, setBookLoading] = useState(true);
+  const [bookError, setBookError] = useState(null);
+
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [error, setError] = useState(null);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
 
-  const isOutOfStock = book.stock === 0 || book.stock === undefined;
-  const maxQuantity = book.stock || 1;
+  // Fetch book data on mount or when bookId changes
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchBook = async () => {
+      try {
+        setBookLoading(true);
+        setBookError(null);
+
+        const response = await booksAPI.getById(bookId);
+
+        if (isMounted) {
+          setBook(response.data || response);
+        }
+      } catch (err) {
+        if (isMounted) {
+          const errorMsg = err.message || 'Failed to load book details';
+          setBookError(errorMsg);
+          toast.error(errorMsg);
+        }
+      } finally {
+        if (isMounted) {
+          setBookLoading(false);
+        }
+      }
+    };
+
+    if (bookId) {
+      fetchBook();
+    } else {
+      setBookError('Invalid book ID');
+      setBookLoading(false);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [bookId]);
+
+  const isOutOfStock = book?.stock === 0 || book?.stock === undefined;
+  const maxQuantity = book?.stock || 1;
 
   const handleAddToCart = async () => {
     setError(null);
     setShowErrorPopup(false);
 
-    // Check stock before adding
     if (isOutOfStock) {
       setError('This book is currently out of stock');
       setShowErrorPopup(true);
+      toast.error('This book is currently out of stock');
       return;
     }
 
     if (quantity > maxQuantity) {
       setError(`Only ${maxQuantity} items available in stock`);
       setShowErrorPopup(true);
+      toast.error(`Only ${maxQuantity} items available in stock`);
       return;
     }
 
@@ -33,17 +83,16 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
     } catch (err) {
-      // Handle API errors (like out of stock from server)
       const errorMessage = err.message || 'Failed to add to cart';
-      
-      if (errorMessage.toLowerCase().includes('stock') || 
-          errorMessage.toLowerCase().includes('out of stock') ||
-          errorMessage.toLowerCase().includes('insufficient')) {
+
+      if (errorMessage.toLowerCase().includes('stock') ||
+        errorMessage.toLowerCase().includes('out of stock') ||
+        errorMessage.toLowerCase().includes('insufficient')) {
         setError('Sorry, this book is currently out of stock or has insufficient stock');
       } else {
         setError(errorMessage);
       }
-      
+
       setShowErrorPopup(true);
     }
   };
@@ -53,9 +102,47 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
     setError(null);
   };
 
+  // Loading state
+  if (bookLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
+            <p className="text-xl text-gray-600">Loading book details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (bookError || !book) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+            <AlertCircle className="mx-auto text-red-500 mb-4" size={64} />
+            <h2 className="text-2xl font-bold text-red-700 mb-2">Book Not Found</h2>
+            <p className="text-red-600 mb-6">{bookError || 'The book you are looking for does not exist.'}</p>
+            <button
+              onClick={() => navigate('/')}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main content
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation cart={cart} setCurrentPage={setCurrentPage} showBackButton={true} />
+      <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
 
       {/* Error Popup Modal */}
       {showErrorPopup && error && (
@@ -84,8 +171,8 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="grid md:grid-cols-2 gap-8 p-8">
             <div>
-              <img 
-                src={book.coverImage || book.image || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop'} 
+              <img
+                src={book.coverImage || book.image || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop'}
                 alt={book.title}
                 className="w-full h-96 object-cover rounded-lg shadow-lg"
                 onError={(e) => {
@@ -98,12 +185,11 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
               <span className="text-sm text-blue-600 font-medium mb-2">{book.category}</span>
               <h1 className="text-4xl font-bold text-gray-800 mb-3">{book.title}</h1>
               <p className="text-xl text-gray-600 mb-6">by {book.author}</p>
-              
+
               <p className="text-gray-700 mb-4 leading-relaxed">
                 {book.description || 'No description available'}
               </p>
 
-              {/* Additional Book Info */}
               {book.isbn && (
                 <p className="text-sm text-gray-600 mb-2">
                   <span className="font-semibold">ISBN:</span> {book.isbn}
@@ -119,23 +205,21 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
                   <span className="font-semibold">Pages:</span> {book.pages}
                 </p>
               )}
-              
+
               <div className="border-t border-gray-200 pt-6 mt-auto">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-3xl font-bold text-blue-600">${book.price.toFixed(2)}</span>
-                  
-                  {/* Stock Status Badge */}
+
                   {book.stock !== undefined && (
-                    <div className={`px-4 py-2 rounded-full font-semibold text-sm ${
-                      isOutOfStock 
-                        ? 'bg-red-100 text-red-700' 
-                        : book.stock < 10 
+                    <div className={`px-4 py-2 rounded-full font-semibold text-sm ${isOutOfStock
+                        ? 'bg-red-100 text-red-700'
+                        : book.stock < 10
                           ? 'bg-yellow-100 text-yellow-700'
                           : 'bg-green-100 text-green-700'
-                    }`}>
-                      {isOutOfStock 
-                        ? 'Out of Stock' 
-                        : book.stock < 10 
+                      }`}>
+                      {isOutOfStock
+                        ? 'Out of Stock'
+                        : book.stock < 10
                           ? `Only ${book.stock} left`
                           : `${book.stock} in stock`
                       }
@@ -143,7 +227,6 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
                   )}
                 </div>
 
-                {/* Quantity Selector - Only show if in stock */}
                 {!isOutOfStock && (
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -174,7 +257,6 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
                   </div>
                 )}
 
-                {/* Add to Cart / Out of Stock Button */}
                 {isOutOfStock ? (
                   <button
                     disabled
@@ -186,11 +268,10 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
                   <button
                     onClick={handleAddToCart}
                     disabled={loading}
-                    className={`w-full py-4 rounded-lg font-bold text-lg transition flex items-center justify-center ${
-                      addedToCart
+                    className={`w-full py-4 rounded-lg font-bold text-lg transition flex items-center justify-center ${addedToCart
                         ? 'bg-green-500 text-white'
                         : 'bg-blue-600 text-white hover:bg-blue-700'
-                    } disabled:bg-gray-400 disabled:cursor-not-allowed`}
+                      } disabled:bg-gray-400 disabled:cursor-not-allowed`}
                   >
                     {loading ? (
                       'Adding...'
@@ -205,12 +286,9 @@ export default function BookDetailPage({ book, cart, addToCart, setCurrentPage, 
                   </button>
                 )}
 
-                {/* Notify When Available */}
                 {isOutOfStock && (
                   <button
-                    onClick={() => {
-                      alert('Notification feature coming soon! We will notify you when this book is back in stock.');
-                    }}
+                    onClick={() => toast.info('Notification feature coming soon! We will notify you when this book is back in stock.')}
                     className="w-full mt-3 py-3 rounded-lg font-medium text-blue-600 border-2 border-blue-600 hover:bg-blue-50 transition"
                   >
                     Notify Me When Available

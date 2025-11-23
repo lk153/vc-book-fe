@@ -1,9 +1,13 @@
+// src/components/Navigation.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn, Settings, Package, ChevronDown } from 'lucide-react';
 
-export default function Navigation({ cart, setCurrentPage, showBackButton = false, user, onLogout }) {
+export default function Navigation({ cart, showBackButton = false, user, onLogout }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -37,26 +41,26 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {showBackButton ? (
           <button
-            onClick={() => setCurrentPage('home')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
           >
             <Home size={20} />
             <span>Back to Home</span>
           </button>
         ) : (
-          <button
-            onClick={() => setCurrentPage('home')}
+          <Link
+            to="/"
             className="flex items-center gap-2 text-2xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition"
           >
             <BookOpen size={32} />
             <span>BookStore</span>
-          </button>
+          </Link>
         )}
 
         <div className="flex items-center gap-4">
           {/* Cart Button */}
           <button
-            onClick={() => setCurrentPage('checkout')}
+            onClick={() => navigate('/checkout')}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             <ShoppingCart size={20} />
@@ -117,7 +121,7 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        setCurrentPage('profile');
+                        navigate('/profile');
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
@@ -132,7 +136,7 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        setCurrentPage('orders');
+                        navigate('/orders');
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
@@ -147,7 +151,7 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        setCurrentPage('settings');
+                        navigate('/settings');
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
@@ -183,7 +187,7 @@ export default function Navigation({ cart, setCurrentPage, showBackButton = fals
             </div>
           ) : (
             <button
-              onClick={() => setCurrentPage('login')}
+              onClick={() => navigate('/login')}
               className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition font-medium"
             >
               <LogIn size={20} />

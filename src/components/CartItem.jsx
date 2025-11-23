@@ -1,3 +1,4 @@
+// src/components/CartItem.jsx
 import React from 'react';
 
 export default function CartItem({ item, updateCartQuantity }) {

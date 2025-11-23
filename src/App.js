@@ -1,25 +1,115 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import HomePage from './pages/HomePage';
 import BookDetailPage from './pages/BookDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import OrdersPage from './pages/OrdersPage';
 import { booksAPI, cartAPI, ordersAPI, CATEGORIES } from './services/api';
 import { tokenManager, userManager } from './services/authAPI';
 
+// Guest cart manager using localStorage
+const guestCartManager = {
+  getCart: () => {
+    const cart = localStorage.getItem('guestCart');
+    return cart ? JSON.parse(cart) : [];
+  },
+
+  setCart: (cart) => {
+    localStorage.setItem('guestCart', JSON.stringify(cart));
+  },
+
+  clearCart: () => {
+    localStorage.removeItem('guestCart');
+  },
+
+  addItem: (book, quantity) => {
+    const cart = guestCartManager.getCart();
+    const existingItem = cart.find(item => item.id === (book._id || book.id));
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.push({
+        id: book._id || book.id,
+        title: book.title,
+        author: book.author,
+        price: book.price,
+        quantity: quantity,
+        image: book.coverImage || book.image,
+        category: book.category,
+      });
+    }
+
+    guestCartManager.setCart(cart);
+    return cart;
+  },
+
+  updateItem: (bookId, newQuantity) => {
+    let cart = guestCartManager.getCart();
+
+    if (newQuantity <= 0) {
+      cart = cart.filter(item => item.id !== bookId);
+    } else {
+      cart = cart.map(item =>
+        item.id === bookId ? { ...item, quantity: newQuantity } : item
+      );
+    }
+
+    guestCartManager.setCart(cart);
+    return cart;
+  }
+};
+
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedBook, setSelectedBook] = useState(null);
   const [books, setBooks] = useState([]);
   const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  
-  // Get user ID (from logged in user or guest)
-  const userId = user?.id || user?._id || 'guest';
+  const [error, setError] = useState(null);
+
+  // Multiple loading states for different operations
+  const [loadingStates, setLoadingStates] = useState({
+    books: false,
+    cart: false,
+    addToCart: false,
+    placeOrder: false,
+    auth: false,
+  });
+
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalBooks: 0,
+    limit: 12,
+  });
+
+  const userId = user?.id || user?._id || null;
+  const isGuest = !user;
+
+  // Helper to update specific loading state
+  const setLoading = (key, value) => {
+    setLoadingStates(prev => ({ ...prev, [key]: value }));
+  };
+
+  // 401 Error Handler - Auto logout on auth errors
+  const handle401Error = (error) => {
+    if (error.message.includes('401') ||
+      error.message.toLowerCase().includes('unauthorized') ||
+      error.message.toLowerCase().includes('token')) {
+      toast.error('Session expired. Please login again.');
+      handleLogout();
+      return true;
+    }
+    return false;
+  };
 
   // Check if user is logged in on mount
   useEffect(() => {
@@ -29,31 +119,45 @@ function App() {
     }
   }, []);
 
-  // Fetch books on mount and when category changes
+  // Fetch books with pagination
   useEffect(() => {
     let isMounted = true;
-    
+
     const loadBooks = async () => {
       if (!isMounted) return;
-      
+
       try {
-        setLoading(true);
+        setLoading('books', true);
         setError(null);
+
         const response = await booksAPI.getAll({
           category: selectedCategory,
-          limit: 50
+          page: pagination.currentPage,
+          limit: pagination.limit
         });
+
         if (isMounted) {
           setBooks(response.data || []);
+
+          // Update pagination info if available from backend
+          if (response.pagination) {
+            setPagination(prev => ({
+              ...prev,
+              totalPages: response.pagination.totalPages || 1,
+              totalBooks: response.pagination.totalBooks || 0,
+            }));
+          }
         }
       } catch (err) {
         if (isMounted) {
-          setError(err.message);
-          console.error('Error fetching books:', err);
+          if (!handle401Error(err)) {
+            setError(err.message);
+            toast.error(`Failed to load books: ${err.message}`);
+          }
         }
       } finally {
         if (isMounted) {
-          setLoading(false);
+          setLoading('books', false);
         }
       }
     };
@@ -63,20 +167,27 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategory]);
+  }, [selectedCategory, pagination.currentPage, pagination.limit]);
 
-  // Fetch cart only when user logs in (not for guest)
+  // Load cart on user change
   useEffect(() => {
     let isMounted = true;
 
     const loadCart = async () => {
-      if (!user || userId === 'guest' || !isMounted) {
-        if (isMounted) setCart([]);
+      if (!isMounted) return;
+
+      // Guest cart - load from localStorage
+      if (isGuest) {
+        const guestCart = guestCartManager.getCart();
+        if (isMounted) setCart(guestCart);
         return;
       }
 
+      // Authenticated cart - load from server
       try {
+        setLoading('cart', true);
         const response = await cartAPI.get(userId);
+
         if (response.data && response.data.items && isMounted) {
           const transformedCart = response.data.items.map(item => ({
             id: item.book._id || item.book,
@@ -90,8 +201,15 @@ function App() {
           setCart(transformedCart);
         }
       } catch (err) {
-        console.error('Error fetching cart:', err);
-        if (isMounted) setCart([]);
+        if (isMounted && !handle401Error(err)) {
+          console.error('Error fetching cart:', err);
+          toast.error('Failed to load cart');
+          setCart([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading('cart', false);
+        }
       }
     };
 
@@ -100,40 +218,24 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [user, userId]);
+  }, [user, userId, isGuest]);
 
-  const addToCart = async (book, quantity) => {
-    // Check if user is logged in for cart operations
-    if (!user) {
-      alert('Please login to add items to cart');
-      setCurrentPage('login');
-      return;
-    }
+  // Migrate guest cart to user cart on login
+  const migrateGuestCart = async (userId) => {
+    const guestCart = guestCartManager.getCart();
+
+    if (guestCart.length === 0) return;
 
     try {
-      setLoading(true);
-      await cartAPI.addItem(userId, book._id || book.id, quantity);
-      
-      const existingItem = cart.find(item => item.id === (book._id || book.id));
-      if (existingItem) {
-        setCart(cart.map(item => 
-          item.id === (book._id || book.id)
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        ));
-      } else {
-        setCart([...cart, {
-          id: book._id || book.id,
-          title: book.title,
-          author: book.author,
-          price: book.price,
-          quantity: quantity,
-          image: book.coverImage || book.image,
-          category: book.category,
-        }]);
+      // Add all guest cart items to user cart
+      for (const item of guestCart) {
+        await cartAPI.addItem(userId, item.id, item.quantity);
       }
-      
-      // Refresh cart from server to ensure sync
+
+      // Clear guest cart
+      guestCartManager.clearCart();
+
+      // Reload user cart
       const response = await cartAPI.get(userId);
       if (response.data && response.data.items) {
         const transformedCart = response.data.items.map(item => ({
@@ -147,28 +249,80 @@ function App() {
         }));
         setCart(transformedCart);
       }
+
+      toast.success('Cart items merged successfully!');
     } catch (err) {
-      setError(err.message);
-      console.error('Error adding to cart:', err);
-      throw err;
-    } finally {
-      setLoading(false);
+      console.error('Error migrating cart:', err);
+      toast.error('Failed to merge cart items');
     }
   };
 
+  // Add to cart - simplified (no optimistic updates)
+  const addToCart = async (book, quantity) => {
+    try {
+      setLoading('addToCart', true);
+
+      // Guest cart
+      if (isGuest) {
+        const updatedCart = guestCartManager.addItem(book, quantity);
+        setCart(updatedCart);
+        toast.success('Added to cart!');
+        return;
+      }
+
+      // Authenticated cart
+      await cartAPI.addItem(userId, book._id || book.id, quantity);
+
+      // Refresh from server
+      const response = await cartAPI.get(userId);
+      if (response.data && response.data.items) {
+        const transformedCart = response.data.items.map(item => ({
+          id: item.book._id || item.book,
+          title: item.book.title,
+          author: item.book.author,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.book.coverImage || item.book.image,
+          category: item.book.category,
+        }));
+        setCart(transformedCart);
+      }
+
+      toast.success('Added to cart!');
+    } catch (err) {
+      if (!handle401Error(err)) {
+        setError(err.message);
+        toast.error(`Failed to add to cart: ${err.message}`);
+        throw err;
+      }
+    } finally {
+      setLoading('addToCart', false);
+    }
+  };
+
+  // Update cart quantity - simplified
   const updateCartQuantity = async (bookId, newQuantity) => {
     try {
+      // Guest cart
+      if (isGuest) {
+        const updatedCart = guestCartManager.updateItem(bookId, newQuantity);
+        setCart(updatedCart);
+
+        if (newQuantity <= 0) {
+          toast.info('Item removed from cart');
+        }
+        return;
+      }
+
+      // Authenticated cart
       if (newQuantity <= 0) {
         await cartAPI.removeItem(userId, bookId);
-        setCart(cart.filter(item => item.id !== bookId));
+        toast.info('Item removed from cart');
       } else {
         await cartAPI.updateItem(userId, bookId, newQuantity);
-        setCart(cart.map(item => 
-          item.id === bookId ? { ...item, quantity: newQuantity } : item
-        ));
       }
-      
-      // Refresh cart from server
+
+      // Refresh from server
       const response = await cartAPI.get(userId);
       if (response.data && response.data.items) {
         const transformedCart = response.data.items.map(item => ({
@@ -183,8 +337,10 @@ function App() {
         setCart(transformedCart);
       }
     } catch (err) {
-      setError(err.message);
-      console.error('Error updating cart:', err);
+      if (!handle401Error(err)) {
+        setError(err.message);
+        toast.error('Failed to update cart');
+      }
     }
   };
 
@@ -193,32 +349,43 @@ function App() {
   };
 
   const placeOrder = async (shippingAddress, paymentMethod) => {
-    // Check if user is logged in
-    if (!user) {
-      alert('Please login to place an order');
-      setCurrentPage('login');
+    // Guest users must login to place order
+    if (isGuest) {
+      toast.warning('Please login to place an order');
       throw new Error('Please login to place an order');
     }
 
     try {
-      setLoading(true);
+      setLoading('placeOrder', true);
+
       const orderData = {
         userId: userId,
         shippingAddress: shippingAddress,
         paymentMethod: paymentMethod || 'Credit Card',
       };
-      
+
       const response = await ordersAPI.place(orderData);
-      
+
+      // Clear cart after successful order
       setCart([]);
-      
+
+      // Clear server cart
+      try {
+        await cartAPI.clear(userId);
+      } catch (err) {
+        console.error('Failed to clear cart:', err);
+      }
+
+      toast.success('Order placed successfully!');
       return response.data;
     } catch (err) {
-      setError(err.message);
-      console.error('Error placing order:', err);
-      throw err;
+      if (!handle401Error(err)) {
+        setError(err.message);
+        toast.error(`Failed to place order: ${err.message}`);
+        throw err;
+      }
     } finally {
-      setLoading(false);
+      setLoading('placeOrder', false);
     }
   };
 
@@ -226,72 +393,177 @@ function App() {
     tokenManager.removeToken();
     userManager.removeUser();
     setUser(null);
-    setCart([]);
-    setCurrentPage('home');
+
+    // Clear authenticated cart, load guest cart
+    const guestCart = guestCartManager.getCart();
+    setCart(guestCart);
+
+    toast.info('Logged out successfully');
+  };
+
+  // Handle successful login/register
+  const handleUserLogin = async (userData) => {
+    setUser(userData);
+
+    // Migrate guest cart to user cart
+    const userId = userData.id || userData._id;
+    await migrateGuestCart(userId);
+  };
+
+  // Pagination handlers
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, currentPage: newPage }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNextPage = () => {
+    if (pagination.currentPage < pagination.totalPages) {
+      handlePageChange(pagination.currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pagination.currentPage > 1) {
+      handlePageChange(pagination.currentPage - 1);
+    }
   };
 
   return (
-    <>
-      {currentPage === 'profile' && (
-        <ProfilePage 
-          user={user}
-          setUser={setUser}
-          cart={cart} 
-          setCurrentPage={setCurrentPage}
-          onLogout={handleLogout}
+    <BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              books={books}
+              cart={cart}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={(category) => {
+                setSelectedCategory(category);
+                setPagination(prev => ({ ...prev, currentPage: 1 }));
+              }}
+              setSelectedBook={setSelectedBook}
+              loading={loadingStates.books}
+              error={error}
+              categories={CATEGORIES}
+              user={user}
+              onLogout={handleLogout}
+              pagination={pagination}
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+              onPageChange={handlePageChange}
+            />
+          }
         />
-      )}
-      {currentPage === 'login' && (
-        <LoginPage 
-          setCurrentPage={setCurrentPage}
-          setUser={setUser}
+
+        <Route
+          path="/book/:bookId"
+          element={
+            <BookDetailPage
+              book={selectedBook}
+              cart={cart}
+              addToCart={addToCart}
+              loading={loadingStates.addToCart}
+              user={user}
+              onLogout={handleLogout}
+            />
+          }
         />
-      )}
-      {currentPage === 'register' && (
-        <RegisterPage 
-          setCurrentPage={setCurrentPage}
-          setUser={setUser}
+
+        <Route
+          path="/checkout"
+          element={
+            <CheckoutPage
+              cart={cart}
+              updateCartQuantity={updateCartQuantity}
+              getTotalPrice={getTotalPrice}
+              placeOrder={placeOrder}
+              loading={loadingStates.placeOrder}
+              userId={userId}
+              user={user}
+              isGuest={isGuest}
+            />
+          }
         />
-      )}
-      {currentPage === 'home' && (
-        <HomePage 
-          books={books}
-          cart={cart}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          setCurrentPage={setCurrentPage}
-          setSelectedBook={setSelectedBook}
-          loading={loading}
-          error={error}
-          categories={CATEGORIES}
-          user={user}
-          onLogout={handleLogout}
+
+        <Route
+          path="/login"
+          element={
+            user ? (
+              <Navigate to="/" replace />
+            ) : (
+              <LoginPage
+                setUser={handleUserLogin}
+                loading={loadingStates.auth}
+                setLoading={(val) => setLoading('auth', val)}
+              />
+            )
+          }
         />
-      )}
-      {currentPage === 'detail' && selectedBook && (
-        <BookDetailPage 
-          book={selectedBook}
-          cart={cart}
-          addToCart={addToCart}
-          setCurrentPage={setCurrentPage}
-          loading={loading}
-          user={user}
-          onLogout={handleLogout}
+
+        <Route
+          path="/register"
+          element={
+            user ? (
+              <Navigate to="/" replace />
+            ) : (
+              <RegisterPage
+                setUser={handleUserLogin}
+                loading={loadingStates.auth}
+                setLoading={(val) => setLoading('auth', val)}
+              />
+            )
+          }
         />
-      )}
-      {currentPage === 'checkout' && (
-        <CheckoutPage 
-          cart={cart}
-          updateCartQuantity={updateCartQuantity}
-          getTotalPrice={getTotalPrice}
-          setCurrentPage={setCurrentPage}
-          placeOrder={placeOrder}
-          loading={loading}
-          userId={userId}
-          user={user}
+
+        <Route
+          path="/profile"
+          element={
+            user ? (
+              <ProfilePage
+                user={user}
+                setUser={setUser}
+                cart={cart}
+                onLogout={handleLogout}
+              />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
         />
-      )}
-    </>
+
+        <Route
+          path="/orders"
+          element={
+            user ? (
+              <OrdersPage
+                cart={cart}
+                user={user}
+                onLogout={handleLogout}
+              />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
