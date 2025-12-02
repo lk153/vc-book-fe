@@ -135,6 +135,9 @@ const translations = {
       view_edit_profile: 'View and edit profile',
       track_orders: 'Track your orders',
       account_preferences: 'Account preferences',
+      choose_lang: 'Choose Language',
+      select_preferred_lang: 'Select your preferred language',
+      lang_saved_auto: 'Language preference saved automatically',
     },
     
     // Home Page
@@ -410,6 +413,9 @@ const translations = {
       view_edit_profile: 'Xem & chỉnh sửa hồ sơ',
       track_orders: 'Theo dõi đơn hàng',
       account_preferences: 'Cài đặt tài khoản',
+      choose_lang: 'Chọn ngôn ngữ',
+      select_preferred_lang: 'Chọn ngôn ngữ phù hợp',
+      lang_saved_auto: 'Ngôn ngữ đã được lưu tự động',
     },
     
     // Home Page (Vietnamese)
