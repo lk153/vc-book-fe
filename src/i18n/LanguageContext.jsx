@@ -415,7 +415,7 @@ const translations = {
       account_preferences: 'Cài đặt tài khoản',
       choose_lang: 'Chọn ngôn ngữ',
       select_preferred_lang: 'Chọn ngôn ngữ phù hợp',
-      lang_saved_auto: 'Ngôn ngữ đã được lưu tự động',
+      lang_saved_auto: 'Ngôn ngữ sẽ được lưu tự động',
     },
     
     // Home Page (Vietnamese)
