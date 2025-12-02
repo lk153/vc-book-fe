@@ -1,13 +1,15 @@
 // src/components/Navigation.jsx
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn, Settings, Package, ChevronDown } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function Navigation({ cart, showBackButton = false, user, onLogout }) {
+  const { t } = useTranslation();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
           >
             <Home size={20} />
-            <span>Back to Home</span>
+            <span>{t('nav.backToHome')}</span>
           </button>
         ) : (
           <Link
@@ -53,11 +55,14 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
             className="flex items-center gap-2 text-2xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition"
           >
             <BookOpen size={32} />
-            <span>BookStore</span>
+            <span>{t('nav.title')}</span>
           </Link>
         )}
 
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Cart Button */}
           <button
             onClick={() => navigate('/checkout')}
@@ -127,8 +132,8 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
                     >
                       <User size={18} className="text-gray-500 group-hover:text-blue-600" />
                       <div>
-                        <p className="font-medium group-hover:text-blue-600">My Profile</p>
-                        <p className="text-xs text-gray-500">View and edit profile</p>
+                        <p className="font-medium group-hover:text-blue-600">{t('nav.profile')}</p>
+                        <p className="text-xs text-gray-500">{t('nav.view_edit_profile')}</p>
                       </div>
                     </button>
 
@@ -142,8 +147,8 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
                     >
                       <Package size={18} className="text-gray-500 group-hover:text-blue-600" />
                       <div>
-                        <p className="font-medium group-hover:text-blue-600">My Orders</p>
-                        <p className="text-xs text-gray-500">Track your orders</p>
+                        <p className="font-medium group-hover:text-blue-600">{t('nav.orders')}</p>
+                        <p className="text-xs text-gray-500">{t('nav.track_orders')}</p>
                       </div>
                     </button>
 
@@ -157,8 +162,8 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
                     >
                       <Settings size={18} className="text-gray-500 group-hover:text-blue-600" />
                       <div>
-                        <p className="font-medium group-hover:text-blue-600">Settings</p>
-                        <p className="text-xs text-gray-500">Account preferences</p>
+                        <p className="font-medium group-hover:text-blue-600">{t('nav.settings')}</p>
+                        <p className="text-xs text-gray-500">{t('nav.account_preferences')}</p>
                       </div>
                     </button>
                   </div>
@@ -178,8 +183,8 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
                   >
                     <LogOut size={18} className="text-red-500" />
                     <div>
-                      <p className="font-medium">Logout</p>
-                      <p className="text-xs text-red-400">Sign out of your account</p>
+                      <p className="font-medium">{t('nav.logout')}</p>
+                      <p className="text-xs text-red-400">{t('nav.logout_confirmation')}</p>
                     </div>
                   </button>
                 </div>
@@ -191,7 +196,7 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
               className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition font-medium"
             >
               <LogIn size={20} />
-              <span>Login</span>
+              <span>{t('nav.login')}</span>
             </button>
           )}
         </div>

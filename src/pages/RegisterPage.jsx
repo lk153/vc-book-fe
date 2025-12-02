@@ -4,8 +4,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Mail, Lock, User, Phone, Loader2, AlertCircle, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { authAPI, tokenManager, userManager } from '../services/authAPI';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function RegisterPage({ setUser, loading, setLoading }) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -134,9 +136,9 @@ export default function RegisterPage({ setUser, loading, setLoading }) {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">
             <BookOpen size={40} />
-            <span>BookStore</span>
+            <span>{t('nav.title')}</span>
           </div>
-          <p className="text-gray-600">Create your account</p>
+          <p className="text-gray-600">{t('auth.create_account')}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">

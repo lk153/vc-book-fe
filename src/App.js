@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -100,7 +100,7 @@ function App() {
   };
 
   // 401 Error Handler - Auto logout on auth errors
-  const handle401Error = (error) => {
+  const handle401Error = useCallback((error) => {
     if (error.message.includes('401') ||
       error.message.toLowerCase().includes('unauthorized') ||
       error.message.toLowerCase().includes('token')) {
@@ -109,7 +109,7 @@ function App() {
       return true;
     }
     return false;
-  };
+  }, []);
 
   // Check if user is logged in on mount
   useEffect(() => {
@@ -167,7 +167,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategory, pagination.currentPage, pagination.limit]);
+  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error]);
 
   // Load cart on user change
   useEffect(() => {
@@ -218,7 +218,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [user, userId, isGuest]);
+  }, [user, userId, isGuest, handle401Error]);
 
   // Migrate guest cart to user cart on login
   const migrateGuestCart = async (userId) => {

@@ -1,9 +1,10 @@
 // src/components/BookCard.jsx
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function BookCard({ book, onClick }) {
-  // Use coverImage from API or fallback to placeholder
+  const { t } = useTranslation();
   const imageUrl = book.coverImage || book.image || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop';
   
   return (
@@ -33,7 +34,7 @@ export default function BookCard({ book, onClick }) {
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold text-blue-600">${book.price.toFixed(2)}</span>
           <button className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-200 transition flex items-center gap-1">
-            View Details
+            {t('orders.viewDetails')}
             <ChevronRight size={16} />
           </button>
         </div>

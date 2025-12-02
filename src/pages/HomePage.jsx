@@ -5,6 +5,7 @@ import Navigation from '../components/Navigation';
 import CategoryFilter from '../components/CategoryFilter';
 import BookCard from '../components/BookCard';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function HomePage({
   books,
@@ -22,6 +23,7 @@ export default function HomePage({
   onPrevPage,
   onPageChange,
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const goToBook = (id) => {
@@ -34,7 +36,7 @@ export default function HomePage({
         <Navigation cart={cart} user={user} onLogout={onLogout} />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-            <h2 className="text-xl font-bold text-red-700 mb-2">Error Loading Books</h2>
+            <h2 className="text-xl font-bold text-red-700 mb-2">{t('home.errorLoading')}</h2>
             <p className="text-red-600">{error}</p>
             <button
               onClick={() => window.location.reload()}
@@ -53,7 +55,7 @@ export default function HomePage({
       <Navigation cart={cart} user={user} onLogout={onLogout} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Discover Your Next Great Read</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">{t('home.title')}</h1>
 
         <CategoryFilter
           categories={categories}
@@ -64,11 +66,11 @@ export default function HomePage({
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="animate-spin text-blue-600" size={48} />
-            <span className="ml-4 text-xl text-gray-600">Loading books...</span>
+            <span className="ml-4 text-xl text-gray-600">{t('home.loadingBooks')}</span>
           </div>
         ) : books.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-xl text-gray-600">No books found in this category.</p>
+            <p className="text-xl text-gray-600">{t('home.noBooks')}</p>
           </div>
         ) : (
           <>

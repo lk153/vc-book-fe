@@ -4,8 +4,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { authAPI, tokenManager, userManager } from '../services/authAPI';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function LoginPage({ setUser, loading, setLoading }) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -80,9 +82,9 @@ export default function LoginPage({ setUser, loading, setLoading }) {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">
             <BookOpen size={40} />
-            <span>BookStore</span>
+            <span>{t('nav.title')}</span>
           </div>
-          <p className="text-gray-600">Sign in to your account</p>
+          <p className="text-gray-600">{t('auth.signIn')}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">
@@ -96,7 +98,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                {t('auth.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -105,7 +107,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter your email"
+                  placeholder={t('auth.enterEmail')}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   disabled={loading}
                 />
@@ -114,7 +116,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
 
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -123,7 +125,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.enterPassword')}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   disabled={loading}
                 />
@@ -143,14 +145,14 @@ export default function LoginPage({ setUser, loading, setLoading }) {
                   type="checkbox"
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <span className="ml-2 text-sm text-gray-600">{t('auth.rememberMe')}</span>
               </label>
               <button
                 type="button"
-                onClick={() => toast.info('Forgot password feature coming soon!')}
+                onClick={() => toast.info(t('auth.forgotPasswordSoon'))}
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
-                Forgot password?
+                {t('auth.forgotPassword')}
               </button>
             </div>
 
@@ -165,7 +167,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
                   Signing in...
                 </>
               ) : (
-                'Sign In'
+                <>{t('auth.signIn')}</>
               )}
             </button>
           </form>
@@ -175,7 +177,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              <span className="px-2 bg-white text-gray-500">{t('auth.continueWith')}</span>
             </div>
           </div>
 
@@ -206,12 +208,12 @@ export default function LoginPage({ setUser, loading, setLoading }) {
           </div>
 
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?{' '}
+            {t('auth.noAccount')}{' '}
             <Link
               to="/register"
               className="text-blue-600 hover:text-blue-700 font-medium"
             >
-              Sign up
+              {t('auth.signUp')}
             </Link>
           </p>
         </div>
@@ -221,7 +223,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
             to="/"
             className="text-gray-600 hover:text-gray-800 text-sm font-medium"
           >
-            Continue as guest →
+            {t('nav.continueAsGuest')} →
           </Link>
         </div>
       </div>

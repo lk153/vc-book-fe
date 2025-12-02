@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
+
 import { 
   ChevronDown, 
   BookOpen, 
@@ -47,6 +49,7 @@ const categoryConfig = {
 };
 
 export default function CategoryFilter({ categories, selectedCategory, setSelectedCategory }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -89,8 +92,8 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         {/* Left Section - Title */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">Categories</h2>
-          <p className="text-sm text-gray-600">Find books by genre</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">{t('home.categories')}</h2>
+          <p className="text-sm text-gray-600">{t('home.findBooks')}</p>
         </div>
 
         {/* Right Section - Mega Menu Trigger */}
@@ -99,8 +102,8 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
           className="inline-flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition shadow-md hover:shadow-lg font-medium"
         >
           <SelectedIcon size={20} />
-          <span className="hidden sm:inline">Browse Categories</span>
-          <span className="sm:hidden">Categories</span>
+          <span className="hidden sm:inline">{t('nav.browseCategories')}</span>
+          <span className="sm:hidden">{t('home.categories')}</span>
           <ChevronDown 
             size={18} 
             className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -110,7 +113,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
 
       {/* Current Selection Breadcrumb */}
       <div className="flex items-center gap-2 text-sm mb-4">
-        <span className="text-gray-500">Viewing:</span>
+        <span className="text-gray-500">{t('home.viewing')}:</span>
         <div className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-blue-200 rounded-lg">
           <SelectedIcon size={16} className="text-blue-600" />
           <span className="font-semibold text-gray-800">{selectedCategory}</span>
@@ -126,7 +129,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
           <div className="px-8 py-6 bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 text-white">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-2xl font-bold mb-2">Explore Book Categories</h3>
+                <h3 className="text-2xl font-bold mb-2">{t('home.exploreCategories')}</h3>
                 <p className="text-blue-100 text-sm">Choose a category to discover amazing books</p>
               </div>
               <button

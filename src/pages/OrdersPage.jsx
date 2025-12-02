@@ -14,7 +14,6 @@ import {
   DollarSign,
   MapPin,
   Phone,
-  Mail,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
