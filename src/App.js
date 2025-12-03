@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useTranslation } from './i18n/LanguageContext';
 
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
@@ -70,7 +69,6 @@ const guestCartManager = {
 };
 
 function App() {
-  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedBook, setSelectedBook] = useState(null);
   const [books, setBooks] = useState([]);
@@ -156,7 +154,7 @@ function App() {
         if (isMounted) {
           if (!handle401Error(err)) {
             setError(err.message);
-            toast.error(t('app.failedLoadBooks', { error: err.message }));
+            toast.error(`Failed to load books: ${err.message}`);
           }
         }
       } finally {
@@ -171,7 +169,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error, t]);
+  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error]);
 
   // Load cart on user change
   useEffect(() => {
@@ -207,7 +205,7 @@ function App() {
       } catch (err) {
         if (isMounted && !handle401Error(err)) {
           console.error('Error fetching cart:', err);
-          toast.error(t('app.failedLoadCart'));
+          toast.error('Failed to load cart');
           setCart([]);
         }
       } finally {
@@ -222,7 +220,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [user, userId, isGuest, handle401Error, t]);
+  }, [user, userId, isGuest, handle401Error]);
 
   // Migrate guest cart to user cart on login
   const migrateGuestCart = async (userId) => {
@@ -254,7 +252,7 @@ function App() {
         setCart(transformedCart);
       }
 
-      toast.success(t('cart.cartMerged'));
+      toast.success('Cart items merged successfully!');
     } catch (err) {
       console.error('Error migrating cart:', err);
       toast.error('Failed to merge cart items');

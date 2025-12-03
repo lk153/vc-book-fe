@@ -302,7 +302,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
       )}
 
       {/* Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes slideDown {
           from {
             opacity: 0;

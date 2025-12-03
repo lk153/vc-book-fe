@@ -301,7 +301,7 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes bounce-in {
           0% {
             transform: scale(0.9);

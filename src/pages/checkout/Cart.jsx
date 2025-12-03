@@ -33,8 +33,8 @@ export default function Cart({ cart, isGuest, updateCartQuantity, setShowOrderFo
                             <p className="text-yellow-700 text-sm">
                                 {t('cart.guestMessage')}
                                 <Link to="/login" className="font-medium underline ml-1">
-                                    Login
-                                </Link> to sync your cart and place orders.
+                                    {t('nav.login')}
+                                </Link> {t('cart.loginSync')}
                             </p>
                         </div>
                     </div>

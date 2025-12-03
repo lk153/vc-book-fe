@@ -69,7 +69,7 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             <ShoppingCart size={20} />
-            <span className="hidden sm:inline">Cart</span>
+            <span className="hidden sm:inline">{t('nav.cart')}</span>
             <span className="bg-white text-blue-600 px-2 py-0.5 rounded-full text-sm font-bold">
               {cart.length}
             </span>
@@ -202,7 +202,7 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slideDown {
           from {
             opacity: 0;

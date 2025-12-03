@@ -165,7 +165,7 @@ export default function LanguageSwitcher() {
       </div>
 
       {/* Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes slideDown {
           from {
             opacity: 0;
