@@ -171,7 +171,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error]);
+  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error, t]);
 
   // Load cart on user change
   useEffect(() => {
@@ -222,7 +222,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [user, userId, isGuest, handle401Error]);
+  }, [user, userId, isGuest, handle401Error, t]);
 
   // Migrate guest cart to user cart on login
   const migrateGuestCart = async (userId) => {
