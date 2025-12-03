@@ -118,6 +118,12 @@ const translations = {
       retry: 'Retry',
     },
 
+    app: {
+      failedLoadBooks: 'Failed to load books: {error}',
+      failedLoadCart: 'Failed to load cart',
+      failedLoadProfile: 'Failed to load profile',
+    },
+
     // Navigation
     nav: {
       home: 'Home',

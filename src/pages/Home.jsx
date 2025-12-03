@@ -139,8 +139,8 @@ export default function Home({
                           key={pageNum}
                           onClick={() => onPageChange(pageNum)}
                           className={`w-10 h-10 rounded-lg font-medium transition ${pagination.currentPage === pageNum
-                              ? 'bg-blue-600 text-white shadow-lg'
-                              : 'bg-white text-gray-700 hover:bg-blue-50 border-2 border-gray-300 hover:border-blue-500'
+                            ? 'bg-blue-600 text-white shadow-lg'
+                            : 'bg-white text-gray-700 hover:bg-blue-50 border-2 border-gray-300 hover:border-blue-500'
                             }`}
                         >
                           {pageNum}

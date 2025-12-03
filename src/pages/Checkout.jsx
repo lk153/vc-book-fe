@@ -63,13 +63,13 @@ export default function Checkout({
 
   // Checkout form
   if (showOrderForm && cart.length > 0) {
-    return <ShippingAddress setShowOrderForm={setShowOrderForm} 
-    loading={loading} orderError={orderError} shippingAddress={shippingAddress} 
-    handlePlaceOrder={handlePlaceOrder} handleInputChange={handleInputChange}
-    paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} getTotalPrice={getTotalPrice}/>
+    return <ShippingAddress setShowOrderForm={setShowOrderForm}
+      loading={loading} orderError={orderError} shippingAddress={shippingAddress}
+      handlePlaceOrder={handlePlaceOrder} handleInputChange={handleInputChange}
+      paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} getTotalPrice={getTotalPrice} />
   }
 
   // Cart view
-  return <Cart cart={cart} isGuest={isGuest} updateCartQuantity={updateCartQuantity} 
-  setShowOrderForm={setShowOrderForm} getTotalPrice={getTotalPrice}/>
+  return <Cart cart={cart} isGuest={isGuest} updateCartQuantity={updateCartQuantity}
+    setShowOrderForm={setShowOrderForm} getTotalPrice={getTotalPrice} />
 }

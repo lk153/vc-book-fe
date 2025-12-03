@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from './i18n/LanguageContext';
 
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
@@ -69,6 +70,7 @@ const guestCartManager = {
 };
 
 function App() {
+  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedBook, setSelectedBook] = useState(null);
   const [books, setBooks] = useState([]);
@@ -154,7 +156,7 @@ function App() {
         if (isMounted) {
           if (!handle401Error(err)) {
             setError(err.message);
-            toast.error(`Failed to load books: ${err.message}`);
+            toast.error(t('app.failedLoadBooks', { error: err.message }));
           }
         }
       } finally {
@@ -205,7 +207,7 @@ function App() {
       } catch (err) {
         if (isMounted && !handle401Error(err)) {
           console.error('Error fetching cart:', err);
-          toast.error('Failed to load cart');
+          toast.error(t('app.failedLoadCart'));
           setCart([]);
         }
       } finally {
@@ -252,7 +254,7 @@ function App() {
         setCart(transformedCart);
       }
 
-      toast.success('Cart items merged successfully!');
+      toast.success(t('cart.cartMerged'));
     } catch (err) {
       console.error('Error migrating cart:', err);
       toast.error('Failed to merge cart items');

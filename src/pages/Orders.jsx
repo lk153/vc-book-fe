@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navigation from '../components/Navigation';
 import { ordersAPI } from '../services/api';
-import { 
-  Package, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  Truck, 
+import {
+  Package,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Truck,
   Loader2,
   Calendar,
   DollarSign,
@@ -43,10 +43,10 @@ export default function Orders({ cart, user, onLogout }) {
       try {
         setLoading(true);
         setError(null);
-        
+
         const userId = user.id || user._id;
         const response = await ordersAPI.getUserOrders(userId);
-        
+
         if (isMounted) {
           // Handle both response.data and direct array response
           const ordersData = response.data || response;
@@ -75,7 +75,7 @@ export default function Orders({ cart, user, onLogout }) {
   // Get status badge styling
   const getStatusBadge = (status) => {
     const statusLower = status?.toLowerCase() || '';
-    
+
     const styles = {
       pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock },
       processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Package },
@@ -100,9 +100,9 @@ export default function Orders({ cart, user, onLogout }) {
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -186,7 +186,7 @@ export default function Orders({ cart, user, onLogout }) {
         ) : (
           <div className="space-y-6">
             {orders.map((order) => (
-              <div 
+              <div
                 key={order._id || order.id || order.orderNumber}
                 className="bg-white rounded-xl shadow-lg overflow-hidden transition hover:shadow-xl"
               >
@@ -307,7 +307,7 @@ export default function Orders({ cart, user, onLogout }) {
                       </h4>
                       <div className="space-y-3">
                         {order.items?.map((item, index) => (
-                          <div 
+                          <div
                             key={item._id || index}
                             className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
                           >
