@@ -1,11 +1,11 @@
-// src/pages/CheckoutPage.jsx
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import ShippingAddress from './checkout/ShippingAddress';
 import Cart from './checkout/Cart';
 import OrderSuccess from './checkout/OrderSuccess';
+import { useTranslation } from '../i18n/LanguageContext';
 
-export default function CheckoutPage({
+export default function Checkout({
   cart,
   updateCartQuantity,
   getTotalPrice,
@@ -13,6 +13,7 @@ export default function CheckoutPage({
   loading,
   isGuest
 }) {
+  const { t } = useTranslation();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderData, setOrderData] = useState(null);
@@ -41,8 +42,8 @@ export default function CheckoutPage({
 
     if (!shippingAddress.fullName || !shippingAddress.address ||
       !shippingAddress.city || !shippingAddress.postalCode || !shippingAddress.phone) {
-      setOrderError('Please fill in all required fields');
-      toast.error('Please fill in all required fields');
+      setOrderError(t('checkout.fillRequired'));
+      toast.error(t('checkout.fillRequired'));
       return;
     }
 

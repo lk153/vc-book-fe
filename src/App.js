@@ -3,13 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import HomePage from './pages/HomePage';
-import BookDetailPage from './pages/BookDetailPage';
-import CheckoutPage from './pages/CheckoutPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
-import OrdersPage from './pages/OrdersPage';
+import Home from './pages/Home';
+import BookDetail from './pages/BookDetail';
+import Checkout from './pages/Checkout';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import { booksAPI, cartAPI, ordersAPI, CATEGORIES } from './services/api';
 import { tokenManager, userManager } from './services/authAPI';
 
@@ -447,7 +449,7 @@ function App() {
         <Route
           path="/"
           element={
-            <HomePage
+            <Home
               books={books}
               cart={cart}
               selectedCategory={selectedCategory}
@@ -472,7 +474,7 @@ function App() {
         <Route
           path="/book/:bookId"
           element={
-            <BookDetailPage
+            <BookDetail
               book={selectedBook}
               cart={cart}
               addToCart={addToCart}
@@ -486,7 +488,7 @@ function App() {
         <Route
           path="/checkout"
           element={
-            <CheckoutPage
+            <Checkout
               cart={cart}
               updateCartQuantity={updateCartQuantity}
               getTotalPrice={getTotalPrice}
@@ -505,7 +507,7 @@ function App() {
             user ? (
               <Navigate to="/" replace />
             ) : (
-              <LoginPage
+              <Login
                 setUser={handleUserLogin}
                 loading={loadingStates.auth}
                 setLoading={(val) => setLoading('auth', val)}
@@ -520,7 +522,7 @@ function App() {
             user ? (
               <Navigate to="/" replace />
             ) : (
-              <RegisterPage
+              <Register
                 setUser={handleUserLogin}
                 loading={loadingStates.auth}
                 setLoading={(val) => setLoading('auth', val)}
@@ -533,7 +535,7 @@ function App() {
           path="/profile"
           element={
             user ? (
-              <ProfilePage
+              <Profile
                 user={user}
                 setUser={setUser}
                 cart={cart}
@@ -549,7 +551,7 @@ function App() {
           path="/orders"
           element={
             user ? (
-              <OrdersPage
+              <Orders
                 cart={cart}
                 user={user}
                 onLogout={handleLogout}
@@ -559,6 +561,9 @@ function App() {
             )
           }
         />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

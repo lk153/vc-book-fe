@@ -1,4 +1,3 @@
-// src/pages/HomePage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
@@ -7,7 +6,7 @@ import BookCard from '../components/BookCard';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 
-export default function HomePage({
+export default function Home({
   books,
   cart,
   selectedCategory,

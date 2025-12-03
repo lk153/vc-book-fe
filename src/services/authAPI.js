@@ -86,6 +86,42 @@ export const authAPI = {
     });
     return handleResponse(response);
   },
+
+  // Forgot Password - Request reset link
+  forgotPassword: async (email) => {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+    return handleResponse(response);
+  },
+
+  // Verify Reset Token (optional - for checking if token is valid)
+  verifyResetToken: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-reset-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
+    return handleResponse(response);
+  },
+
+  // Reset Password - Set new password with token
+  resetPassword: async (resetData) => {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(resetData),
+    });
+    return handleResponse(response);
+  },
 };
 
 // Token Management

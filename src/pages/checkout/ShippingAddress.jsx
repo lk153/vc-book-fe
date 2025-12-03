@@ -1,8 +1,10 @@
 import { Home, Loader2 } from 'lucide-react';
+import { useTranslation } from '../../i18n/LanguageContext';
 
 export default function ShippingAddress({
   setShowOrderForm, loading, orderError, shippingAddress, handlePlaceOrder, handleInputChange,
   paymentMethod, setPaymentMethod, getTotalPrice }) {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <nav className="bg-white shadow-sm">
@@ -12,13 +14,13 @@ export default function ShippingAddress({
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
           >
             <Home size={20} />
-            <span>Back to Cart</span>
+            <span>{t('checkout.backToCart')}</span>
           </button>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Shipping Information</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">{t('checkout.title')}</h1>
 
         {orderError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
@@ -30,7 +32,7 @@ export default function ShippingAddress({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name *
+                {t('checkout.fullName')} *
               </label>
               <input
                 type="text"
@@ -44,7 +46,7 @@ export default function ShippingAddress({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone *
+                {t('checkout.phone')} *
               </label>
               <input
                 type="tel"
@@ -59,7 +61,7 @@ export default function ShippingAddress({
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Address *
+              {t('checkout.address')} *
             </label>
             <input
               type="text"
@@ -74,7 +76,7 @@ export default function ShippingAddress({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                City *
+                {t('checkout.city')} *
               </label>
               <input
                 type="text"
@@ -88,7 +90,7 @@ export default function ShippingAddress({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                State
+                {t('checkout.state')}
               </label>
               <input
                 type="text"
@@ -101,7 +103,7 @@ export default function ShippingAddress({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Postal Code *
+                {t('checkout.postalCode')} *
               </label>
               <input
                 type="text"
@@ -116,7 +118,7 @@ export default function ShippingAddress({
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Country
+              {t('checkout.country')}
             </label>
             <input
               type="text"
@@ -129,23 +131,23 @@ export default function ShippingAddress({
 
           <div className="mb-8">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Payment Method
+              {t('checkout.paymentMethod')}
             </label>
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="Credit Card">Credit Card</option>
-              <option value="Debit Card">Debit Card</option>
-              <option value="PayPal">PayPal</option>
-              <option value="Cash on Delivery">Cash on Delivery</option>
+              <option value="Credit Card">{t('checkout.creditCard')}</option>
+              <option value="Debit Card">{t('checkout.debitCard')}</option>
+              <option value="PayPal">{t('checkout.paypal')}</option>
+              <option value="Cash on Delivery">{t('checkout.cashOnDelivery')}</option>
             </select>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold text-gray-800">Order Total</span>
+              <span className="text-lg font-semibold text-gray-800">{t('checkout.orderTotal')}</span>
               <span className="text-2xl font-bold text-blue-600">${getTotalPrice()}</span>
             </div>
           </div>
@@ -161,7 +163,7 @@ export default function ShippingAddress({
                 Processing...
               </>
             ) : (
-              'Place Order'
+              t('checkout.placeOrder')
             )}
           </button>
         </form>

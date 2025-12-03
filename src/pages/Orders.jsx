@@ -18,7 +18,7 @@ import {
   ChevronUp
 } from 'lucide-react';
 
-export default function OrdersPage({ cart, user, onLogout }) {
+export default function Orders({ cart, user, onLogout }) {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

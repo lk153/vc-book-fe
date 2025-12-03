@@ -1,4 +1,3 @@
-// src/pages/RegisterPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -6,7 +5,7 @@ import { BookOpen, Mail, Lock, User, Phone, Loader2, AlertCircle, Eye, EyeOff, C
 import { authAPI, tokenManager, userManager } from '../services/authAPI';
 import { useTranslation } from '../i18n/LanguageContext';
 
-export default function RegisterPage({ setUser, loading, setLoading }) {
+export default function Register({ setUser, loading, setLoading }) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: '',

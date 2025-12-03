@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -6,7 +5,7 @@ import { BookOpen, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-
 import { authAPI, tokenManager, userManager } from '../services/authAPI';
 import { useTranslation } from '../i18n/LanguageContext';
 
-export default function LoginPage({ setUser, loading, setLoading }) {
+export default function Login({ setUser, loading, setLoading }) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
@@ -147,13 +146,7 @@ export default function LoginPage({ setUser, loading, setLoading }) {
                 />
                 <span className="ml-2 text-sm text-gray-600">{t('auth.rememberMe')}</span>
               </label>
-              <button
-                type="button"
-                onClick={() => toast.info(t('auth.forgotPasswordSoon'))}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-              >
-                {t('auth.forgotPassword')}
-              </button>
+              <Link to="/forgot-password">{t('auth.forgotPassword')}</Link>
             </div>
 
             <button

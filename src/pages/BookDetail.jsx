@@ -4,11 +4,12 @@ import { toast } from 'react-toastify';
 import Navigation from '../components/Navigation';
 import { booksAPI } from '../services/api';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
-export default function BookDetailPage({ cart, addToCart, loading, user, onLogout }) {
+export default function BookDetail({ cart, addToCart, loading, user, onLogout }) {
   const navigate = useNavigate();
   const { bookId } = useParams(); // Get bookId from URL
-
+  const { t } = useTranslation();
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);
   const [bookError, setBookError] = useState(null);
@@ -65,16 +66,16 @@ export default function BookDetailPage({ cart, addToCart, loading, user, onLogou
     setShowErrorPopup(false);
 
     if (isOutOfStock) {
-      setError('This book is currently out of stock');
+      setError(t('toast.outOfStock'));
       setShowErrorPopup(true);
-      toast.error('This book is currently out of stock');
+      toast.error(t('toast.outOfStock'));
       return;
     }
 
     if (quantity > maxQuantity) {
-      setError(`Only ${maxQuantity} items available in stock`);
+      setError(t('toast.maxStock', { count: maxQuantity }));
       setShowErrorPopup(true);
-      toast.error(`Only ${maxQuantity} items available in stock`);
+      toast.error(t('toast.maxStock', { count: maxQuantity }));
       return;
     }
 
@@ -212,16 +213,16 @@ export default function BookDetailPage({ cart, addToCart, loading, user, onLogou
 
                   {book.stock !== undefined && (
                     <div className={`px-4 py-2 rounded-full font-semibold text-sm ${isOutOfStock
-                        ? 'bg-red-100 text-red-700'
-                        : book.stock < 10
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-green-100 text-green-700'
+                      ? 'bg-red-100 text-red-700'
+                      : book.stock < 10
+                        ? 'bg-yellow-100 text-yellow-700'
+                        : 'bg-green-100 text-green-700'
                       }`}>
                       {isOutOfStock
-                        ? 'Out of Stock'
+                        ? t('book.outOfStock')
                         : book.stock < 10
-                          ? `Only ${book.stock} left`
-                          : `${book.stock} in stock`
+                          ? t('book.onlyLeft', { count: book.stock })
+                          : t('book.inStock', { count: book.stock })
                       }
                     </div>
                   )}
@@ -230,7 +231,7 @@ export default function BookDetailPage({ cart, addToCart, loading, user, onLogou
                 {!isOutOfStock && (
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quantity {book.stock && `(Max: ${book.stock})`}
+                      {t('book.quantity')} {book.stock && `(${t('book.max')}: ${book.stock})`}
                     </label>
                     <div className="flex items-center gap-3">
                       <button
@@ -251,7 +252,7 @@ export default function BookDetailPage({ cart, addToCart, loading, user, onLogou
                     </div>
                     {quantity >= maxQuantity && book.stock && (
                       <p className="text-sm text-yellow-600 mt-2">
-                        Maximum available quantity reached
+                        {t('book.maxQuantity')}
                       </p>
                     )}
                   </div>
@@ -262,26 +263,26 @@ export default function BookDetailPage({ cart, addToCart, loading, user, onLogou
                     disabled
                     className="w-full py-4 rounded-lg font-bold text-lg bg-gray-300 text-gray-500 cursor-not-allowed"
                   >
-                    Out of Stock
+                    {t('book.outOfStock')}
                   </button>
                 ) : (
                   <button
                     onClick={handleAddToCart}
                     disabled={loading}
                     className={`w-full py-4 rounded-lg font-bold text-lg transition flex items-center justify-center ${addedToCart
-                        ? 'bg-green-500 text-white'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                      ? 'bg-green-500 text-white'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
                       } disabled:bg-gray-400 disabled:cursor-not-allowed`}
                   >
                     {loading ? (
-                      'Adding...'
+                      <>{t('book.adding')}</>
                     ) : addedToCart ? (
                       <>
                         <CheckCircle className="mr-2" size={20} />
-                        Added to Cart!
+                        {t('book.addedToCart')}
                       </>
                     ) : (
-                      'Add to Cart'
+                      <>{t('book.addToCart')}</>
                     )}
                   </button>
                 )}
@@ -291,7 +292,7 @@ export default function BookDetailPage({ cart, addToCart, loading, user, onLogou
                     onClick={() => toast.info('Notification feature coming soon! We will notify you when this book is back in stock.')}
                     className="w-full mt-3 py-3 rounded-lg font-medium text-blue-600 border-2 border-blue-600 hover:bg-blue-50 transition"
                   >
-                    Notify Me When Available
+                    {t('book.notifyMe')}
                   </button>
                 )}
               </div>

@@ -1,4 +1,3 @@
-// src/pages/ProfilePage.jsx
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { User, Mail, Phone, Lock, Save, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
@@ -6,7 +5,7 @@ import Navigation from '../components/Navigation';
 import { authAPI, userManager } from '../services/authAPI';
 import { useTranslation } from '../i18n/LanguageContext';
 
-export default function ProfilePage({ user, setUser, cart, onLogout }) {
+export default function Profile({ user, setUser, cart, onLogout }) {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -90,21 +89,21 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
     setError(null);
 
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      const msg = 'All password fields are required';
+      const msg = t('profile.allFieldsRequired');
       setError(msg);
       toast.error(msg);
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
-      const msg = 'New password must be at least 6 characters';
+      const msg = t('profile.passwordMinLength');
       setError(msg);
       toast.error(msg);
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      const msg = 'New passwords do not match';
+      const msg = t('profile.passwordsNotMatch');
       setError(msg);
       toast.error(msg);
       return;
@@ -118,7 +117,7 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
         newPassword: passwordData.newPassword,
       });
 
-      toast.success('Password changed successfully!');
+      toast.success(t('profile.passwordChanged'));
       setPasswordData({
         currentPassword: '',
         newPassword: '',
@@ -126,7 +125,7 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
       });
       setShowPasswordSection(false);
     } catch (err) {
-      const msg = err.message || 'Failed to change password';
+      const msg = err.message || t('profile.passwordFailed');
       setError(msg);
       toast.error(msg);
     } finally {
@@ -193,7 +192,7 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
               <form onSubmit={handleUpdateProfile}>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name *
+                    {t('profile.fullName')} *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -210,7 +209,7 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
 
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
+                    {t('profile.email')} *
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -227,7 +226,7 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
 
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
+                    {t('profile.phone')}
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -251,12 +250,12 @@ export default function ProfilePage({ user, setUser, cart, onLogout }) {
                     {loading ? (
                       <>
                         <Loader2 className="animate-spin mr-2" size={20} />
-                        Saving...
+                        {t('profile.saving')}
                       </>
                     ) : (
                       <>
                         <Save className="mr-2" size={20} />
-                        Save Changes
+                        {t('profile.saveChanges')}
                       </>
                     )}
                   </button>
