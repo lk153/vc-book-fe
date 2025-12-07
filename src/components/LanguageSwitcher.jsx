@@ -7,12 +7,20 @@ export default function LanguageSwitcher() {
   const { t } = useTranslation();
   const { language, changeLanguage, languages } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const desktopRef = useRef(null);
+  const mobileRef = useRef(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      const desktop = desktopRef.current;
+      const mobile = mobileRef.current;
+
+      const clickedInsideDesktop = desktop && desktop.contains(event.target);
+      const clickedInsideMobile = mobile && mobile.contains(event.target);
+
+      // If click outside both -> close
+      if (!clickedInsideDesktop && !clickedInsideMobile) {
         setIsOpen(false);
       }
     };
@@ -36,7 +44,7 @@ export default function LanguageSwitcher() {
   return (
     <>
       {/* Desktop Version - Shows in Navigation Bar (md and up) */}
-      <div className="hidden md:block relative" ref={dropdownRef}>
+      <div className="hidden md:block relative" ref={desktopRef}>
         {/* Language Switcher Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -51,17 +59,20 @@ export default function LanguageSwitcher() {
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 animate-slideDown">
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 animate-slideDown" onClick={(e) => e.stopPropagation()}>
             {Object.values(languages).map((lang) => {
               const isSelected = language === lang.code;
 
               return (
                 <button
                   key={lang.code}
-                  onClick={() => handleLanguageChange(lang.code)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLanguageChange(lang.code);
+                  }}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 transition ${isSelected
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   <span className="text-2xl">{lang.flag}</span>
@@ -77,13 +88,13 @@ export default function LanguageSwitcher() {
       </div>
 
       {/* Mobile Version - Floating Circle Button (bottom right) */}
-      <div className="md:hidden" ref={dropdownRef}>
+      <div className="md:hidden" ref={mobileRef}>
         {/* Floating Circle Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 ${isOpen
-              ? 'bg-red-500 hover:bg-red-600'
-              : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
+            ? 'bg-red-500 hover:bg-red-600'
+            : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
             }`}
           aria-label="Change language"
         >
@@ -129,8 +140,8 @@ export default function LanguageSwitcher() {
                       key={lang.code}
                       onClick={() => handleLanguageChange(lang.code)}
                       className={`w-full flex items-center gap-4 px-5 py-4 transition ${isSelected
-                          ? 'bg-blue-50'
-                          : 'hover:bg-gray-50'
+                        ? 'bg-blue-50'
+                        : 'hover:bg-gray-50'
                         }`}
                     >
                       <span className="text-3xl">{lang.flag}</span>
@@ -164,7 +175,6 @@ export default function LanguageSwitcher() {
         )}
       </div>
 
-      {/* Animations */}
       <style>{`
         @keyframes slideDown {
           from {

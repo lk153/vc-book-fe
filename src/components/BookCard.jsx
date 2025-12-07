@@ -1,4 +1,3 @@
-// src/components/BookCard.jsx
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';

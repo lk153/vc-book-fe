@@ -1,4 +1,3 @@
-// src/components/Navigation.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn, Settings, Package, ChevronDown } from 'lucide-react';
@@ -50,10 +49,7 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
             <span>{t('nav.backToHome')}</span>
           </button>
         ) : (
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-2xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition"
-          >
+          <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition">
             <BookOpen size={32} />
             <span>{t('nav.title')}</span>
           </Link>
