@@ -5,6 +5,7 @@ import Navigation from '../components/Navigation';
 import { booksAPI } from '../services/api';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
+import { formatPrice } from '../utils/price';
 
 export default function BookDetail({ cart, addToCart, loading, user, onLogout }) {
   const navigate = useNavigate();
@@ -175,7 +176,7 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
               <img
                 src={book.coverImage || book.image || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop'}
                 alt={book.title}
-                className="w-full h-96 object-cover rounded-lg shadow-lg"
+                className="w-full h-96 object-contain rounded-lg shadow-lg"
                 onError={(e) => {
                   e.target.src = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop';
                 }}
@@ -185,7 +186,7 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
             <div className="flex flex-col">
               <span className="text-sm text-blue-600 font-medium mb-2">{book.category}</span>
               <h1 className="text-4xl font-bold text-gray-800 mb-3">{book.title}</h1>
-              <p className="text-xl text-gray-600 mb-6">by {book.author}</p>
+              <p className="text-xl text-gray-600 mb-6">{t('book.by')} {book.author}</p>
 
               <p className="text-gray-700 mb-4 leading-relaxed">
                 {book.description || 'No description available'}
@@ -209,7 +210,7 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
 
               <div className="border-t border-gray-200 pt-6 mt-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-3xl font-bold text-blue-600">${book.price.toFixed(2)}</span>
+                  <span className="text-3xl font-bold text-blue-600">{formatPrice(book.price)}{t('common.currencySymbol')}</span>
 
                   {book.stock !== undefined && (
                     <div className={`px-4 py-2 rounded-full font-semibold text-sm ${isOutOfStock

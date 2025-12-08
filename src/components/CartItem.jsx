@@ -1,17 +1,21 @@
 import React from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
+import { formatPrice } from '../utils/price';
 
 export default function CartItem({ item, updateCartQuantity }) {
+  const { t } = useTranslation();
+
   return (
     <div className="p-6 flex gap-4">
       <img 
         src={item.image} 
         alt={item.title}
-        className="w-24 h-32 object-cover rounded-lg"
+        className="w-24 h-32 object-contain rounded-lg"
       />
       <div className="flex-1">
         <h3 className="text-xl font-bold text-gray-800 mb-1">{item.title}</h3>
-        <p className="text-gray-600 mb-3">by {item.author}</p>
-        <p className="text-lg font-semibold text-blue-600">${item.price}</p>
+        <p className="text-gray-600 mb-3">{t('book.by')} {item.author}</p>
+        <p className="text-lg font-semibold text-blue-600">{formatPrice(item.price)}{t('common.currencySymbol')}</p>
       </div>
       <div className="flex flex-col items-end justify-between">
         <div className="flex items-center gap-2">
@@ -30,7 +34,7 @@ export default function CartItem({ item, updateCartQuantity }) {
           </button>
         </div>
         <p className="text-xl font-bold text-gray-800">
-          ${(item.price * item.quantity).toFixed(2)}
+          {formatPrice(item.price * item.quantity)}{t('common.currencySymbol')}
         </p>
       </div>
     </div>

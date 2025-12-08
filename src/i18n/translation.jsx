@@ -21,6 +21,7 @@ const translations = {
       total: 'Total',
       subtotal: 'Subtotal',
       retry: 'Retry',
+      currencySymbol: '₫',
     },
 
     app: {
@@ -69,7 +70,7 @@ const translations = {
       trending: 'Trending now',
       newReleases: 'New Releases',
       latestBooks: 'Latest books',
-      categoriesAvailable: '{count} Categories Available',
+      categoriesAvailable: 'Categories Available',
       updatedDaily: 'Updated daily',
     },
 
@@ -305,6 +306,7 @@ const translations = {
       total: 'Tổng cộng',
       subtotal: 'Tạm tính',
       retry: 'Thử lại',
+      currencySymbol: '₫',
     },
 
     // Navigation (Vietnamese)
@@ -347,7 +349,7 @@ const translations = {
       trending: 'Đang thịnh hành',
       newReleases: 'Mới phát hành',
       latestBooks: 'Sách mới nhất',
-      categoriesAvailable: '{count} Danh mục có sẵn',
+      categoriesAvailable: 'Danh mục có sẵn',
       updatedDaily: 'Cập nhật hàng ngày',
     },
 

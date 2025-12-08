@@ -178,12 +178,8 @@ export const ordersAPI = {
 
 // Categories constant (for filtering)
 export const CATEGORIES = [
-  "All",
-  "Fiction",
-  "Science Fiction",
-  "Business",
-  "Biography",
-  "Self-Help"
+  "Tất cả",
+  "Tiểu đệ tử",
 ];
 
 // Combined API object

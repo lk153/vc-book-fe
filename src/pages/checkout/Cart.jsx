@@ -2,6 +2,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, Home, AlertTriangle } from 'lucide-react';
 import CartItem from '../../components/CartItem';
 import { useTranslation } from '../../i18n/LanguageContext';
+import { formatPrice } from '../../utils/price';
 
 export default function Cart({ cart, isGuest, updateCartQuantity, setShowOrderForm, getTotalPrice }) {
     const navigate = useNavigate();
@@ -67,7 +68,7 @@ export default function Cart({ cart, isGuest, updateCartQuantity, setShowOrderFo
                         <div className="bg-gray-50 p-6 border-t-2 border-gray-200">
                             <div className="flex justify-between items-center mb-6">
                                 <span className="text-2xl font-bold text-gray-800">{t('common.total')}</span>
-                                <span className="text-3xl font-bold text-blue-600">${getTotalPrice()}</span>
+                                <span className="text-3xl font-bold text-blue-600">{formatPrice(getTotalPrice())}{t('common.currencySymbol')}</span>
                             </div>
 
                             {isGuest ? (

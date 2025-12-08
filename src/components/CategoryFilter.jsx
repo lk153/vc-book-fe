@@ -4,10 +4,10 @@ import { useTranslation } from '../i18n/LanguageContext';
 import { 
   ChevronDown, 
   BookOpen, 
-  Sparkles, 
-  Briefcase, 
-  User, 
-  Heart, 
+  // Sparkles, 
+  // Briefcase, 
+  // User, 
+  // Heart, 
   Compass,
   TrendingUp,
   Star,
@@ -16,36 +16,36 @@ import {
 
 // Category configuration with icons and descriptions
 const categoryConfig = {
-  'All': {
+  'Tất cả': {
     icon: Compass,
-    description: 'Browse all available books',
+    description: 'Tìm kiếm tất cả các thể loại sách',
     color: 'blue',
   },
-  'Fiction': {
+  'Tiểu đệ tử': {
     icon: BookOpen,
-    description: 'Imaginative stories and novels',
+    description: 'Sách cho tiểu đệ tử',
     color: 'purple',
   },
-  'Science Fiction': {
-    icon: Sparkles,
-    description: 'Futuristic and sci-fi adventures',
-    color: 'indigo',
-  },
-  'Business': {
-    icon: Briefcase,
-    description: 'Management and entrepreneurship',
-    color: 'green',
-  },
-  'Biography': {
-    icon: User,
-    description: 'Life stories and memoirs',
-    color: 'orange',
-  },
-  'Self-Help': {
-    icon: Heart,
-    description: 'Personal growth and wellness',
-    color: 'pink',
-  },
+  // 'Science Fiction': {
+  //   icon: Sparkles,
+  //   description: 'Futuristic and sci-fi adventures',
+  //   color: 'indigo',
+  // },
+  // 'Business': {
+  //   icon: Briefcase,
+  //   description: 'Management and entrepreneurship',
+  //   color: 'green',
+  // },
+  // 'Biography': {
+  //   icon: User,
+  //   description: 'Life stories and memoirs',
+  //   color: 'orange',
+  // },
+  // 'Self-Help': {
+  //   icon: Heart,
+  //   description: 'Personal growth and wellness',
+  //   color: 'pink',
+  // },
 };
 
 export default function CategoryFilter({ categories, selectedCategory, setSelectedCategory }) {
@@ -130,7 +130,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-2xl font-bold mb-2">{t('home.exploreCategories')}</h3>
-                <p className="text-blue-100 text-sm">Choose a category to discover amazing books</p>
+                <p className="text-blue-100 text-sm">{t('home.chooseCategory')}</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -149,7 +149,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-1 h-6 bg-blue-600 rounded-full"></div>
-                <h4 className="text-lg font-bold text-gray-800">MAIN CATEGORIES</h4>
+                <h4 className="text-lg font-bold text-gray-800">{t('home.mainCategories')}</h4>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -242,8 +242,8 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
                     <Compass size={20} className="text-blue-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-gray-800 text-sm">View All</div>
-                    <div className="text-xs text-gray-600">Browse everything</div>
+                    <div className="font-semibold text-gray-800 text-sm">{t('home.viewAll')}</div>
+                    <div className="text-xs text-gray-600">{t('home.browseEverything')}</div>
                   </div>
                 </button>
 
@@ -258,8 +258,8 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
                     <TrendingUp size={20} className="text-orange-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-gray-800 text-sm">Popular</div>
-                    <div className="text-xs text-gray-600">Trending now</div>
+                    <div className="font-semibold text-gray-800 text-sm">{t('home.popular')}</div>
+                    <div className="text-xs text-gray-600">{t('home.trending')}</div>
                   </div>
                 </button>
 
@@ -274,8 +274,8 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
                     <Star size={20} className="text-green-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-gray-800 text-sm">New Releases</div>
-                    <div className="text-xs text-gray-600">Latest books</div>
+                    <div className="font-semibold text-gray-800 text-sm">{t('home.newReleases')}</div>
+                    <div className="text-xs text-gray-600">{t('home.latestBooks')}</div>
                   </div>
                 </button>
               </div>
@@ -288,13 +288,13 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-gray-600">
-                  <span className="font-semibold text-gray-800">{categories.length}</span> Categories Available
+                  <span className="font-semibold text-gray-800">{categories.length}</span> {t('home.categoriesAvailable')}
                 </span>
               </div>
               <div className="w-px h-4 bg-gray-300"></div>
               <div className="flex items-center gap-2">
                 <Clock size={14} className="text-gray-400" />
-                <span className="text-gray-600">Updated daily</span>
+                <span className="text-gray-600">{t('home.updatedDaily')}</span>
               </div>
             </div>
           </div>

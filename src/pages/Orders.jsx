@@ -314,7 +314,7 @@ export default function Orders({ cart, user, onLogout }) {
                             <img
                               src={item.book?.coverImage || item.book?.image || item.image || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop'}
                               alt={item.book?.title || item.title || 'Book'}
-                              className="w-16 h-20 object-cover rounded"
+                              className="w-16 h-20 object-contain rounded"
                               onError={(e) => {
                                 e.target.src = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop';
                               }}
