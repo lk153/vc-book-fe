@@ -10,7 +10,6 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -27,7 +26,6 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
     };
   }, [showUserMenu]);
 
-  // Get user initials for avatar
   const getUserInitials = () => {
     const name = user?.name || user?.fullName || user?.email || 'U';
     const parts = name.split(' ');
@@ -56,7 +54,6 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
         )}
 
         <div className="flex items-center gap-4">
-          {/* Language Switcher */}
           <LanguageSwitcher />
 
           {/* Cart Button */}

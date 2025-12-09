@@ -1,7 +1,5 @@
-// Translations object
 const translations = {
     en: {
-        // Common
         common: {
             loading: 'Loading...',
             error: 'Error',
@@ -30,7 +28,6 @@ const translations = {
             failedLoadProfile: 'Failed to load profile',
         },
 
-        // Navigation
         nav: {
             home: 'Home',
             cart: 'Cart',
@@ -52,7 +49,6 @@ const translations = {
             lang_saved_auto: 'Language preference saved automatically',
         },
 
-        // Home Page
         home: {
             title: 'Discover Your Next Great Read',
             noBooks: 'No books found in this category.',
@@ -74,7 +70,6 @@ const translations = {
             updatedDaily: 'Updated daily',
         },
 
-        // Book Detail
         book: {
             by: 'by',
             isbn: 'ISBN',
@@ -98,7 +93,6 @@ const translations = {
             loadingDetails: 'Loading book details...',
         },
 
-        // Cart & Checkout
         cart: {
             title: 'Shopping Cart',
             empty: 'Your cart is empty',
@@ -115,7 +109,6 @@ const translations = {
             cartMerged: 'Cart items merged successfully!',
         },
 
-        // Checkout
         checkout: {
             title: 'Shipping Information',
             fullName: 'Full Name',
@@ -146,7 +139,6 @@ const translations = {
             shipping: 'Shipping',
         },
 
-        // Auth
         auth: {
             signInCta: 'Sign in',
             signIn: 'Sign in to your account',
@@ -190,7 +182,6 @@ const translations = {
             continueAsGuest: 'Continue as guest',
         },
 
-        // Profile
         profile: {
             title: 'My Profile',
             information: 'Profile Information',
@@ -218,7 +209,6 @@ const translations = {
             changingPassword: 'Changing password...',
         },
 
-        // Orders
         orders: {
             title: 'My Orders',
             track: 'Track and manage your orders',
@@ -251,7 +241,6 @@ const translations = {
             statusCompleted: 'Completed',
         },
 
-        // Toast Messages
         toast: {
             addedToCart: 'Added to cart!',
             failedToAdd: 'Failed to add to cart',
@@ -265,7 +254,6 @@ const translations = {
             notifyFeature: 'Notification feature coming soon! We will notify you when this book is back in stock.',
         },
 
-        // Validation
         validation: {
             required: 'This field is required',
             emailInvalid: 'Please enter a valid email address',
@@ -276,7 +264,6 @@ const translations = {
             termsRequired: 'Please accept the Terms and Conditions',
         },
 
-        // Categories
         categories: {
             all: 'All',
             allDescription: 'Browse all available books',
@@ -294,7 +281,6 @@ const translations = {
     },
 
     vi: {
-        // Common (Vietnamese)
         common: {
             loading: 'Đang tải...',
             error: 'Lỗi',
@@ -323,7 +309,6 @@ const translations = {
             failedLoadProfile: 'Không thể tải hồ sơ của bạn',
         },
 
-        // Navigation (Vietnamese)
         nav: {
             home: 'Trang chủ',
             cart: 'Giỏ hàng',
@@ -345,7 +330,6 @@ const translations = {
             lang_saved_auto: 'Ngôn ngữ sẽ được lưu tự động',
         },
 
-        // Home Page (Vietnamese)
         home: {
             title: 'Khám phá cuốn sách tiếp theo của bạn',
             noBooks: 'Không tìm thấy sách trong danh mục này.',
@@ -367,7 +351,6 @@ const translations = {
             updatedDaily: 'Cập nhật hàng ngày',
         },
 
-        // Book Detail (Vietnamese)
         book: {
             by: 'bởi',
             isbn: 'ISBN',
@@ -391,7 +374,6 @@ const translations = {
             loadingDetails: 'Đang tải thông tin sách...',
         },
 
-        // Cart & Checkout (Vietnamese)
         cart: {
             title: 'Giỏ hàng',
             empty: 'Giỏ hàng trống',
@@ -408,7 +390,6 @@ const translations = {
             cartMerged: 'Đã gộp giỏ hàng thành công!',
         },
 
-        // Checkout (Vietnamese)
         checkout: {
             title: 'Thông tin giao hàng',
             fullName: 'Họ và tên',
@@ -439,7 +420,6 @@ const translations = {
             shipping: 'Phí vận chuyển',
         },
 
-        // Auth (Vietnamese)
         auth: {
             signInCta: 'Đăng nhập',
             signIn: 'Đăng nhập tài khoản',
@@ -483,7 +463,6 @@ const translations = {
             continueAsGuest: 'Tiếp tục với tư cách khách',
         },
 
-        // Profile (Vietnamese)
         profile: {
             title: 'Hồ sơ của tôi',
             information: 'Thông tin hồ sơ',
@@ -511,7 +490,6 @@ const translations = {
             changingPassword: 'Đang đổi mật khẩu...',
         },
 
-        // Orders (Vietnamese)
         orders: {
             title: 'Đơn hàng của tôi',
             track: 'Theo dõi và quản lý đơn hàng',
@@ -544,7 +522,6 @@ const translations = {
             statusCompleted: 'Hoàn thành',
         },
 
-        // Toast Messages (Vietnamese)
         toast: {
             addedToCart: 'Đã thêm vào giỏ hàng!',
             failedToAdd: 'Thêm vào giỏ hàng thất bại',
@@ -558,7 +535,6 @@ const translations = {
             notifyFeature: 'Tính năng thông báo sắp ra mắt! Chúng tôi sẽ thông báo khi sách có hàng trở lại.',
         },
 
-        // Validation (Vietnamese)
         validation: {
             required: 'Trường này là bắt buộc',
             emailInvalid: 'Vui lòng nhập địa chỉ email hợp lệ',
@@ -569,7 +545,6 @@ const translations = {
             termsRequired: 'Vui lòng chấp nhận Điều khoản và Điều kiện',
         },
 
-        // Categories (Vietnamese)
         categories: {
             all: 'Tất cả',
             allDescription: 'Duyệt tất cả sách có sẵn',
