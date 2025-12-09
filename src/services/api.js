@@ -18,7 +18,7 @@ export const booksAPI = {
   getAll: async (filters = {}) => {
     const queryParams = new URLSearchParams();
     
-    if (filters.category && filters.category !== 'All') {
+    if (filters.category && filters.category !== 'Tất cả') {
       queryParams.append('category', filters.category);
     }
     if (filters.search) {

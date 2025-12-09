@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import { formatPrice } from '../utils/price';

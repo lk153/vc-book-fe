@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { User, Mail, Phone, Lock, Save, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import Navigation from '../components/Navigation';
@@ -13,7 +13,6 @@ export default function Profile({ user, setUser, cart, onLogout }) {
 
   const [formData, setFormData] = useState({
     name: user?.name || user?.fullName || '',
-    email: user?.email || '',
     phone: user?.phone || '',
   });
 
@@ -49,16 +48,8 @@ export default function Profile({ user, setUser, cart, onLogout }) {
     e.preventDefault();
     setError(null);
 
-    if (!formData.name || !formData.email) {
-      const msg = 'Name and email are required';
-      setError(msg);
-      toast.error(msg);
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      const msg = 'Please enter a valid email address';
+    if (!formData.name) {
+      const msg = 'Name is required';
       setError(msg);
       toast.error(msg);
       return;
@@ -73,10 +64,10 @@ export default function Profile({ user, setUser, cart, onLogout }) {
       userManager.setUser(updatedUser);
       setUser(updatedUser);
 
-      toast.success('Profile updated successfully!');
+      toast.success(t('profile.updated'));
       setIsEditing(false);
     } catch (err) {
-      const msg = err.message || 'Failed to update profile';
+      const msg = err.message || t('profile.updateFailed');
       setError(msg);
       toast.error(msg);
     } finally {
@@ -209,18 +200,13 @@ export default function Profile({ user, setUser, cart, onLogout }) {
 
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('profile.email')} *
+                    {t('profile.email')}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      disabled={!isEditing || loading}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    />
+                    <div className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                      {user?.email}
+                    </div>
                   </div>
                 </div>
 

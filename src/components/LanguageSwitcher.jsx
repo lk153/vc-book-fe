@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Globe, Check, X } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTranslation } from '../i18n/LanguageContext';

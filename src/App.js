@@ -14,6 +14,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { booksAPI, cartAPI, ordersAPI, CATEGORIES } from './services/api';
 import { tokenManager, userManager } from './services/authAPI';
+import { useTranslation } from './i18n/LanguageContext';
 
 // Guest cart manager using localStorage
 const guestCartManager = {
@@ -69,12 +70,14 @@ const guestCartManager = {
 };
 
 function App() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [selectedBook, setSelectedBook] = useState(null);
   const [books, setBooks] = useState([]);
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Multiple loading states for different operations
   const [loadingStates, setLoadingStates] = useState({
@@ -102,16 +105,17 @@ function App() {
   };
 
   // 401 Error Handler - Auto logout on auth errors
+  const sessionExpiredMessage = t('auth.sessionExpired');
   const handle401Error = useCallback((error) => {
     if (error.message.includes('401') ||
       error.message.toLowerCase().includes('unauthorized') ||
       error.message.toLowerCase().includes('token')) {
-      toast.error('Session expired. Please login again.');
+      toast.error(sessionExpiredMessage);
       handleLogout();
       return true;
     }
     return false;
-  }, []);
+  }, [sessionExpiredMessage]);
 
   // Check if user is logged in on mount
   useEffect(() => {
@@ -119,9 +123,11 @@ function App() {
     if (savedUser && tokenManager.isAuthenticated()) {
       setUser(savedUser);
     }
+    setIsInitialized(true);
   }, []);
 
   // Fetch books with pagination
+  const failedLoadBooksMessage = t('app.failedLoadBooks');
   useEffect(() => {
     let isMounted = true;
 
@@ -154,7 +160,7 @@ function App() {
         if (isMounted) {
           if (!handle401Error(err)) {
             setError(err.message);
-            toast.error(`Failed to load books: ${err.message}`);
+            toast.error(`${failedLoadBooksMessage}: ${err.message}`);
           }
         }
       } finally {
@@ -169,7 +175,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error]);
+  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error, failedLoadBooksMessage]);
 
   // Load cart on user change
   useEffect(() => {
@@ -223,6 +229,7 @@ function App() {
   }, [user, userId, isGuest, handle401Error]);
 
   // Migrate guest cart to user cart on login
+  const cartMergedMessage = t('cart.cartMerged');
   const migrateGuestCart = async (userId) => {
     const guestCart = guestCartManager.getCart();
 
@@ -252,7 +259,7 @@ function App() {
         setCart(transformedCart);
       }
 
-      toast.success('Cart items merged successfully!');
+      toast.success(cartMergedMessage);
     } catch (err) {
       console.error('Error migrating cart:', err);
       toast.error('Failed to merge cart items');
@@ -260,6 +267,7 @@ function App() {
   };
 
   // Add to cart - simplified (no optimistic updates)
+  const addedToCart = t('toast.addedToCart');
   const addToCart = async (book, quantity) => {
     try {
       setLoading('addToCart', true);
@@ -268,7 +276,7 @@ function App() {
       if (isGuest) {
         const updatedCart = guestCartManager.addItem(book, quantity);
         setCart(updatedCart);
-        toast.success('Added to cart!');
+        toast.success(addedToCart);
         return;
       }
 
@@ -290,7 +298,7 @@ function App() {
         setCart(transformedCart);
       }
 
-      toast.success('Added to cart!');
+      toast.success(addedToCart);
     } catch (err) {
       if (!handle401Error(err)) {
         setError(err.message);
@@ -303,6 +311,7 @@ function App() {
   };
 
   // Update cart quantity - simplified
+  const itemRemoved = t('cart.itemRemoved');
   const updateCartQuantity = async (bookId, newQuantity) => {
     try {
       // Guest cart
@@ -311,7 +320,7 @@ function App() {
         setCart(updatedCart);
 
         if (newQuantity <= 0) {
-          toast.info('Item removed from cart');
+          toast.info(itemRemoved);
         }
         return;
       }
@@ -319,7 +328,7 @@ function App() {
       // Authenticated cart
       if (newQuantity <= 0) {
         await cartAPI.removeItem(userId, bookId);
-        toast.info('Item removed from cart');
+        toast.info(itemRemoved);
       } else {
         await cartAPI.updateItem(userId, bookId, newQuantity);
       }
@@ -445,7 +454,12 @@ function App() {
         theme="light"
       />
 
-      <Routes>
+      {!isInitialized ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-lg font-semibold text-gray-600">Loading...</div>
+        </div>
+      ) : (
+        <Routes>
         <Route
           path="/"
           element={
@@ -567,7 +581,8 @@ function App() {
 
         {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        </Routes>
+      )}
     </BrowserRouter>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navigation from '../components/Navigation';
@@ -17,8 +17,10 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function Orders({ cart, user, onLogout }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -145,7 +147,7 @@ export default function Orders({ cart, user, onLogout }) {
               onClick={() => window.location.reload()}
               className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
             >
-              Retry
+              {t('common.retry')}
             </button>
           </div>
         </div>

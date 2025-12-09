@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from '../i18n/LanguageContext';
 
 import { 
@@ -79,7 +79,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
   const getConfig = (category) => {
     return categoryConfig[category] || {
       icon: BookOpen,
-      description: `Explore ${category} books`,
+      description: `Khám phá danh mục sách ${category}`,
       color: 'blue',
     };
   };
@@ -233,7 +233,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <button
                   onClick={() => {
-                    setSelectedCategory('All');
+                    setSelectedCategory('Tất cả');
                     setIsOpen(false);
                   }}
                   className="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg hover:shadow-md transition group"

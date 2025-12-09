@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
@@ -165,7 +165,7 @@ export default function Login({ setUser, loading, setLoading }) {
             </button>
           </form>
 
-          <div className="relative my-6">
+          {/* <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
@@ -198,9 +198,9 @@ export default function Login({ setUser, loading, setLoading }) {
               </svg>
               <span className="text-sm font-medium text-gray-700">Facebook</span>
             </button>
-          </div>
+          </div> */}
 
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-gray-600 my-6">
             {t('auth.noAccount')}{' '}
             <Link
               to="/register"
