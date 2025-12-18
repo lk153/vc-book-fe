@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +12,7 @@ import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import { booksAPI, cartAPI, ordersAPI, CATEGORIES } from './services/api';
+import { cartAPI, ordersAPI, CATEGORIES } from './services/api';
 import { tokenManager, userManager } from './services/authAPI';
 import { useTranslation } from './i18n/LanguageContext';
 
@@ -71,29 +71,21 @@ const guestCartManager = {
 
 function App() {
   const { t } = useTranslation();
-  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [books, setBooks] = useState([]);
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Multiple loading states for different operations
   const [loadingStates, setLoadingStates] = useState({
-    books: false,
     cart: false,
     addToCart: false,
     placeOrder: false,
     auth: false,
-  });
-
-  // Pagination state
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalBooks: 0,
-    limit: 12,
   });
 
   const userId = user?.id || user?._id || null;
@@ -104,9 +96,22 @@ function App() {
     setLoadingStates(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleLogout = useCallback(() => {
+    tokenManager.removeToken();
+    userManager.removeUser();
+    setUser(null);
+
+    // Clear authenticated cart, load guest cart
+    const guestCart = guestCartManager.getCart();
+    setCart(guestCart);
+
+    // use the ref so handleLogout identity doesn't change when `t` function changes
+    toast.info(tRef.current('toast.loggedOut'));
+  }, []);
+
   // 401 Error Handler - Auto logout on auth errors
-  const sessionExpiredMessage = t('auth.sessionExpired');
   const handle401Error = useCallback((error) => {
+    const sessionExpiredMessage = tRef.current('auth.sessionExpired');
     if (error.message.includes('401') ||
       error.message.toLowerCase().includes('unauthorized') ||
       error.message.toLowerCase().includes('token')) {
@@ -115,9 +120,8 @@ function App() {
       return true;
     }
     return false;
-  }, [sessionExpiredMessage]);
+  }, [handleLogout]);
 
-  // Check if user is logged in on mount
   useEffect(() => {
     const savedUser = userManager.getUser();
     if (savedUser && tokenManager.isAuthenticated()) {
@@ -126,72 +130,20 @@ function App() {
     setIsInitialized(true);
   }, []);
 
-  // Fetch books with pagination
-  const failedLoadBooksMessage = t('app.failedLoadBooks');
-  useEffect(() => {
-    let isMounted = true;
+  // (Route watching removed — not needed after moving books fetching into Home)
 
-    const loadBooks = async () => {
-      if (!isMounted) return;
-
-      try {
-        setLoading('books', true);
-        setError(null);
-
-        const response = await booksAPI.getAll({
-          category: selectedCategory,
-          page: pagination.currentPage,
-          limit: pagination.limit
-        });
-
-        if (isMounted) {
-          setBooks(response.data || []);
-
-          // Update pagination info if available from backend
-          if (response.pagination) {
-            setPagination(prev => ({
-              ...prev,
-              totalPages: response.pagination.totalPages || 1,
-              totalBooks: response.pagination.totalBooks || 0,
-            }));
-          }
-        }
-      } catch (err) {
-        if (isMounted) {
-          if (!handle401Error(err)) {
-            setError(err.message);
-            toast.error(`${failedLoadBooksMessage}: ${err.message}`);
-          }
-        }
-      } finally {
-        if (isMounted) {
-          setLoading('books', false);
-        }
-      }
-    };
-
-    loadBooks();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [selectedCategory, pagination.currentPage, pagination.limit, handle401Error, failedLoadBooksMessage]);
-
-  // Load cart on user change
   useEffect(() => {
     let isMounted = true;
 
     const loadCart = async () => {
       if (!isMounted) return;
 
-      // Guest cart - load from localStorage
       if (isGuest) {
         const guestCart = guestCartManager.getCart();
         if (isMounted) setCart(guestCart);
         return;
       }
 
-      // Authenticated cart - load from server
       try {
         setLoading('cart', true);
         const response = await cartAPI.get(userId);
@@ -228,7 +180,6 @@ function App() {
     };
   }, [user, userId, isGuest, handle401Error]);
 
-  // Migrate guest cart to user cart on login
   const cartMergedMessage = t('cart.cartMerged');
   const migrateGuestCart = async (userId) => {
     const guestCart = guestCartManager.getCart();
@@ -236,15 +187,11 @@ function App() {
     if (guestCart.length === 0) return;
 
     try {
-      // Add all guest cart items to user cart
       for (const item of guestCart) {
         await cartAPI.addItem(userId, item.id, item.quantity);
       }
 
-      // Clear guest cart
       guestCartManager.clearCart();
-
-      // Reload user cart
       const response = await cartAPI.get(userId);
       if (response.data && response.data.items) {
         const transformedCart = response.data.items.map(item => ({
@@ -266,7 +213,6 @@ function App() {
     }
   };
 
-  // Add to cart - simplified (no optimistic updates)
   const addedToCart = t('toast.addedToCart');
   const addToCart = async (book, quantity) => {
     try {
@@ -301,7 +247,7 @@ function App() {
       toast.success(addedToCart);
     } catch (err) {
       if (!handle401Error(err)) {
-        setError(err.message);
+        // setError(err.message);
         toast.error(`Failed to add to cart: ${err.message}`);
         throw err;
       }
@@ -310,11 +256,9 @@ function App() {
     }
   };
 
-  // Update cart quantity - simplified
   const itemRemoved = t('cart.itemRemoved');
   const updateCartQuantity = async (bookId, newQuantity) => {
     try {
-      // Guest cart
       if (isGuest) {
         const updatedCart = guestCartManager.updateItem(bookId, newQuantity);
         setCart(updatedCart);
@@ -325,7 +269,6 @@ function App() {
         return;
       }
 
-      // Authenticated cart
       if (newQuantity <= 0) {
         await cartAPI.removeItem(userId, bookId);
         toast.info(itemRemoved);
@@ -333,7 +276,6 @@ function App() {
         await cartAPI.updateItem(userId, bookId, newQuantity);
       }
 
-      // Refresh from server
       const response = await cartAPI.get(userId);
       if (response.data && response.data.items) {
         const transformedCart = response.data.items.map(item => ({
@@ -349,7 +291,7 @@ function App() {
       }
     } catch (err) {
       if (!handle401Error(err)) {
-        setError(err.message);
+        // setError(err.message);
         toast.error('Failed to update cart');
       }
     }
@@ -360,7 +302,6 @@ function App() {
   };
 
   const placeOrder = async (shippingAddress, paymentMethod) => {
-    // Guest users must login to place order
     if (isGuest) {
       toast.warning('Please login to place an order');
       throw new Error('Please login to place an order');
@@ -391,25 +332,13 @@ function App() {
       return response.data;
     } catch (err) {
       if (!handle401Error(err)) {
-        setError(err.message);
+        // setError(err.message);
         toast.error(`Failed to place order: ${err.message}`);
         throw err;
       }
     } finally {
       setLoading('placeOrder', false);
     }
-  };
-
-  const handleLogout = () => {
-    tokenManager.removeToken();
-    userManager.removeUser();
-    setUser(null);
-
-    // Clear authenticated cart, load guest cart
-    const guestCart = guestCartManager.getCart();
-    setCart(guestCart);
-
-    toast.info('Logged out successfully');
   };
 
   // Handle successful login/register
@@ -421,23 +350,7 @@ function App() {
     await migrateGuestCart(userId);
   };
 
-  // Pagination handlers
-  const handlePageChange = (newPage) => {
-    setPagination(prev => ({ ...prev, currentPage: newPage }));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleNextPage = () => {
-    if (pagination.currentPage < pagination.totalPages) {
-      handlePageChange(pagination.currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (pagination.currentPage > 1) {
-      handlePageChange(pagination.currentPage - 1);
-    }
-  };
+  // Pagination for books is handled inside the Home page component now.
 
   return (
     <BrowserRouter>
@@ -454,6 +367,8 @@ function App() {
         theme="light"
       />
 
+      {/* Route watcher removed; Home handles its own fetching */}
+
       {!isInitialized ? (
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-lg font-semibold text-gray-600">Loading...</div>
@@ -464,23 +379,12 @@ function App() {
           path="/"
           element={
             <Home
-              books={books}
               cart={cart}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={(category) => {
-                setSelectedCategory(category);
-                setPagination(prev => ({ ...prev, currentPage: 1 }));
-              }}
               setSelectedBook={setSelectedBook}
-              loading={loadingStates.books}
-              error={error}
               categories={CATEGORIES}
               user={user}
               onLogout={handleLogout}
-              pagination={pagination}
-              onNextPage={handleNextPage}
-              onPrevPage={handlePrevPage}
-              onPageChange={handlePageChange}
+              handle401Error={handle401Error}
             />
           }
         />

@@ -2,6 +2,7 @@ const translations = {
     en: {
         common: {
             loading: 'Loading...',
+            sending: 'Sending...',
             error: 'Error',
             success: 'Success',
             cancel: 'Cancel',
@@ -180,6 +181,23 @@ const translations = {
             phone: 'Phone Number',
             enterPhone: 'Enter your phone number',
             continueAsGuest: 'Continue as guest',
+            forgotPasswordNote: 'No worries! Enter your email and we\'ll send you reset instructions.',
+            enterEmailNote: 'Enter the email address associated with your account',
+            sendResetLink: 'Send Reset Link',
+            rememberYourPassword: 'Remember your password?',
+            resetPasswordTip: `The reset link will expire in 1 hour for security reasons.
+                If you don't receive an email within a few minutes, please check your spam folder.`,
+            resetPasswordSent: 'Password reset email sent! Check your inbox.',
+            forgotPassCheckEmail: 'Check Your Email',
+            forgotPassCheckEmailDesc: 'We\'ve sent a password reset link to:',
+            forgotNextSteps: 'Next steps:',
+            forgotStep1: 'Check your email inbox',
+            forgotStep2: 'Click the reset password link',
+            forgotStep3: 'Create a new password',
+            forgotStep4: 'Login with your new password',
+            checkSpamNote: 'Didn\'t receive the email? Check your spam folder or',
+            checkSpamTryAgain: 'try again',
+            backToLogin: 'Back to Login',
         },
 
         profile: {
@@ -221,6 +239,7 @@ const translations = {
             viewDetails: 'View Details',
             hideDetails: 'Hide Details',
             order: 'Order',
+            orders: 'Orders',
             items: 'items',
             item: 'item',
             shippingAddress: 'Shipping Address',
@@ -283,6 +302,7 @@ const translations = {
     vi: {
         common: {
             loading: 'Đang tải...',
+            sending: 'Đang gửi...',
             error: 'Lỗi',
             success: 'Thành công',
             cancel: 'Hủy',
@@ -461,6 +481,23 @@ const translations = {
             phone: 'Số điện thoại',
             enterPhone: 'Nhập số điện thoại của bạn',
             continueAsGuest: 'Tiếp tục với tư cách khách',
+            forgotPasswordNote: 'Đừng lo lắng! Hãy nhập email của bạn và chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu.',
+            enterEmailNote: 'Nhập địa chỉ email liên kết với tài khoản của bạn',
+            sendResetLink: 'Gửi liên kết đặt lại mật khẩu',
+            rememberYourPassword: 'Bạn nhớ mật khẩu của mình không?',
+            resetPasswordTip: `Liên kết đặt lại mật khẩu sẽ hết hạn sau 1 giờ vì lý do bảo mật.
+                Nếu bạn không nhận được email trong vài phút, vui lòng kiểm tra thư mục spam của bạn.`,
+            resetPasswordSent: 'Email đặt lại mật khẩu đã được gửi! Vui lòng kiểm tra hộp thư đến của bạn.', 
+            forgotPassCheckEmail: 'Kiểm tra Email của bạn',
+            forgotPassCheckEmailDesc: 'Chung tôi đã gửi liên kết đặt lại mật khẩu đến:',
+            forgotNextSteps: 'Các bước tiếp theo:',
+            forgotStep1: 'Kiểm tra hộp thư đến của bạn',
+            forgotStep2: 'Nhấp vào liên kết đặt lại mật khẩu',
+            forgotStep3: 'Tạo mật khẩu mới',
+            forgotStep4: 'Đăng nhập với mật khẩu mới',
+            checkSpamNote: 'Không nhận được email? Kiểm tra thư mục spam hoặc',
+            checkSpamTryAgain: 'thử lại',
+            backToLogin: 'Quay lại Đăng nhập',
         },
 
         profile: {
@@ -502,6 +539,7 @@ const translations = {
             viewDetails: 'Xem chi tiết',
             hideDetails: 'Ẩn chi tiết',
             order: 'Đơn hàng',
+            orders: 'Đơn hàng',
             items: 'sản phẩm',
             item: 'sản phẩm',
             shippingAddress: 'Địa chỉ giao hàng',

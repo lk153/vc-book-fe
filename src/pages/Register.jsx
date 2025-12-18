@@ -100,7 +100,7 @@ export default function Register({ setUser, loading, setLoading }) {
         setUser(userData);
       }
 
-      toast.success(t('atuh.accountCreated'));
+      toast.success(t('auth.accountCreated'));
       navigate('/');
     } catch (err) {
       const errorMsg = err.message || t('auth.accountCreateFailed');

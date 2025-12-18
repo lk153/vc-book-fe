@@ -127,7 +127,7 @@ export default function Orders({ cart, user, onLogout }) {
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-            <p className="text-xl text-gray-600">Loading your orders...</p>
+            <p className="text-xl text-gray-600">{t("orders.loadingOrders")}</p>
           </div>
         </div>
       </div>
@@ -162,13 +162,13 @@ export default function Orders({ cart, user, onLogout }) {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">My Orders</h1>
-            <p className="text-gray-600">Track and manage your orders</p>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">{t('orders.title')}</h1>
+            <p className="text-gray-600">{t("orders.track")}</p>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg">
             <Package className="text-blue-600" size={20} />
             <span className="text-sm font-semibold text-gray-700">
-              {orders.length} {orders.length === 1 ? 'Order' : 'Orders'}
+              {orders.length} {orders.length === 1 ? t("orders.order") : t("orders.orders")}
             </span>
           </div>
         </div>
@@ -176,13 +176,13 @@ export default function Orders({ cart, user, onLogout }) {
         {orders.length === 0 ? (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
             <Package size={64} className="mx-auto text-gray-300 mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-700 mb-2">No Orders Yet</h2>
-            <p className="text-gray-500 mb-6">Start shopping to see your orders here!</p>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-2">{t("orders.noOrders")}</h2>
+            <p className="text-gray-500 mb-6">{t("orders.startShopping")}</p>
             <button
               onClick={() => navigate('/')}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
-              Browse Books
+              {t("cart.browseBooks")}
             </button>
           </div>
         ) : (

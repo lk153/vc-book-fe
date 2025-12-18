@@ -1,31 +1,96 @@
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import CategoryFilter from '../components/CategoryFilter';
 import BookCard from '../components/BookCard';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
+import { booksAPI } from '../services/api';
+import { toast } from 'react-toastify';
 
 export default function Home({
-  books,
   cart,
-  selectedCategory,
-  setSelectedCategory,
   setSelectedBook,
-  loading,
-  error,
   categories,
   user,
   onLogout,
-  pagination,
-  onNextPage,
-  onPrevPage,
-  onPageChange,
+  handle401Error,
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalBooks: 0,
+    limit: 12,
+  });
+
+  const failedLoadBooksMessage = t('app.failedLoadBooks');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadBooks = async () => {
+      if (!isMounted) return;
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await booksAPI.getAll({
+          category: selectedCategory,
+          page: pagination.currentPage,
+          limit: pagination.limit,
+        });
+
+        if (!isMounted) return;
+        setBooks(response.data || []);
+        if (response.pagination) {
+          setPagination(prev => ({
+            ...prev,
+            totalPages: response.pagination.totalPages || 1,
+            totalBooks: response.pagination.totalBooks || 0,
+          }));
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        if (handle401Error && handle401Error(err)) return;
+        setError(err.message || failedLoadBooksMessage);
+        toast.error(`${failedLoadBooksMessage}: ${err.message}`);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadBooks();
+
+    return () => { isMounted = false; };
+  }, [selectedCategory, pagination.currentPage, pagination.limit, failedLoadBooksMessage, handle401Error]);
+
   const goToBook = (id) => {
     navigate(`/book/${id}`);
+  };
+
+  const onPageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, currentPage: newPage }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const onNextPage = () => {
+    if (pagination.currentPage < pagination.totalPages) {
+      onPageChange(pagination.currentPage + 1);
+    }
+  };
+
+  const onPrevPage = () => {
+    if (pagination.currentPage > 1) {
+      onPageChange(pagination.currentPage - 1);
+    }
   };
 
   if (error) {

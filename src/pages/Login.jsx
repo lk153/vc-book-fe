@@ -31,7 +31,7 @@ export default function Login({ setUser, loading, setLoading }) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
+      setError(t('validation.emailInvalid'));
       return false;
     }
 
@@ -64,10 +64,10 @@ export default function Login({ setUser, loading, setLoading }) {
         setUser(userData);
       }
 
-      toast.success('Welcome back!');
+      toast.success(t('auth.welcomeBack'));
       navigate('/');
     } catch (err) {
-      const errorMsg = err.message || 'Invalid email or password';
+      const errorMsg = err.message || t('auth.invalidCredentials');
       setError(errorMsg);
       toast.error(errorMsg);
     } finally {
