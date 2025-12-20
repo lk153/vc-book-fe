@@ -375,116 +375,114 @@ function App() {
         </div>
       ) : (
         <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              cart={cart}
-              setSelectedBook={setSelectedBook}
-              categories={CATEGORIES}
-              user={user}
-              onLogout={handleLogout}
-              handle401Error={handle401Error}
-            />
-          }
-        />
-
-        <Route
-          path="/book/:bookId"
-          element={
-            <BookDetail
-              book={selectedBook}
-              cart={cart}
-              addToCart={addToCart}
-              loading={loadingStates.addToCart}
-              user={user}
-              onLogout={handleLogout}
-            />
-          }
-        />
-
-        <Route
-          path="/checkout"
-          element={
-            <Checkout
-              cart={cart}
-              updateCartQuantity={updateCartQuantity}
-              getTotalPrice={getTotalPrice}
-              placeOrder={placeOrder}
-              loading={loadingStates.placeOrder}
-              userId={userId}
-              user={user}
-              isGuest={isGuest}
-            />
-          }
-        />
-
-        <Route
-          path="/login"
-          element={
-            user ? (
-              <Navigate to="/" replace />
-            ) : (
-              <Login
-                setUser={handleUserLogin}
-                loading={loadingStates.auth}
-                setLoading={(val) => setLoading('auth', val)}
-              />
-            )
-          }
-        />
-
-        <Route
-          path="/register"
-          element={
-            user ? (
-              <Navigate to="/" replace />
-            ) : (
-              <Register
-                setUser={handleUserLogin}
-                loading={loadingStates.auth}
-                setLoading={(val) => setLoading('auth', val)}
-              />
-            )
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            user ? (
-              <Profile
+          <Route
+            path="/"
+            element={
+              <Home
+                cart={cart}
+                setSelectedBook={setSelectedBook}
+                categories={CATEGORIES}
                 user={user}
-                setUser={setUser}
-                cart={cart}
                 onLogout={handleLogout}
+                handle401Error={handle401Error}
               />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+            }
+          />
 
-        <Route
-          path="/orders"
-          element={
-            user ? (
-              <Orders
+          <Route
+            path="/book/:bookId"
+            element={
+              <BookDetail
+                book={selectedBook}
                 cart={cart}
+                addToCart={addToCart}
+                loading={loadingStates.addToCart}
                 user={user}
                 onLogout={handleLogout}
               />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+            }
+          />
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/checkout"
+            element={
+              <Checkout
+                cart={cart}
+                updateCartQuantity={updateCartQuantity}
+                getTotalPrice={getTotalPrice}
+                placeOrder={placeOrder}
+                loading={loadingStates.placeOrder}
+                userId={userId}
+                user={user}
+                isGuest={isGuest}
+              />
+            }
+          />
 
-        {/* Catch all - redirect to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="/login"
+            element={
+              user ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Login
+                  setUser={handleUserLogin}
+                  loading={loadingStates.auth}
+                  setLoading={(val) => setLoading('auth', val)}
+                />
+              )
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              user ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Register
+                  setUser={handleUserLogin}
+                  loading={loadingStates.auth}
+                  setLoading={(val) => setLoading('auth', val)}
+                />
+              )
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              user ? (
+                <Profile
+                  user={user}
+                  setUser={setUser}
+                  cart={cart}
+                  onLogout={handleLogout}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/orders"
+            element={
+              user ? (
+                <Orders
+                  cart={cart}
+                  user={user}
+                  onLogout={handleLogout}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}
     </BrowserRouter>
