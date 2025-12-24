@@ -3,8 +3,10 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Lock, Eye, EyeOff, CheckCircle, Loader2, AlertCircle, Shield } from 'lucide-react';
 import { authAPI } from '../services/authAPI';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function ResetPassword() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token'); // Get reset token from URL
@@ -95,7 +97,7 @@ export default function ResetPassword() {
             });
 
             setSuccess(true);
-            toast.success('Password reset successful!');
+            toast.success(t('resetPassSuccess.toastMessage'));
         } catch (err) {
             const errorMsg = err.message || 'Failed to reset password. Please try again.';
             setError(errorMsg);
@@ -132,23 +134,23 @@ export default function ResetPassword() {
                             <CheckCircle className="text-green-600" size={48} />
                         </div>
 
-                        <h2 className="text-2xl font-bold text-gray-800 mb-3">Password Reset Successful!</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-3">{t('resetPassSuccess.title')}</h2>
                         <p className="text-gray-600 mb-6">
-                            Your password has been successfully reset. You can now login with your new password.
+                            {t('resetPassSuccess.description')}
                         </p>
 
                         <button
                             onClick={() => navigate('/login')}
                             className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition mb-4"
                         >
-                            Go to Login
+                            {t('resetPassSuccess.backToLogin')}
                         </button>
 
                         <Link
                             to="/"
                             className="text-sm text-gray-600 hover:text-gray-800"
                         >
-                            Back to Home
+                            {t('resetPassSuccess.backToHome')}
                         </Link>
                     </div>
                 </div>
@@ -173,7 +175,7 @@ export default function ResetPassword() {
                             <AlertCircle className="text-red-600" size={48} />
                         </div>
 
-                        <h2 className="text-2xl font-bold text-gray-800 mb-3">Invalid Reset Link</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-3">{t('resetPassSuccess.invalidResetLink')}</h2>
                         <p className="text-gray-600 mb-6">
                             {error || 'This password reset link is invalid or has expired. Please request a new one.'}
                         </p>
@@ -182,14 +184,14 @@ export default function ResetPassword() {
                             onClick={() => navigate('/forgot-password')}
                             className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition mb-4"
                         >
-                            Request New Link
+                            {t('resetPassSuccess.requestNewLink')}
                         </button>
 
                         <Link
                             to="/login"
                             className="text-sm text-gray-600 hover:text-gray-800"
                         >
-                            Back to Login
+                            {t('resetPassSuccess.backToLogin')}
                         </Link>
                     </div>
                 </div>
@@ -206,9 +208,9 @@ export default function ResetPassword() {
                         <BookOpen size={40} />
                         <span>BookStore</span>
                     </div>
-                    <h1 className="text-2xl font-bold text-gray-800 mt-4 mb-2">Reset Your Password</h1>
+                    <h1 className="text-2xl font-bold text-gray-800 mt-4 mb-2">{t('resetPass.title')}</h1>
                     <p className="text-gray-600">
-                        Enter your new password below
+                        {t('resetPass.description')}
                     </p>
                 </div>
 
@@ -224,7 +226,7 @@ export default function ResetPassword() {
                         {/* New Password */}
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                New Password
+                                {t('resetPass.inputNewPassword')}
                             </label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -233,7 +235,7 @@ export default function ResetPassword() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
-                                    placeholder="Enter new password"
+                                    placeholder={t('resetPass.inputNewPasswordPlaceholder')}
                                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                     disabled={loading}
                                 />
@@ -258,7 +260,7 @@ export default function ResetPassword() {
                                         </div>
                                         <span className="text-xs font-medium text-gray-600">{passwordStrength.label}</span>
                                     </div>
-                                    <p className="text-xs text-gray-500">Use at least 6 characters with letters and numbers</p>
+                                    <p className="text-xs text-gray-500">{t('resetPassSuccess.passwordStrength')}</p>
                                 </div>
                             )}
                         </div>
@@ -266,7 +268,7 @@ export default function ResetPassword() {
                         {/* Confirm Password */}
                         <div className="mb-6">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Confirm New Password
+                                {t('resetPass.inputConfirmPassword')}
                             </label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -275,7 +277,7 @@ export default function ResetPassword() {
                                     name="confirmPassword"
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
-                                    placeholder="Confirm new password"
+                                    placeholder={t('resetPass.inputConfirmPasswordPlaceholder')}
                                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                     disabled={loading}
                                 />
@@ -290,7 +292,7 @@ export default function ResetPassword() {
                             {formData.confirmPassword && formData.password === formData.confirmPassword && (
                                 <div className="flex items-center gap-1 mt-2 text-green-600 text-sm">
                                     <CheckCircle size={16} />
-                                    <span>Passwords match</span>
+                                    <span>{t('resetPassSuccess.passwordMatch')}</span>
                                 </div>
                             )}
                         </div>
@@ -300,11 +302,11 @@ export default function ResetPassword() {
                             <div className="flex items-start gap-3">
                                 <Shield className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
                                 <div>
-                                    <p className="text-sm font-medium text-blue-900 mb-1">Security Tips:</p>
+                                    <p className="text-sm font-medium text-blue-900 mb-1">{t('resetPass.securityTipTitle')}</p>
                                     <ul className="text-xs text-blue-700 space-y-1">
-                                        <li>• Use a unique password you don't use elsewhere</li>
-                                        <li>• Include uppercase, lowercase, numbers, and symbols</li>
-                                        <li>• Avoid personal information (name, birthday, etc.)</li>
+                                        <li>{t('resetPass.securityTip1')}</li>
+                                        <li>{t('resetPass.securityTip2')}</li>
+                                        <li>{t('resetPass.securityTip3')}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -319,21 +321,21 @@ export default function ResetPassword() {
                             {loading ? (
                                 <>
                                     <Loader2 className="animate-spin mr-2" size={20} />
-                                    Resetting...
+                                    {t('resetPass.resetting')}
                                 </>
                             ) : (
-                                'Reset Password'
+                                t('resetPass.resetPassword')
                             )}
                         </button>
                     </form>
 
                     <p className="text-center text-sm text-gray-600 mt-6">
-                        Remember your password?{' '}
+                        {t('auth.rememberYourPassword')}{' '}
                         <Link
                             to="/login"
                             className="text-blue-600 hover:text-blue-700 font-medium"
                         >
-                            Sign in
+                            {t('auth.signInCta')}
                         </Link>
                     </p>
                 </div>
