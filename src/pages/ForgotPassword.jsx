@@ -142,7 +142,7 @@ export default function ForgotPassword() {
           className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition"
         >
           <ArrowLeft size={20} />
-          <span className="font-medium">Back to Login</span>
+          <span className="font-medium">{t('auth.backToLogin')}</span>
         </button>
 
         {/* Logo and Header */}
