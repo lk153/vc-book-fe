@@ -1,5 +1,6 @@
 import { Home, Loader2 } from 'lucide-react';
 import { useTranslation } from '../../i18n/LanguageContext';
+import { formatPrice } from '../../utils/price';
 
 export default function ShippingAddress({
   setShowOrderForm, loading, orderError, shippingAddress, handlePlaceOrder, handleInputChange,
@@ -148,7 +149,7 @@ export default function ShippingAddress({
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold text-gray-800">{t('checkout.orderTotal')}</span>
-              <span className="text-2xl font-bold text-blue-600">${getTotalPrice()}</span>
+              <span className="text-2xl font-bold text-blue-600">{formatPrice(getTotalPrice())}{t('common.currencySymbol')}</span>
             </div>
           </div>
 
