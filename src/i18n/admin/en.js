@@ -127,6 +127,9 @@ export const adminEN = {
       pages: 'Pages',
       lowStock: 'Low Stock',
       outOfStock: 'Out of Stock',
+      zoomIn: 'Zoom In',
+      zoomOut: 'Zoom Out',
+      zoomHint: 'Use scroll wheel or +/- keys to zoom. Press ESC to close.',
     },
   },
 };

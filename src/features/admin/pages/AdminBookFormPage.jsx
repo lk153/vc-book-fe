@@ -1,12 +1,107 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Save, Loader2, ArrowLeft, Image } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Image, ZoomIn, ZoomOut, X } from 'lucide-react';
 import { AdminLayout } from '../components/AdminLayout';
 import { useCreateBook, useUpdateBook } from '../hooks/useAdminBooks';
 import { useBookDetail } from '../../books/useBooks';
 import { useTranslation } from '../../../i18n/LanguageContext';
 import { CATEGORIES } from '../../../api/books';
+
+function ImagePreviewModal({ imageUrl, onClose, t }) {
+  const [scale, setScale] = useState(1);
+  const minScale = 0.5;
+  const maxScale = 3;
+
+  const handleZoomIn = () => {
+    setScale((prev) => Math.min(prev + 0.25, maxScale));
+  };
+
+  const handleZoomOut = () => {
+    setScale((prev) => Math.max(prev - 0.25, minScale));
+  };
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === '+' || e.key === '=') handleZoomIn();
+      if (e.key === '-') handleZoomOut();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleZoomOut();
+          }}
+          disabled={scale <= minScale}
+          className="p-2 bg-white rounded-full hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          title={t('admin.books.zoomOut')}
+        >
+          <ZoomOut size={20} />
+        </button>
+        <span className="text-white font-medium min-w-[60px] text-center">
+          {Math.round(scale * 100)}%
+        </span>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleZoomIn();
+          }}
+          disabled={scale >= maxScale}
+          className="p-2 bg-white rounded-full hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          title={t('admin.books.zoomIn')}
+        >
+          <ZoomIn size={20} />
+        </button>
+        <button
+          onClick={onClose}
+          className="p-2 bg-white rounded-full hover:bg-gray-100 transition ml-4"
+          title={t('admin.common.cancel')}
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      <div
+        className="overflow-auto max-w-[90vw] max-h-[90vh] flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+        onWheel={handleWheel}
+      >
+        <img
+          src={imageUrl}
+          alt="Preview"
+          style={{ transform: `scale(${scale})`, transition: 'transform 0.2s ease' }}
+          className="max-w-none cursor-grab"
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop';
+          }}
+        />
+      </div>
+
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm opacity-70">
+        {t('admin.books.zoomHint')}
+      </div>
+    </div>
+  );
+}
 
 export function AdminBookFormPage() {
   const { t } = useTranslation();
@@ -32,6 +127,7 @@ export function AdminBookFormPage() {
   });
 
   const [imagePreview, setImagePreview] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
 
   useEffect(() => {
     if (book && isEditing) {
@@ -212,14 +308,23 @@ export function AdminBookFormPage() {
               />
               {imagePreview && (
                 <div className="mt-4 flex items-start gap-4">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-24 h-32 object-cover rounded-lg border"
-                    onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop';
-                    }}
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowImageModal(true)}
+                    className="relative group"
+                  >
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-24 h-32 object-cover rounded-lg border transition group-hover:opacity-80"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop';
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <ZoomIn className="text-gray-700 bg-white rounded-full p-1" size={24} />
+                    </div>
+                  </button>
                   <span className="text-sm text-gray-500 flex items-center gap-1">
                     <Image size={16} />
                     {t('admin.books.imagePreview')}
@@ -314,6 +419,14 @@ export function AdminBookFormPage() {
           </div>
         </form>
       </div>
+
+      {showImageModal && imagePreview && (
+        <ImagePreviewModal
+          imageUrl={imagePreview}
+          onClose={() => setShowImageModal(false)}
+          t={t}
+        />
+      )}
     </AdminLayout>
   );
 }

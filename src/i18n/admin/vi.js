@@ -127,6 +127,9 @@ export const adminVI = {
       pages: 'Số trang',
       lowStock: 'Sắp hết hàng',
       outOfStock: 'Hết hàng',
+      zoomIn: 'Phóng to',
+      zoomOut: 'Thu nhỏ',
+      zoomHint: 'Dùng cuộn chuột hoặc phím +/- để thu phóng. Nhấn ESC để đóng.',
     },
   },
 };
