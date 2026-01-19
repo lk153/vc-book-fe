@@ -61,15 +61,19 @@ const guestCartManager = {
 
 // Transform API response to cart items
 const transformCartItems = (items) => {
-  return items.map(item => ({
-    id: item.book._id || item.book,
-    title: item.book.title,
-    author: item.book.author,
-    price: item.price,
-    quantity: item.quantity,
-    image: item.book.coverImage || item.book.image,
-    category: item.book.category,
-  }));
+  return items.map(item => {
+    // Handle both populated book object and book ID string
+    const bookId = typeof item.book === 'string' ? item.book : (item.book._id || item.book.id);
+    return {
+      id: bookId,
+      title: item.book.title || '',
+      author: item.book.author || '',
+      price: item.price,
+      quantity: item.quantity,
+      image: item.book.coverImage || item.book.image || '',
+      category: item.book.category || '',
+    };
+  });
 };
 
 export function CartProvider({ children }) {
@@ -205,9 +209,9 @@ export function CartProvider({ children }) {
         setCart(transformCartItems(response.data.items));
       }
     } catch (err) {
-      toast.error('Failed to update cart');
+      toast.error(t('cart.updateFailed'));
     }
-  }, [isGuest, userId]);
+  }, [isGuest, userId, t]);
 
   // Get total price
   const getTotalPrice = useCallback(() => {

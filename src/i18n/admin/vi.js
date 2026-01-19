@@ -51,7 +51,7 @@ export const adminVI = {
     orders: {
       title: 'Quản lý đơn hàng',
       subtitle: 'Xem và quản lý tất cả đơn hàng',
-      orderNumber: 'Mã đơn',
+      orderNumber: 'Mã đơn hàng',
       customer: 'Khách hàng',
       date: 'Ngày',
       total: 'Tổng',

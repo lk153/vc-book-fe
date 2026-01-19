@@ -251,7 +251,7 @@ export function BookDetailPage() {
 
                 {isOutOfStock && (
                   <button
-                    onClick={() => toast.info('Notification feature coming soon! We will notify you when this book is back in stock.')}
+                    onClick={() => toast.info(t('toast.notifyFeature'))}
                     className="w-full mt-3 py-3 rounded-lg font-medium text-blue-600 border-2 border-blue-600 hover:bg-blue-50 transition"
                   >
                     {t('book.notifyMe')}

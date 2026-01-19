@@ -108,6 +108,7 @@ const translations = {
             itemsCount: '{count} items',
             itemRemoved: 'Item removed from cart',
             cartMerged: 'Cart items merged successfully!',
+            updateFailed: 'Failed to update cart',
         },
 
         checkout: {
@@ -142,6 +143,9 @@ const translations = {
             addressOption: 'Shipping Address',
             useSavedAddress: 'Use Saved Address',
             inputCustomAddress: 'Enter New Address',
+            noOrderFound: 'No Order Found',
+            noOrderMessage: "It looks like there's no recent order to display.",
+            viewMyOrders: 'View My Orders',
         },
 
         auth: {
@@ -438,6 +442,7 @@ const translations = {
             itemsCount: '{count} sản phẩm',
             itemRemoved: 'Đã xóa khỏi giỏ hàng',
             cartMerged: 'Đã gộp giỏ hàng thành công!',
+            updateFailed: 'Cập nhật giỏ hàng thất bại',
         },
 
         checkout: {
@@ -462,7 +467,7 @@ const translations = {
             orderSuccess: 'Đặt hàng thành công!',
             thankYou: 'Cảm ơn bạn đã đặt hàng',
             orderDetails: 'Chi tiết đơn hàng',
-            orderNumber: 'Số đơn hàng',
+            orderNumber: 'Mã đơn hàng',
             status: 'Trạng thái',
             deliveryAddress: 'Địa chỉ giao hàng',
             continueShopping: 'Tiếp tục mua sắm',
@@ -472,6 +477,9 @@ const translations = {
             addressOption: 'Địa chỉ giao hàng',
             useSavedAddress: 'Sử dụng địa chỉ đã lưu',
             inputCustomAddress: 'Nhập địa chỉ mới',
+            noOrderFound: 'Không tìm thấy đơn hàng',
+            noOrderMessage: 'Có vẻ như không có đơn hàng gần đây để hiển thị.',
+            viewMyOrders: 'Xem đơn hàng của tôi',
         },
 
         auth: {
