@@ -1,5 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import translations from './translation';
+import { adminEN } from './admin/en';
+import { adminVI } from './admin/vi';
+
+// Merge admin translations into main translations
+const mergedTranslations = {
+  en: { ...translations.en, ...adminEN },
+  vi: { ...translations.vi, ...adminVI },
+};
 
 const LanguageContext = createContext();
 export const LANGUAGES = {
@@ -19,14 +27,14 @@ export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
     const saved = localStorage.getItem('language');
     if (!saved) return 'vi';
-    try {
-      const parsed = JSON.parse(saved);
-      if (typeof parsed === 'string') return parsed;
-    } catch (e) {
-      console.log('Error parsing saved language from localStorage:', e);
+
+    // Handle both plain string (e.g., "vi") and JSON string (e.g., "\"vi\"")
+    const cleanValue = saved.replace(/^"|"$/g, '');
+    if (LANGUAGES[cleanValue]) {
+      return cleanValue;
     }
 
-    return saved.replace(/^"|"$/g, '') || 'en';
+    return 'vi';
   });
 
   useEffect(() => {
@@ -67,7 +75,7 @@ export function useTranslation() {
   const { language } = useLanguage();
 
   const t = (key, params = {}) => {
-    const translation = getNestedTranslation(translations[language], key);
+    const translation = getNestedTranslation(mergedTranslations[language], key);
 
     if (!translation) {
       console.warn(`Translation missing for key: ${key} in language: ${language}`);

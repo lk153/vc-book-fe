@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { AdminAuthProvider } from './context/AdminAuthContext';
 
 import { BooksListingPage } from './features/books/BooksListingPage';
 import { BookDetailPage } from './features/books/BookDetailPage';
@@ -17,6 +18,16 @@ import { ResetPasswordPage } from './features/auth/ResetPasswordPage';
 import { ProfilePage } from './features/profile/ProfilePage';
 import { OrdersPage } from './features/orders/OrdersPage';
 import { FloatingContact } from './components/FloatingContact';
+
+// Admin pages
+import {
+  AdminLoginPage,
+  AdminDashboardPage,
+  AdminOrdersPage,
+  AdminUsersPage,
+  AdminBooksPage,
+  AdminBookFormPage,
+} from './features/admin';
 
 function ProtectedRoute({ children }) {
   const { user, isInitialized } = useAuth();
@@ -128,6 +139,15 @@ function AppRoutes() {
         }
       />
 
+      {/* Admin Routes */}
+      <Route path="/admin" element={<AdminLoginPage />} />
+      <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+      <Route path="/admin/orders" element={<AdminOrdersPage />} />
+      <Route path="/admin/users" element={<AdminUsersPage />} />
+      <Route path="/admin/books" element={<AdminBooksPage />} />
+      <Route path="/admin/books/new" element={<AdminBookFormPage />} />
+      <Route path="/admin/books/:bookId/edit" element={<AdminBookFormPage />} />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -151,8 +171,10 @@ function App() {
 
       <AuthProvider>
         <CartProvider>
-          <AppRoutes />
-          <FloatingContact />
+          <AdminAuthProvider>
+            <AppRoutes />
+            <FloatingContact />
+          </AdminAuthProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
