@@ -1,15 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { LanguageProvider } from './i18n/LanguageContext';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <LanguageProvider>
-    <App />
-  </LanguageProvider>
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
+  </QueryClientProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

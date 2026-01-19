@@ -1,13 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { useTranslation } from '../i18n/LanguageContext';
+import { useTranslation } from '../../i18n/LanguageContext';
 
-import { 
-  ChevronDown, 
-  BookOpen, 
-  // Sparkles, 
-  // Briefcase, 
-  // User, 
-  // Heart, 
+import {
+  ChevronDown,
+  BookOpen,
   Compass,
   TrendingUp,
   Star,
@@ -26,29 +22,9 @@ const categoryConfig = {
     description: 'Sách cho tiểu đệ tử',
     color: 'purple',
   },
-  // 'Science Fiction': {
-  //   icon: Sparkles,
-  //   description: 'Futuristic and sci-fi adventures',
-  //   color: 'indigo',
-  // },
-  // 'Business': {
-  //   icon: Briefcase,
-  //   description: 'Management and entrepreneurship',
-  //   color: 'green',
-  // },
-  // 'Biography': {
-  //   icon: User,
-  //   description: 'Life stories and memoirs',
-  //   color: 'orange',
-  // },
-  // 'Self-Help': {
-  //   icon: Heart,
-  //   description: 'Personal growth and wellness',
-  //   color: 'pink',
-  // },
 };
 
-export default function CategoryFilter({ categories, selectedCategory, setSelectedCategory }) {
+export function CategoryFilter({ categories, selectedCategory, setSelectedCategory }) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -104,8 +80,8 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
           <SelectedIcon size={20} />
           <span className="hidden sm:inline">{t('nav.browseCategories')}</span>
           <span className="sm:hidden">{t('home.categories')}</span>
-          <ChevronDown 
-            size={18} 
+          <ChevronDown
+            size={18}
             className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
@@ -151,7 +127,7 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
                 <div className="w-1 h-6 bg-blue-600 rounded-full"></div>
                 <h4 className="text-lg font-bold text-gray-800">{t('home.mainCategories')}</h4>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((category) => {
                   const config = getConfig(category);
@@ -170,20 +146,18 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
                     <button
                       key={category}
                       onClick={() => handleCategorySelect(category)}
-                      className={`group relative flex items-start gap-4 p-5 rounded-xl border-2 transition-all text-left ${
-                        isSelected
-                          ? `bg-gradient-to-br ${colorClasses[config.color]} border-transparent text-white shadow-xl scale-105`
-                          : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-lg hover:scale-102'
-                      }`}
+                      className={`group relative flex items-start gap-4 p-5 rounded-xl border-2 transition-all text-left ${isSelected
+                        ? `bg-gradient-to-br ${colorClasses[config.color]} border-transparent text-white shadow-xl scale-105`
+                        : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-lg hover:scale-102'
+                        }`}
                     >
                       {/* Icon Container */}
-                      <div className={`flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center transition ${
-                        isSelected 
-                          ? 'bg-white bg-opacity-20 backdrop-blur-sm' 
-                          : `bg-gradient-to-br ${colorClasses[config.color]} bg-opacity-10`
-                      }`}>
-                        <Icon 
-                          size={28} 
+                      <div className={`flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center transition ${isSelected
+                        ? 'bg-white bg-opacity-20 backdrop-blur-sm'
+                        : `bg-gradient-to-br ${colorClasses[config.color]} bg-opacity-10`
+                        }`}>
+                        <Icon
+                          size={28}
                           className={isSelected ? 'text-white' : `text-${config.color}-600`}
                           strokeWidth={2}
                         />
@@ -191,14 +165,12 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
 
                       {/* Category Content */}
                       <div className="flex-1 min-w-0">
-                        <div className={`font-bold text-lg mb-1 ${
-                          isSelected ? 'text-white' : 'text-gray-800 group-hover:text-blue-700'
-                        }`}>
+                        <div className={`font-bold text-lg mb-1 ${isSelected ? 'text-white' : 'text-gray-800 group-hover:text-blue-700'
+                          }`}>
                           {category}
                         </div>
-                        <div className={`text-sm leading-snug ${
-                          isSelected ? 'text-white text-opacity-90' : 'text-gray-500 group-hover:text-gray-700'
-                        }`}>
+                        <div className={`text-sm leading-snug ${isSelected ? 'text-white text-opacity-90' : 'text-gray-500 group-hover:text-gray-700'
+                          }`}>
                           {config.description}
                         </div>
                       </div>
@@ -249,7 +221,6 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
 
                 <button
                   onClick={() => {
-                    // Future: Popular categories
                     setIsOpen(false);
                   }}
                   className="flex items-center gap-3 p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg hover:shadow-md transition group"
@@ -265,7 +236,6 @@ export default function CategoryFilter({ categories, selectedCategory, setSelect
 
                 <button
                   onClick={() => {
-                    // Future: New releases
                     setIsOpen(false);
                   }}
                   className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg hover:shadow-md transition group"

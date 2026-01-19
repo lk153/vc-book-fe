@@ -3,9 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn, Settings, Package, ChevronDown } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from '../i18n/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
-export default function Navigation({ cart, showBackButton = false, user, onLogout }) {
+export function Navigation({ showBackButton = false }) {
   const { t } = useTranslation();
+  const { user, logout } = useAuth();
+  const { cart } = useCart();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -33,6 +37,13 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+      navigate('/');
+    }
   };
 
   return (
@@ -168,9 +179,7 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
                   <button
                     onClick={() => {
                       setShowUserMenu(false);
-                      if (window.confirm('Are you sure you want to logout?')) {
-                        onLogout();
-                      }
+                      handleLogout();
                     }}
                     className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition flex items-center gap-3 group"
                   >
@@ -213,3 +222,5 @@ export default function Navigation({ cart, showBackButton = false, user, onLogou
     </nav>
   );
 }
+
+export default Navigation;

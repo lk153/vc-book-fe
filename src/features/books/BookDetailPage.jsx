@@ -1,63 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Navigation from '../components/Navigation';
-import { booksAPI } from '../services/api';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { useTranslation } from '../i18n/LanguageContext';
-import { formatPrice } from '../utils/price';
+import { useTranslation } from '../../i18n/LanguageContext';
+import { formatPrice } from '../../utils/price';
+import { useBookDetail } from './useBooks';
+import { useCart } from '../../context/CartContext';
+import { Navigation } from '../../components/Navigation';
 
-export default function BookDetail({ cart, addToCart, loading, user, onLogout }) {
+export function BookDetailPage() {
   const navigate = useNavigate();
-  const { bookId } = useParams(); // Get bookId from URL
+  const { bookId } = useParams();
   const { t } = useTranslation();
-  const [book, setBook] = useState(null);
-  const [bookLoading, setBookLoading] = useState(true);
-  const [bookError, setBookError] = useState(null);
+  const { book, isLoading: bookLoading, error: bookError } = useBookDetail(bookId);
+  const { addToCart, addToCartLoading } = useCart();
 
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [error, setError] = useState(null);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
-
-  // Fetch book data on mount or when bookId changes
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchBook = async () => {
-      try {
-        setBookLoading(true);
-        setBookError(null);
-
-        const response = await booksAPI.getById(bookId);
-
-        if (isMounted) {
-          setBook(response.data || response);
-        }
-      } catch (err) {
-        if (isMounted) {
-          const errorMsg = err.message || 'Failed to load book details';
-          setBookError(errorMsg);
-          toast.error(errorMsg);
-        }
-      } finally {
-        if (isMounted) {
-          setBookLoading(false);
-        }
-      }
-    };
-
-    if (bookId) {
-      fetchBook();
-    } else {
-      setBookError('Invalid book ID');
-      setBookLoading(false);
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [bookId]);
 
   const isOutOfStock = book?.stock === 0 || book?.stock === undefined;
   const maxQuantity = book?.stock || 1;
@@ -108,7 +69,7 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
   if (bookLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+        <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
@@ -123,12 +84,12 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
   if (bookError || !book) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+        <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
             <AlertCircle className="mx-auto text-red-500 mb-4" size={64} />
             <h2 className="text-2xl font-bold text-red-700 mb-2">Book Not Found</h2>
-            <p className="text-red-600 mb-6">{bookError || 'The book you are looking for does not exist.'}</p>
+            <p className="text-red-600 mb-6">{bookError?.message || 'The book you are looking for does not exist.'}</p>
             <button
               onClick={() => navigate('/')}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
@@ -144,7 +105,7 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
   // Main content
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+      <Navigation showBackButton={true} />
 
       {/* Error Popup Modal */}
       {showErrorPopup && error && (
@@ -269,13 +230,13 @@ export default function BookDetail({ cart, addToCart, loading, user, onLogout })
                 ) : (
                   <button
                     onClick={handleAddToCart}
-                    disabled={loading}
+                    disabled={addToCartLoading}
                     className={`w-full py-4 rounded-lg font-bold text-lg transition flex items-center justify-center ${addedToCart
                       ? 'bg-green-500 text-white'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                       } disabled:bg-gray-400 disabled:cursor-not-allowed`}
                   >
-                    {loading ? (
+                    {addToCartLoading ? (
                       <>{t('book.adding')}</>
                     ) : addedToCart ? (
                       <>

@@ -1,13 +1,13 @@
-import { useTranslation } from '../i18n/LanguageContext';
-import { formatPrice } from '../utils/price';
+import { useTranslation } from '../../i18n/LanguageContext';
+import { formatPrice } from '../../utils/price';
 
-export default function CartItem({ item, updateCartQuantity }) {
+export function CartItem({ item, updateCartQuantity }) {
   const { t } = useTranslation();
 
   return (
     <div className="p-6 flex gap-4">
-      <img 
-        src={item.image} 
+      <img
+        src={item.image}
         alt={item.title}
         className="w-24 h-32 object-contain rounded-lg"
       />

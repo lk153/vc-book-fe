@@ -138,6 +138,10 @@ const translations = {
             continueShopping: 'Continue Shopping',
             tax: 'Tax',
             shipping: 'Shipping',
+            total: 'Total',
+            addressOption: 'Shipping Address',
+            useSavedAddress: 'Use Saved Address',
+            inputCustomAddress: 'Enter New Address',
         },
 
         auth: {
@@ -266,6 +270,7 @@ const translations = {
             orders: 'Orders',
             items: 'items',
             item: 'item',
+            quantity: 'Quantity',
             shippingAddress: 'Shipping Address',
             paymentDetails: 'Payment Details',
             paymentMethod: 'Payment Method',
@@ -276,6 +281,7 @@ const translations = {
             cancelSoon: 'Order cancellation feature coming soon!',
             trackSoon: 'Order tracking feature coming soon!',
             invoiceSoon: 'Download invoice feature coming soon!',
+            loginToView: 'Please login to view orders',
             statusPending: 'Pending',
             statusProcessing: 'Processing',
             statusShipped: 'Shipped',
@@ -462,6 +468,10 @@ const translations = {
             continueShopping: 'Tiếp tục mua sắm',
             tax: 'Thuế',
             shipping: 'Phí vận chuyển',
+            total: 'Tổng cộng',
+            addressOption: 'Địa chỉ giao hàng',
+            useSavedAddress: 'Sử dụng địa chỉ đã lưu',
+            inputCustomAddress: 'Nhập địa chỉ mới',
         },
 
         auth: {
@@ -590,6 +600,7 @@ const translations = {
             orders: 'Đơn hàng',
             items: 'sản phẩm',
             item: 'sản phẩm',
+            quantity: 'Số lượng',
             shippingAddress: 'Địa chỉ giao hàng',
             paymentDetails: 'Chi tiết thanh toán',
             paymentMethod: 'Phương thức thanh toán',
@@ -600,6 +611,7 @@ const translations = {
             cancelSoon: 'Tính năng hủy đơn sắp ra mắt!',
             trackSoon: 'Tính năng theo dõi sắp ra mắt!',
             invoiceSoon: 'Tính năng tải hóa đơn sắp ra mắt!',
+            loginToView: 'Vui lòng đăng nhập để xem đơn hàng',
             statusPending: 'Chờ xử lý',
             statusProcessing: 'Đang xử lý',
             statusShipped: 'Đã gửi hàng',

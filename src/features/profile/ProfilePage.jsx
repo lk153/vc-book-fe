@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { User, Mail, Phone, Lock, Save, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import Navigation from '../components/Navigation';
-import { authAPI, userManager } from '../services/authAPI';
-import { useTranslation } from '../i18n/LanguageContext';
+import { useTranslation } from '../../i18n/LanguageContext';
+import { authAPI } from '../../api/auth';
+import { useAuth } from '../../context/AuthContext';
+import { Navigation } from '../../components/Navigation';
 
-export default function Profile({ user, setUser, cart, onLogout }) {
+export function ProfilePage() {
   const { t } = useTranslation();
+  const { user, updateUser } = useAuth();
+
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -57,13 +60,8 @@ export default function Profile({ user, setUser, cart, onLogout }) {
 
     try {
       setLoading(true);
-
       await authAPI.updateProfile(formData);
-
-      const updatedUser = { ...user, ...formData };
-      userManager.setUser(updatedUser);
-      setUser(updatedUser);
-
+      updateUser(formData);
       toast.success(t('profile.updated'));
       setIsEditing(false);
     } catch (err) {
@@ -102,7 +100,6 @@ export default function Profile({ user, setUser, cart, onLogout }) {
 
     try {
       setLoading(true);
-
       await authAPI.changePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
@@ -135,7 +132,7 @@ export default function Profile({ user, setUser, cart, onLogout }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+      <Navigation showBackButton={true} />
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">{t('profile.title')}</h1>

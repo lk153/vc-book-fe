@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Mail, ArrowLeft, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
-import { authAPI } from '../services/authAPI';
-import { useTranslation } from '../i18n/LanguageContext';
+import { authAPI } from '../../api/auth';
+import { useTranslation } from '../../i18n/LanguageContext';
 
-export default function ForgotPassword() {
+export function ForgotPasswordPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -38,11 +38,7 @@ export default function ForgotPassword() {
 
     try {
       setLoading(true);
-
-      // Call forgot password API
       await authAPI.forgotPassword(email);
-
-      // Show success state
       setSuccess(true);
       toast.success(t('auth.resetPasswordSent'));
     } catch (err) {
@@ -59,7 +55,6 @@ export default function ForgotPassword() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
-          {/* Logo */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">
               <BookOpen size={40} />
@@ -67,9 +62,7 @@ export default function ForgotPassword() {
             </div>
           </div>
 
-          {/* Success Card */}
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            {/* Success Icon */}
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="text-green-600" size={48} />
             </div>
@@ -136,7 +129,6 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Back Button */}
         <button
           onClick={() => navigate('/login')}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition"
@@ -145,7 +137,6 @@ export default function ForgotPassword() {
           <span className="font-medium">{t('auth.backToLogin')}</span>
         </button>
 
-        {/* Logo and Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">
             <BookOpen size={40} />
@@ -157,7 +148,6 @@ export default function ForgotPassword() {
           </p>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
@@ -167,7 +157,6 @@ export default function ForgotPassword() {
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Email Input */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t('auth.email')}
@@ -192,7 +181,6 @@ export default function ForgotPassword() {
               </p>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -209,7 +197,6 @@ export default function ForgotPassword() {
             </button>
           </form>
 
-          {/* Additional Info */}
           <div className="mt-6 pt-6 border-t border-gray-200">
             <div className="bg-blue-50 rounded-lg p-4">
               <p className="text-sm text-gray-700 mb-2">
@@ -221,7 +208,6 @@ export default function ForgotPassword() {
             </div>
           </div>
 
-          {/* Remember Password Link */}
           <p className="text-center text-sm text-gray-600 mt-6">
             {t('auth.rememberYourPassword')}{' '}
             <Link

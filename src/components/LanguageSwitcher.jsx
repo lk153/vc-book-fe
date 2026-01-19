@@ -92,7 +92,7 @@ export default function LanguageSwitcher() {
         {/* Floating Circle Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 ${isOpen
+          className={`fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 ${isOpen
             ? 'bg-red-500 hover:bg-red-600'
             : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
             }`}
@@ -120,7 +120,7 @@ export default function LanguageSwitcher() {
             />
 
             {/* Language Selection Modal */}
-            <div className="fixed bottom-24 right-6 w-64 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-slideUp">
+            <div className="fixed bottom-40 right-6 w-64 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-slideUp">
               {/* Header */}
               <div className="px-5 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                 <div className="flex items-center gap-2 mb-1">
@@ -232,7 +232,7 @@ export default function LanguageSwitcher() {
         }
         
         /* Optional: Add pulse effect on mount */
-        .fixed.bottom-6.right-6::before {
+        .fixed.bottom-24.right-6::before {
           content: '';
           position: absolute;
           inset: -4px;

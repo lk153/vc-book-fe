@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Navigation from '../components/Navigation';
-import { ordersAPI } from '../services/api';
 import {
   Package,
   Clock,
@@ -17,74 +15,39 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import { useTranslation } from '../i18n/LanguageContext';
+import { useTranslation, useLanguage } from '../../i18n/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import { useOrders } from './useOrders';
+import { Navigation } from '../../components/Navigation';
+import { formatPrice } from '../../utils/price';
 
-export default function Orders({ cart, user, onLogout }) {
+export function OrdersPage() {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const navigate = useNavigate();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const { orders, isLoading, error } = useOrders();
   const [expandedOrder, setExpandedOrder] = useState(null);
 
   // Redirect if not logged in
   useEffect(() => {
     if (!user) {
-      toast.warning('Please login to view orders');
+      toast.warning(t('orders.loginToView'));
       navigate('/login');
     }
-  }, [user, navigate]);
-
-  // Fetch orders on mount
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchOrders = async () => {
-      if (!user) return;
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const userId = user.id || user._id;
-        const response = await ordersAPI.getUserOrders(userId);
-
-        if (isMounted) {
-          // Handle both response.data and direct array response
-          const ordersData = response.data || response;
-          setOrders(Array.isArray(ordersData) ? ordersData : []);
-        }
-      } catch (err) {
-        if (isMounted) {
-          const errorMsg = err.message || 'Failed to load orders';
-          setError(errorMsg);
-          toast.error(errorMsg);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchOrders();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user]);
+  }, [user, navigate, t]);
 
   // Get status badge styling
   const getStatusBadge = (status) => {
     const statusLower = status?.toLowerCase() || '';
 
     const styles = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock },
-      processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Package },
-      shipped: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Truck },
-      delivered: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle },
-      cancelled: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle },
-      completed: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle },
+      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock, label: t('orders.statusPending') },
+      processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Package, label: t('orders.statusProcessing') },
+      shipped: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Truck, label: t('orders.statusShipped') },
+      delivered: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('orders.statusDelivered') },
+      cancelled: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: t('orders.statusCancelled') },
+      completed: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('orders.statusCompleted') },
     };
 
     const style = styles[statusLower] || styles.pending;
@@ -93,16 +56,17 @@ export default function Orders({ cart, user, onLogout }) {
     return (
       <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold ${style.bg} ${style.text}`}>
         <Icon size={16} />
-        {status || 'Pending'}
+        {style.label}
       </span>
     );
   };
 
-  // Format date
+  // Format date based on language
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    const locale = language === 'vi' ? 'vi-VN' : 'en-US';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -120,10 +84,10 @@ export default function Orders({ cart, user, onLogout }) {
     return null; // Will redirect via useEffect
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+        <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
@@ -137,12 +101,12 @@ export default function Orders({ cart, user, onLogout }) {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+        <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
             <XCircle className="mx-auto text-red-500 mb-4" size={64} />
-            <h2 className="text-2xl font-bold text-red-700 mb-2">Error Loading Orders</h2>
-            <p className="text-red-600 mb-6">{error}</p>
+            <h2 className="text-2xl font-bold text-red-700 mb-2">{t('orders.errorLoading')}</h2>
+            <p className="text-red-600 mb-6">{error.message}</p>
             <button
               onClick={() => window.location.reload()}
               className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
@@ -157,7 +121,7 @@ export default function Orders({ cart, user, onLogout }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation cart={cart} user={user} onLogout={onLogout} showBackButton={true} />
+      <Navigation showBackButton={true} />
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
@@ -198,7 +162,7 @@ export default function Orders({ cart, user, onLogout }) {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-bold text-gray-800">
-                          Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}
+                          {t('orders.order')} #{order.orderNumber || order._id?.slice(-8) || 'N/A'}
                         </h3>
                         {getStatusBadge(order.status)}
                       </div>
@@ -208,12 +172,11 @@ export default function Orders({ cart, user, onLogout }) {
                           <span>{formatDate(order.createdAt || order.orderDate)}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <DollarSign size={16} />
-                          <span className="font-semibold">${order.summary?.total?.toFixed(2) || order.totalAmount?.toFixed(2) || '0.00'}</span>
+                          <span className="font-semibold">{formatPrice(order.summary?.total || order.totalAmount || '0')}{t('common.currencySymbol')}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Package size={16} />
-                          <span>{order.items?.length || 0} {order.items?.length === 1 ? 'item' : 'items'}</span>
+                          <span>{order.items?.length || 0} {order.items?.length === 1 ? t('orders.item') : t('orders.items')}</span>
                         </div>
                       </div>
                     </div>
@@ -223,7 +186,7 @@ export default function Orders({ cart, user, onLogout }) {
                       className="flex items-center gap-2 px-4 py-2 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition"
                     >
                       <span className="text-sm font-medium">
-                        {expandedOrder === (order._id || order.id) ? 'Hide Details' : 'View Details'}
+                        {expandedOrder === (order._id || order.id) ? t('orders.hideDetails') : t('orders.viewDetails')}
                       </span>
                       {expandedOrder === (order._id || order.id) ? (
                         <ChevronUp size={20} />
@@ -242,7 +205,7 @@ export default function Orders({ cart, user, onLogout }) {
                       <div className="bg-white p-4 rounded-lg">
                         <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
                           <MapPin size={20} className="text-blue-600" />
-                          Shipping Address
+                          {t('orders.shippingAddress')}
                         </h4>
                         <div className="text-sm text-gray-600 space-y-1">
                           <p className="font-semibold">{order.shippingAddress?.fullName || 'N/A'}</p>
@@ -264,35 +227,35 @@ export default function Orders({ cart, user, onLogout }) {
                       <div className="bg-white p-4 rounded-lg">
                         <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
                           <DollarSign size={20} className="text-blue-600" />
-                          Payment Details
+                          {t('orders.paymentDetails')}
                         </h4>
                         <div className="text-sm text-gray-600 space-y-2">
                           <div className="flex justify-between">
-                            <span>Payment Method:</span>
+                            <span>{t('orders.paymentMethod')}:</span>
                             <span className="font-semibold">{order.paymentMethod || 'N/A'}</span>
                           </div>
                           {order.summary && (
                             <>
                               <div className="flex justify-between">
-                                <span>Subtotal:</span>
-                                <span>${order.summary.subtotal?.toFixed(2) || '0.00'}</span>
+                                <span>{t('common.subtotal')}:</span>
+                                <span>{formatPrice((order.summary.subtotal))}{t('common.currencySymbol')}</span>
                               </div>
                               {order.summary.tax > 0 && (
                                 <div className="flex justify-between">
-                                  <span>Tax:</span>
-                                  <span>${order.summary.tax.toFixed(2)}</span>
+                                  <span>{t('checkout.tax')}:</span>
+                                  <span>{formatPrice((order.summary.tax))}{t('common.currencySymbol')}</span>
                                 </div>
                               )}
                               {order.summary.shipping > 0 && (
                                 <div className="flex justify-between">
-                                  <span>Shipping:</span>
-                                  <span>${order.summary.shipping.toFixed(2)}</span>
+                                  <span>{t('checkout.shipping')}:</span>
+                                  <span>{formatPrice((order.summary.shipping))}{t('common.currencySymbol')}</span>
                                 </div>
                               )}
                               <div className="flex justify-between pt-2 border-t border-gray-200">
-                                <span className="font-bold">Total:</span>
+                                <span className="font-bold">{t('common.total')}:</span>
                                 <span className="font-bold text-blue-600">
-                                  ${order.summary.total.toFixed(2)}
+                                  {formatPrice((order.summary.total))}{t('common.currencySymbol')}
                                 </span>
                               </div>
                             </>
@@ -305,7 +268,7 @@ export default function Orders({ cart, user, onLogout }) {
                     <div className="bg-white p-4 rounded-lg">
                       <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <Package size={20} className="text-blue-600" />
-                        Order Items
+                        {t('orders.orderItems')}
                       </h4>
                       <div className="space-y-3">
                         {order.items?.map((item, index) => (
@@ -329,12 +292,12 @@ export default function Orders({ cart, user, onLogout }) {
                                 {item.book?.author || item.author || 'Unknown Author'}
                               </p>
                               <p className="text-sm text-gray-500 mt-1">
-                                Quantity: {item.quantity} × ${item.price?.toFixed(2) || '0.00'}
+                                {t('orders.quantity')}: {item.quantity} × {formatPrice((item.price))}{t('common.currencySymbol')}
                               </p>
                             </div>
                             <div className="text-right">
                               <p className="font-bold text-gray-800">
-                                ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
+                                {formatPrice((item.price || 0) * (item.quantity || 0))}{t('common.currencySymbol')}
                               </p>
                             </div>
                           </div>
@@ -346,23 +309,23 @@ export default function Orders({ cart, user, onLogout }) {
                     <div className="mt-6 flex flex-wrap gap-3">
                       {order.status?.toLowerCase() === 'pending' && (
                         <button
-                          onClick={() => toast.info('Order cancellation feature coming soon!')}
+                          onClick={() => toast.info(t('orders.cancelSoon'))}
                           className="px-4 py-2 border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition font-medium"
                         >
-                          Cancel Order
+                          {t('orders.cancelOrder')}
                         </button>
                       )}
                       <button
-                        onClick={() => toast.info('Order tracking feature coming soon!')}
+                        onClick={() => toast.info(t('orders.trackSoon'))}
                         className="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition font-medium"
                       >
-                        Track Order
+                        {t('orders.trackOrder')}
                       </button>
                       <button
-                        onClick={() => toast.info('Download invoice feature coming soon!')}
+                        onClick={() => toast.info(t('orders.invoiceSoon'))}
                         className="px-4 py-2 border-2 border-gray-600 text-gray-600 rounded-lg hover:bg-gray-50 transition font-medium"
                       >
-                        Download Invoice
+                        {t('orders.downloadInvoice')}
                       </button>
                     </div>
                   </div>

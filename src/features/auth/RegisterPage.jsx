@@ -2,11 +2,16 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Mail, Lock, User, Phone, Loader2, AlertCircle, Eye, EyeOff, CheckCircle } from 'lucide-react';
-import { authAPI, tokenManager, userManager } from '../services/authAPI';
-import { useTranslation } from '../i18n/LanguageContext';
+import { useTranslation } from '../../i18n/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 
-export default function Register({ setUser, loading, setLoading }) {
+export function RegisterPage() {
   const { t } = useTranslation();
+  const { register, loading } = useAuth();
+  const { migrateGuestCart } = useCart();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -18,7 +23,6 @@ export default function Register({ setUser, loading, setLoading }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setFormData({
@@ -81,33 +85,24 @@ export default function Register({ setUser, loading, setLoading }) {
     }
 
     try {
-      setLoading(true);
-
-      const response = await authAPI.register({
+      const userData = await register({
         name: formData.fullName,
         email: formData.email,
         phone: formData.phone,
         password: formData.password,
       });
 
-      if (response.token) {
-        tokenManager.setToken(response.token);
+      // Migrate guest cart to user cart
+      if (userData) {
+        const userId = userData.id || userData._id;
+        await migrateGuestCart(userId);
       }
 
-      if (response.user || response.data) {
-        const userData = response.user || response.data;
-        userManager.setUser(userData);
-        setUser(userData);
-      }
-
-      toast.success(t('auth.accountCreated'));
       navigate('/');
     } catch (err) {
       const errorMsg = err.message || t('auth.accountCreateFailed');
       setError(errorMsg);
       toast.error(errorMsg);
-    } finally {
-      setLoading(false);
     }
   };
 
