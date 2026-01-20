@@ -5,7 +5,7 @@
       "name": "Debug React (CRA)",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:8000",
+      "url": "http://localhost:8888",
       "webRoot": "${workspaceFolder}/src",
       "sourceMaps": true,
     }

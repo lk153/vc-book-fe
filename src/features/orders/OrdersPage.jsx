@@ -232,7 +232,7 @@ export function OrdersPage() {
                         <div className="text-sm text-gray-600 space-y-2">
                           <div className="flex justify-between">
                             <span>{t('orders.paymentMethod')}:</span>
-                            <span className="font-semibold">{order.paymentMethod || 'N/A'}</span>
+                            <span className="font-semibold">{order.paymentMethod || t('checkout.cashOnDelivery')}</span>
                           </div>
                           {order.summary && (
                             <>

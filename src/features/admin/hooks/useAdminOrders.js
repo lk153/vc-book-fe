@@ -25,7 +25,7 @@ export function useAdminOrderDetail(orderId) {
   });
 
   return {
-    order: query.data?.data || query.data,
+    order: query.data?.order || query.data,
     isLoading: query.isLoading,
     error: query.error,
   };
