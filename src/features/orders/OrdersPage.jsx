@@ -13,7 +13,8 @@ import {
   MapPin,
   Phone,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  RefreshCcw
 } from 'lucide-react';
 import { useTranslation, useLanguage } from '../../i18n/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -44,10 +45,10 @@ export function OrdersPage() {
     const styles = {
       pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock, label: t('orders.statusPending') },
       processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Package, label: t('orders.statusProcessing') },
-      shipped: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Truck, label: t('orders.statusShipped') },
+      shipped: { bg: 'bg-indigo-100', text: 'text-indigo-700', icon: Truck, label: t('orders.statusShipped') },
       delivered: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('orders.statusDelivered') },
       cancelled: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: t('orders.statusCancelled') },
-      completed: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('orders.statusCompleted') },
+      refunded: { bg: 'bg-orange-100', text: 'text-orange-700', icon: RefreshCcw, label: t('orders.statusRefunded') },
     };
 
     const style = styles[statusLower] || styles.pending;

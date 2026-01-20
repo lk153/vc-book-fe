@@ -4,6 +4,19 @@
 
 This is a **React-based e-commerce frontend** for an online book store. Users can browse books, manage shopping carts, place orders, and manage their accounts.
 
+### Order Statuses
+pending, processing, shipped, delivered, cancelled, refunded
+
+| Status | Color |
+|--------|-------|
+| Pending	 | Yellow |
+| Processing | Blue.  |
+| Shipped	 | Indigo |
+| Delivered	 | Green  |
+| Cancelled	 | Red    |
+| Refunded	 | Orange |
+
+
 ## Quick Commands
 
 ```bash

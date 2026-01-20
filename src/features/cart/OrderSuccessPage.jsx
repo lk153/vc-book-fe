@@ -18,7 +18,7 @@ export function OrderSuccessPage() {
       shipped: t('orders.statusShipped'),
       delivered: t('orders.statusDelivered'),
       cancelled: t('orders.statusCancelled'),
-      completed: t('orders.statusCompleted'),
+      refunded: t('orders.statusRefunded'),
     };
     return statusMap[statusKey] || status;
   };
@@ -26,12 +26,12 @@ export function OrderSuccessPage() {
   const getStatusColor = (status) => {
     const statusKey = status?.toLowerCase();
     const colorMap = {
-      pending: 'bg-orange-100 text-orange-700',
+      pending: 'bg-yellow-100 text-yellow-700',
       processing: 'bg-blue-100 text-blue-700',
-      shipped: 'bg-purple-100 text-purple-700',
+      shipped: 'bg-indigo-100 text-indigo-700',
       delivered: 'bg-green-100 text-green-700',
       cancelled: 'bg-red-100 text-red-700',
-      completed: 'bg-green-100 text-green-700',
+      refunded: 'bg-orange-100 text-orange-700',
     };
     return colorMap[statusKey] || 'bg-gray-100 text-gray-700';
   };

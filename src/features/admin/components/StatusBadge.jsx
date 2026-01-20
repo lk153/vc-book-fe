@@ -6,10 +6,10 @@ export function StatusBadge({ status, type = 'order' }) {
   const orderStyles = {
     pending: { bg: 'bg-yellow-100', text: 'text-yellow-700' },
     processing: { bg: 'bg-blue-100', text: 'text-blue-700' },
-    shipped: { bg: 'bg-purple-100', text: 'text-purple-700' },
+    shipped: { bg: 'bg-indigo-100', text: 'text-indigo-700' },
     delivered: { bg: 'bg-green-100', text: 'text-green-700' },
     cancelled: { bg: 'bg-red-100', text: 'text-red-700' },
-    completed: { bg: 'bg-green-100', text: 'text-green-700' },
+    refunded: { bg: 'bg-orange-100', text: 'text-orange-700' },
   };
 
   const userStyles = {
@@ -30,7 +30,7 @@ export function StatusBadge({ status, type = 'order' }) {
       shipped: t('admin.orders.statusShipped'),
       delivered: t('admin.orders.statusDelivered'),
       cancelled: t('admin.orders.statusCancelled'),
-      completed: t('admin.orders.statusCompleted'),
+      refunded: t('admin.orders.statusRefunded'),
     };
     label = orderLabels[statusKey] || status;
   } else if (type === 'user') {

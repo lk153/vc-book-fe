@@ -291,7 +291,7 @@ const translations = {
             statusShipped: 'Shipped',
             statusDelivered: 'Delivered',
             statusCancelled: 'Cancelled',
-            statusCompleted: 'Completed',
+            statusRefunded: 'Refunded',
         },
 
         toast: {
@@ -625,7 +625,7 @@ const translations = {
             statusShipped: 'Đã gửi hàng',
             statusDelivered: 'Đã giao',
             statusCancelled: 'Đã hủy',
-            statusCompleted: 'Hoàn thành',
+            statusRefunded: 'Đã hoàn tiền',
         },
 
         toast: {
