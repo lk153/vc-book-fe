@@ -15,13 +15,13 @@ export function ForgotPasswordPage() {
 
   const validateEmail = () => {
     if (!email) {
-      setError('Please enter your email address');
+      setError(t('validation.enterEmail'));
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError(t('validation.emailInvalid'));
       return false;
     }
 

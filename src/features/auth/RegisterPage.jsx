@@ -34,41 +34,41 @@ export function RegisterPage() {
 
   const validateForm = () => {
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all required fields');
+      setError(t('validation.fillRequired'));
       return false;
     }
 
     if (formData.fullName.trim().length < 2) {
-      setError('Please enter your full name');
+      setError(t('validation.nameMin'));
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
+      setError(t('validation.emailInvalid'));
       return false;
     }
 
     if (formData.phone) {
       const phoneRegex = /^[\d\s\-+()]+$/;
       if (!phoneRegex.test(formData.phone) || formData.phone.replace(/\D/g, '').length < 10) {
-        setError('Please enter a valid phone number (at least 10 digits)');
+        setError(t('validation.phoneInvalid'));
         return false;
       }
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError(t('validation.passwordMin', { min: 6 }));
       return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('validation.passwordMatch'));
       return false;
     }
 
     if (!acceptTerms) {
-      setError('Please accept the Terms and Conditions');
+      setError(t('validation.termsRequired'));
       return false;
     }
 

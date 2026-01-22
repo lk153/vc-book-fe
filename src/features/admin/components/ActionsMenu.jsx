@@ -1,20 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { Eye, MoreHorizontal, FileText, Download, CreditCard } from 'lucide-react';
+import { useClickOutside } from '../../../hooks/useClickOutside';
 
 export function ActionsMenu({ order, onView, t }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleClose = useCallback(() => setIsOpen(false), []);
+  useClickOutside(menuRef, handleClose, isOpen);
 
   const handleAction = (action) => {
     setIsOpen(false);

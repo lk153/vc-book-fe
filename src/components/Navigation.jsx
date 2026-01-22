@@ -1,10 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, BookOpen, Home, User, LogOut, LogIn, Settings, Package, ChevronDown } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from '../i18n/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useClickOutside } from '../hooks/useClickOutside';
+import { ROUTES } from '../constants/routes';
 
 export function Navigation({ showBackButton = false }) {
   const { t } = useTranslation();
@@ -14,21 +16,8 @@ export function Navigation({ showBackButton = false }) {
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowUserMenu(false);
-      }
-    };
-
-    if (showUserMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showUserMenu]);
+  const handleCloseMenu = useCallback(() => setShowUserMenu(false), []);
+  useClickOutside(menuRef, handleCloseMenu, showUserMenu);
 
   const getUserInitials = () => {
     const name = user?.name || user?.fullName || user?.email || 'U';
@@ -40,9 +29,9 @@ export function Navigation({ showBackButton = false }) {
   };
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
+    if (window.confirm(t('nav.logoutConfirm'))) {
       logout();
-      navigate('/');
+      navigate(ROUTES.HOME);
     }
   };
 
@@ -51,14 +40,14 @@ export function Navigation({ showBackButton = false }) {
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {showBackButton ? (
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(ROUTES.HOME)}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
           >
             <Home size={20} />
             <span>{t('nav.backToHome')}</span>
           </button>
         ) : (
-          <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition">
+          <Link to={ROUTES.HOME} className="flex items-center gap-2 text-2xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition">
             <BookOpen size={32} />
             <span>{t('nav.title')}</span>
           </Link>
@@ -69,7 +58,7 @@ export function Navigation({ showBackButton = false }) {
 
           {/* Cart Button */}
           <button
-            onClick={() => navigate('/checkout')}
+            onClick={() => navigate(ROUTES.CHECKOUT)}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             <ShoppingCart size={20} />
@@ -130,7 +119,7 @@ export function Navigation({ showBackButton = false }) {
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        navigate('/profile');
+                        navigate(ROUTES.PROFILE);
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
@@ -145,7 +134,7 @@ export function Navigation({ showBackButton = false }) {
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        navigate('/orders');
+                        navigate(ROUTES.ORDERS);
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
@@ -160,7 +149,7 @@ export function Navigation({ showBackButton = false }) {
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        navigate('/settings');
+                        navigate(ROUTES.SETTINGS);
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
@@ -194,7 +183,7 @@ export function Navigation({ showBackButton = false }) {
             </div>
           ) : (
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate(ROUTES.LOGIN)}
               className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition font-medium"
             >
               <LogIn size={20} />

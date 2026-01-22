@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
+import { ROUTES } from './constants/routes';
 
 import { BooksListingPage } from './features/books/BooksListingPage';
 import { BookDetailPage } from './features/books/BookDetailPage';
@@ -41,7 +42,7 @@ function ProtectedRoute({ children }) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
   return children;
@@ -59,7 +60,7 @@ function GuestRoute({ children }) {
   }
 
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={ROUTES.HOME} replace />;
   }
 
   return children;
@@ -78,14 +79,14 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<BooksListingPage />} />
-      <Route path="/book/:bookId" element={<BookDetailPage />} />
+      <Route path={ROUTES.HOME} element={<BooksListingPage />} />
+      <Route path={ROUTES.BOOK_DETAIL} element={<BookDetailPage />} />
 
       {/* Cart and Checkout Routes */}
-      <Route path="/cart" element={<CartPage />} />
-      <Route path="/checkout" element={<Navigate to="/cart" replace />} />
+      <Route path={ROUTES.CART} element={<CartPage />} />
+      <Route path={ROUTES.CHECKOUT} element={<Navigate to={ROUTES.CART} replace />} />
       <Route
-        path="/shipping-address"
+        path={ROUTES.SHIPPING_ADDRESS}
         element={
           <ProtectedRoute>
             <ShippingAddressPage />
@@ -93,7 +94,7 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/order-success"
+        path={ROUTES.ORDER_SUCCESS}
         element={
           <ProtectedRoute>
             <OrderSuccessPage />
@@ -103,7 +104,7 @@ function AppRoutes() {
 
       {/* Auth Routes */}
       <Route
-        path="/login"
+        path={ROUTES.LOGIN}
         element={
           <GuestRoute>
             <LoginPage />
@@ -111,19 +112,19 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/register"
+        path={ROUTES.REGISTER}
         element={
           <GuestRoute>
             <RegisterPage />
           </GuestRoute>
         }
       />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+      <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
 
       {/* Protected Routes */}
       <Route
-        path="/profile"
+        path={ROUTES.PROFILE}
         element={
           <ProtectedRoute>
             <ProfilePage />
@@ -131,7 +132,7 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/orders"
+        path={ROUTES.ORDERS}
         element={
           <ProtectedRoute>
             <OrdersPage />
@@ -140,15 +141,15 @@ function AppRoutes() {
       />
 
       {/* Admin Routes */}
-      <Route path="/admin" element={<AdminLoginPage />} />
-      <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-      <Route path="/admin/orders" element={<AdminOrdersPage />} />
-      <Route path="/admin/users" element={<AdminUsersPage />} />
-      <Route path="/admin/books" element={<AdminBooksPage />} />
-      <Route path="/admin/books/new" element={<AdminBookFormPage />} />
-      <Route path="/admin/books/:bookId/edit" element={<AdminBookFormPage />} />
+      <Route path={ROUTES.ADMIN_LOGIN} element={<AdminLoginPage />} />
+      <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboardPage />} />
+      <Route path={ROUTES.ADMIN_ORDERS} element={<AdminOrdersPage />} />
+      <Route path={ROUTES.ADMIN_USERS} element={<AdminUsersPage />} />
+      <Route path={ROUTES.ADMIN_BOOKS} element={<AdminBooksPage />} />
+      <Route path={ROUTES.ADMIN_BOOKS_NEW} element={<AdminBookFormPage />} />
+      <Route path={ROUTES.ADMIN_BOOKS_EDIT} element={<AdminBookFormPage />} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
   );
 }

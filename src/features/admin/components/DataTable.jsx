@@ -1,5 +1,6 @@
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from '../../../i18n/LanguageContext';
+import { getId } from '../../../utils/getId';
 
 export function DataTable({
   columns,
@@ -44,7 +45,7 @@ export function DataTable({
         <tbody className="divide-y divide-gray-200">
           {data.map((row, index) => (
             <tr
-              key={row._id || row.id || index}
+              key={getId(row) || index}
               onClick={() => onRowClick?.(row)}
               className={`${onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''} transition`}
             >

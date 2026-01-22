@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { Globe, Check, X } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTranslation } from '../i18n/LanguageContext';
+import { useClickOutside } from '../hooks/useClickOutside';
 
 export default function LanguageSwitcher() {
   const { t } = useTranslation();
@@ -10,29 +11,10 @@ export default function LanguageSwitcher() {
   const desktopRef = useRef(null);
   const mobileRef = useRef(null);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const desktop = desktopRef.current;
-      const mobile = mobileRef.current;
-
-      const clickedInsideDesktop = desktop && desktop.contains(event.target);
-      const clickedInsideMobile = mobile && mobile.contains(event.target);
-
-      // If click outside both -> close
-      if (!clickedInsideDesktop && !clickedInsideMobile) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
+  // Close dropdown when clicking outside (supports multiple refs)
+  const handleClose = useCallback(() => setIsOpen(false), []);
+  const refs = useMemo(() => [desktopRef, mobileRef], []);
+  useClickOutside(refs, handleClose, isOpen);
 
   const handleLanguageChange = (lang) => {
     changeLanguage(lang);

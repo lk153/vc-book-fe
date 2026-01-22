@@ -7,6 +7,8 @@ import { DataTable } from '../components/DataTable';
 import { useAdminBooks, useDeleteBook } from '../hooks/useAdminBooks';
 import { useTranslation } from '../../../i18n/LanguageContext';
 import { formatPrice } from '../../../utils/price';
+import { getId } from '../../../utils/getId';
+import { ROUTES, getAdminBookEditPath } from '../../../constants/routes';
 
 export function AdminBooksPage() {
   const { t } = useTranslation();
@@ -92,7 +94,7 @@ export function AdminBooksPage() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/admin/books/${row._id || row.id}/edit`);
+              navigate(getAdminBookEditPath(getId(row)));
             }}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
             title={t('admin.common.edit')}
@@ -102,7 +104,7 @@ export function AdminBooksPage() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(row._id || row.id, row.title);
+              handleDelete(getId(row), row.title);
             }}
             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
             title={t('admin.common.delete')}
@@ -130,7 +132,7 @@ export function AdminBooksPage() {
             {t('admin.common.refresh')}
           </button>
           <button
-            onClick={() => navigate('/admin/books/new')}
+            onClick={() => navigate(ROUTES.ADMIN_BOOKS_NEW)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
             <Plus size={18} />

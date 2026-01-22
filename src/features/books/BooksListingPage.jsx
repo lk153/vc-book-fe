@@ -7,6 +7,7 @@ import { useBooks } from './useBooks';
 import { BookCard } from './BookCard';
 import { CategoryFilter } from './CategoryFilter';
 import { Navigation } from '../../components/Navigation';
+import { getBookDetailPath } from '../../constants/routes';
 
 export function BooksListingPage() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export function BooksListingPage() {
   });
 
   const goToBook = (id) => {
-    navigate(`/book/${id}`);
+    navigate(getBookDetailPath(id));
   };
 
   const onPageChange = (newPage) => {

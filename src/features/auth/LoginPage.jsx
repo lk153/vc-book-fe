@@ -29,7 +29,7 @@ export function LoginPage() {
 
   const validateForm = () => {
     if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
+      setError(t('validation.fillAllFields'));
       return false;
     }
 

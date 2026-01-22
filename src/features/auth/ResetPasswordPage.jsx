@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BookOpen, Lock, Eye, EyeOff, CheckCircle, Loader2, AlertCircle, Shield } from 'lucide-react';
@@ -22,25 +22,25 @@ export function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [tokenValid, setTokenValid] = useState(true);
 
-  // Validate token on mount
-  useEffect(() => {
-    if (!token) {
-      setTokenValid(false);
-      setError('Invalid or missing reset token');
-    } else {
-      verifyToken(token);
-    }
-  }, [token]);
-
-  const verifyToken = async (resetToken) => {
+  const verifyToken = useCallback(async (resetToken) => {
     try {
       await authAPI.verifyResetToken(resetToken);
       setTokenValid(true);
     } catch (err) {
       setTokenValid(false);
-      setError('This reset link is invalid or has expired');
+      setError(t('resetPassSuccess.invalidResetLink'));
     }
-  };
+  }, [t]);
+
+  // Validate token on mount
+  useEffect(() => {
+    if (!token) {
+      setTokenValid(false);
+      setError(t('resetPassSuccess.invalidResetLink'));
+    } else {
+      verifyToken(token);
+    }
+  }, [token, t, verifyToken]);
 
   const getPasswordStrength = () => {
     const password = formData.password;
@@ -60,17 +60,17 @@ export function ResetPasswordPage() {
 
   const validateForm = () => {
     if (!formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields');
+      setError(t('validation.fillAllFields'));
       return false;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError(t('validation.passwordMin', { min: 6 }));
       return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('validation.passwordMatch'));
       return false;
     }
 

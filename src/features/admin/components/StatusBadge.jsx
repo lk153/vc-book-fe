@@ -1,44 +1,33 @@
 import { useTranslation } from '../../../i18n/LanguageContext';
+import { getStatusStyles, getStatusLabel } from '../../../constants/orders';
+
+// User status configuration (kept local as it's only used here)
+const userStyles = {
+  active: { bg: 'bg-green-100', text: 'text-green-700' },
+  banned: { bg: 'bg-red-100', text: 'text-red-700' },
+};
 
 export function StatusBadge({ status, type = 'order' }) {
   const { t } = useTranslation();
 
-  const orderStyles = {
-    pending: { bg: 'bg-yellow-100', text: 'text-yellow-700' },
-    processing: { bg: 'bg-blue-100', text: 'text-blue-700' },
-    shipped: { bg: 'bg-indigo-100', text: 'text-indigo-700' },
-    delivered: { bg: 'bg-green-100', text: 'text-green-700' },
-    cancelled: { bg: 'bg-red-100', text: 'text-red-700' },
-    refunded: { bg: 'bg-orange-100', text: 'text-orange-700' },
-  };
-
-  const userStyles = {
-    active: { bg: 'bg-green-100', text: 'text-green-700' },
-    banned: { bg: 'bg-red-100', text: 'text-red-700' },
-  };
-
-  const styles = type === 'user' ? userStyles : orderStyles;
   const statusKey = status?.toLowerCase() || 'pending';
-  const style = styles[statusKey] || styles.pending || { bg: 'bg-gray-100', text: 'text-gray-700' };
 
-  // Get translated label
-  let label = status;
-  if (type === 'order') {
-    const orderLabels = {
-      pending: t('admin.orders.statusPending'),
-      processing: t('admin.orders.statusProcessing'),
-      shipped: t('admin.orders.statusShipped'),
-      delivered: t('admin.orders.statusDelivered'),
-      cancelled: t('admin.orders.statusCancelled'),
-      refunded: t('admin.orders.statusRefunded'),
-    };
-    label = orderLabels[statusKey] || status;
-  } else if (type === 'user') {
+  // Get style based on type
+  let style;
+  let label;
+
+  if (type === 'user') {
+    style = userStyles[statusKey] || { bg: 'bg-gray-100', text: 'text-gray-700' };
     const userLabels = {
       active: t('admin.users.statusActive'),
       banned: t('admin.users.statusBanned'),
     };
     label = userLabels[statusKey] || status;
+  } else {
+    // Order type - use centralized constants
+    const orderStyle = getStatusStyles(status);
+    style = { bg: orderStyle.bg, text: orderStyle.text };
+    label = getStatusLabel(status, t);
   }
 
   return (

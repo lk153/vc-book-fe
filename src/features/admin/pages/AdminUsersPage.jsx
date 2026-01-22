@@ -6,6 +6,7 @@ import { DataTable } from '../components/DataTable';
 import { StatusBadge } from '../components/StatusBadge';
 import { useAdminUsers, useToggleUserBan, useResetUserPassword } from '../hooks/useAdminUsers';
 import { useTranslation, useLanguage } from '../../../i18n/LanguageContext';
+import { getId } from '../../../utils/getId';
 
 export function AdminUsersPage() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export function AdminUsersPage() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return t('common.notAvailable');
     const date = new Date(dateString);
     const locale = language === 'vi' ? 'vi-VN' : 'en-US';
     return date.toLocaleDateString(locale);
@@ -64,7 +65,7 @@ export function AdminUsersPage() {
               {(row.name || row.fullName || 'U').charAt(0).toUpperCase()}
             </span>
           </div>
-          <span className="font-medium">{row.name || row.fullName || 'N/A'}</span>
+          <span className="font-medium">{row.name || row.fullName || t('common.notAvailable')}</span>
         </div>
       )
     },
@@ -75,7 +76,7 @@ export function AdminUsersPage() {
     {
       key: 'phone',
       label: t('admin.users.phone'),
-      render: (row) => row.phone || 'N/A'
+      render: (row) => row.phone || t('common.notAvailable')
     },
     {
       key: 'createdAt',
@@ -100,7 +101,7 @@ export function AdminUsersPage() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleResetPassword(row._id || row.id, row.email);
+              handleResetPassword(getId(row), row.email);
             }}
             className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition"
             title={t('admin.users.resetPassword')}
@@ -110,7 +111,7 @@ export function AdminUsersPage() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleToggleBan(row._id || row.id, row.banned);
+              handleToggleBan(getId(row), row.banned);
             }}
             className={`p-2 rounded-lg transition ${
               row.banned

@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useTranslation } from '../../i18n/LanguageContext';
+import { useClickOutside } from '../../hooks/useClickOutside';
 
 import {
   ChevronDown,
@@ -29,22 +30,8 @@ export function CategoryFilter({ categories, selectedCategory, setSelectedCatego
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
+  const handleClose = useCallback(() => setIsOpen(false), []);
+  useClickOutside(menuRef, handleClose, isOpen);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);

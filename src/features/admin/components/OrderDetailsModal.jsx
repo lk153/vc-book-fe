@@ -1,33 +1,16 @@
 import { Loader2, X, MapPin, Phone, DollarSign, Package } from 'lucide-react';
 import { useAdminOrderDetail } from '../hooks/useAdminOrders';
-
-const STATUS_COLORS = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  processing: 'bg-blue-100 text-blue-700',
-  shipped: 'bg-indigo-100 text-indigo-700',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
-  refunded: 'bg-orange-100 text-orange-700',
-};
+import { getStatusBadgeClasses, getStatusLabel as getStatusLabelFromConstants } from '../../../constants/orders';
 
 export function OrderDetailsModal({ orderId, onClose, t, formatDate, formatPrice }) {
   const { order, isLoading } = useAdminOrderDetail(orderId);
 
   const getStatusColor = (status) => {
-    const statusKey = status?.toLowerCase();
-    return STATUS_COLORS[statusKey] || 'bg-gray-100 text-gray-700';
+    return getStatusBadgeClasses(status);
   };
 
   const getStatusLabel = (status) => {
-    const labels = {
-      pending: t('admin.orders.statusPending'),
-      processing: t('admin.orders.statusProcessing'),
-      shipped: t('admin.orders.statusShipped'),
-      delivered: t('admin.orders.statusDelivered'),
-      cancelled: t('admin.orders.statusCancelled'),
-      refunded: t('admin.orders.statusRefunded'),
-    };
-    return labels[status?.toLowerCase()] || status;
+    return getStatusLabelFromConstants(status, t);
   };
 
   if (isLoading) {
@@ -93,7 +76,7 @@ export function OrderDetailsModal({ orderId, onClose, t, formatDate, formatPrice
                 {t('admin.orders.shippingAddress')}
               </h4>
               <div className="text-sm text-gray-600 space-y-1">
-                <p className="font-semibold">{order.shippingAddress?.fullName || order.user?.name || 'N/A'}</p>
+                <p className="font-semibold">{order.shippingAddress?.fullName || order.user?.name || t('common.notAvailable')}</p>
                 <p>{order.shippingAddress?.address}</p>
                 <p>
                   {order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.postalCode}

@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { cartAPI } from '../api/cart';
 import { useAuth } from './AuthContext';
 import { useTranslation } from '../i18n/LanguageContext';
+import { getId } from '../utils/getId';
 
 const CartContext = createContext(null);
 
@@ -23,13 +24,13 @@ const guestCartManager = {
 
   addItem: (book, quantity) => {
     const cart = guestCartManager.getCart();
-    const existingItem = cart.find(item => item.id === (book._id || book.id));
+    const existingItem = cart.find(item => item.id === getId(book));
 
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
       cart.push({
-        id: book._id || book.id,
+        id: getId(book),
         title: book.title,
         author: book.author,
         price: book.price,
@@ -63,7 +64,7 @@ const guestCartManager = {
 const transformCartItems = (items) => {
   return items.map(item => {
     // Handle both populated book object and book ID string
-    const bookId = typeof item.book === 'string' ? item.book : (item.book._id || item.book.id);
+    const bookId = typeof item.book === 'string' ? item.book : getId(item.book);
     return {
       id: bookId,
       title: item.book.title || '',
@@ -168,7 +169,7 @@ export function CartProvider({ children }) {
         return;
       }
 
-      await cartAPI.addItem(userId, book._id || book.id, quantity);
+      await cartAPI.addItem(userId, getId(book), quantity);
 
       const response = await cartAPI.get(userId);
       if (response.data && response.data.items) {

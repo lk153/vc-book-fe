@@ -1,16 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Check, AlertTriangle } from 'lucide-react';
-
-const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
-
-const STATUS_CONFIG = {
-  pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-300', hover: 'hover:bg-yellow-200', dot: 'bg-yellow-500' },
-  processing: { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-300', hover: 'hover:bg-blue-200', dot: 'bg-blue-500' },
-  shipped: { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-300', hover: 'hover:bg-indigo-200', dot: 'bg-indigo-500' },
-  delivered: { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-300', hover: 'hover:bg-green-200', dot: 'bg-green-500' },
-  cancelled: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-300', hover: 'hover:bg-red-200', dot: 'bg-red-500' },
-  refunded: { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-300', hover: 'hover:bg-orange-200', dot: 'bg-orange-500' },
-};
+import { ORDER_STATUSES, getStatusStyles } from '../../../constants/orders';
+import { useClickOutside } from '../../../hooks/useClickOutside';
 
 export function StatusBadgeDropdown({ status, orderId, onStatusChange, t, getStatusLabel }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,17 +10,10 @@ export function StatusBadgeDropdown({ status, orderId, onStatusChange, t, getSta
   const dropdownRef = useRef(null);
 
   const currentStatus = status?.toLowerCase() || 'pending';
-  const config = STATUS_CONFIG[currentStatus] || STATUS_CONFIG.pending;
+  const config = getStatusStyles(currentStatus);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleClose = useCallback(() => setIsOpen(false), []);
+  useClickOutside(dropdownRef, handleClose, isOpen);
 
   const handleStatusSelect = (newStatus) => {
     if (newStatus === 'cancelled') {
@@ -58,7 +42,7 @@ export function StatusBadgeDropdown({ status, orderId, onStatusChange, t, getSta
             e.stopPropagation();
             setIsOpen(!isOpen);
           }}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-colors ${config.bg} ${config.text} ${config.border} ${config.hover}`}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-colors ${config.bg} ${config.textDark} ${config.border} ${config.hover}`}
         >
           <span className={`w-2 h-2 rounded-full ${config.dot}`} />
           {getStatusLabel(currentStatus)}
@@ -67,7 +51,7 @@ export function StatusBadgeDropdown({ status, orderId, onStatusChange, t, getSta
         {isOpen && (
           <div className="absolute z-20 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 left-0">
             {ORDER_STATUSES.map((s) => {
-              const sConfig = STATUS_CONFIG[s] || STATUS_CONFIG.pending;
+              const sConfig = getStatusStyles(s);
               const isActive = s === currentStatus;
               return (
                 <button

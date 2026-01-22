@@ -21,6 +21,7 @@ const translations = {
             subtotal: 'Subtotal',
             retry: 'Retry',
             currencySymbol: '₫',
+            notAvailable: 'N/A',
         },
 
         app: {
@@ -35,13 +36,14 @@ const translations = {
             login: 'Login',
             logout: 'Logout',
             logout_confirmation: 'Sign out of your account',
+            logoutConfirm: 'Are you sure you want to logout?',
             profile: 'My Profile',
             orders: 'My Orders',
             settings: 'Settings',
             backToHome: 'Back to Home',
             continueAsGuest: 'Continue as guest',
             browseCategories: 'Browse Categories',
-            title: 'BookStore',
+            title: 'Sách Hay',
             view_edit_profile: 'View and edit profile',
             track_orders: 'Track your orders',
             account_preferences: 'Account preferences',
@@ -309,12 +311,15 @@ const translations = {
 
         validation: {
             required: 'This field is required',
+            fillAllFields: 'Please fill in all fields',
             emailInvalid: 'Please enter a valid email address',
             phoneInvalid: 'Please enter a valid phone number (at least 10 digits)',
             passwordMin: 'Password must be at least {min} characters long',
             passwordMatch: 'Passwords do not match',
             nameMin: 'Please enter your full name',
             termsRequired: 'Please accept the Terms and Conditions',
+            fillRequired: 'Please fill in all required fields',
+            enterEmail: 'Please enter your email address',
         },
 
         categories: {
@@ -355,6 +360,7 @@ const translations = {
             subtotal: 'Tạm tính',
             retry: 'Thử lại',
             currencySymbol: '₫',
+            notAvailable: 'N/A',
         },
 
         app: {
@@ -369,13 +375,14 @@ const translations = {
             login: 'Đăng nhập',
             logout: 'Đăng xuất',
             logout_confirmation: 'Đăng xuất tài khoản',
+            logoutConfirm: 'Bạn có chắc chắn muốn đăng xuất?',
             profile: 'Hồ sơ',
             orders: 'Đơn hàng',
             settings: 'Cài đặt',
             backToHome: 'Về trang chủ',
             continueAsGuest: 'Tiếp tục với tư cách khách',
             browseCategories: 'Duyệt danh mục',
-            title: 'Nhà sách',
+            title: 'Sách Hay',
             view_edit_profile: 'Xem & chỉnh sửa hồ sơ',
             track_orders: 'Theo dõi đơn hàng',
             account_preferences: 'Cài đặt tài khoản',
@@ -649,6 +656,9 @@ const translations = {
             passwordMatch: 'Mật khẩu không khớp',
             nameMin: 'Vui lòng nhập họ tên đầy đủ',
             termsRequired: 'Vui lòng chấp nhận Điều khoản và Điều kiện',
+            fillAllFields: 'Vui lòng điền đầy đủ thông tin',
+            fillRequired: 'Vui lòng điền đầy đủ thông tin bắt buộc',
+            enterEmail: 'Vui lòng nhập địa chỉ email của bạn',
         },
 
         categories: {

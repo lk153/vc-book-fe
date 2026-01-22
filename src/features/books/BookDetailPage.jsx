@@ -73,7 +73,7 @@ export function BookDetailPage() {
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-            <p className="text-xl text-gray-600">Loading book details...</p>
+            <p className="text-xl text-gray-600">{t('book.loadingDetails')}</p>
           </div>
         </div>
       </div>
@@ -88,13 +88,13 @@ export function BookDetailPage() {
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
             <AlertCircle className="mx-auto text-red-500 mb-4" size={64} />
-            <h2 className="text-2xl font-bold text-red-700 mb-2">Book Not Found</h2>
-            <p className="text-red-600 mb-6">{bookError?.message || 'The book you are looking for does not exist.'}</p>
+            <h2 className="text-2xl font-bold text-red-700 mb-2">{t('book.notFound')}</h2>
+            <p className="text-red-600 mb-6">{bookError?.message || t('book.bookNotExist')}</p>
             <button
               onClick={() => navigate('/')}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
-              Back to Home
+              {t('nav.backToHome')}
             </button>
           </div>
         </div>

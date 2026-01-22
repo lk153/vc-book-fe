@@ -21,6 +21,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useOrders } from './useOrders';
 import { Navigation } from '../../components/Navigation';
 import { formatPrice } from '../../utils/price';
+import { getId } from '../../utils/getId';
+import { getStatusStyles, getStatusLabel } from '../../constants/orders';
 
 export function OrdersPage() {
   const { t } = useTranslation();
@@ -38,33 +40,35 @@ export function OrdersPage() {
     }
   }, [user, navigate, t]);
 
-  // Get status badge styling
+  // Get status badge styling - icons are UI-specific, colors/labels from constants
   const getStatusBadge = (status) => {
     const statusLower = status?.toLowerCase() || '';
 
-    const styles = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock, label: t('orders.statusPending') },
-      processing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Package, label: t('orders.statusProcessing') },
-      shipped: { bg: 'bg-indigo-100', text: 'text-indigo-700', icon: Truck, label: t('orders.statusShipped') },
-      delivered: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('orders.statusDelivered') },
-      cancelled: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: t('orders.statusCancelled') },
-      refunded: { bg: 'bg-orange-100', text: 'text-orange-700', icon: RefreshCcw, label: t('orders.statusRefunded') },
+    // Icons are UI-specific to this page
+    const statusIcons = {
+      pending: Clock,
+      processing: Package,
+      shipped: Truck,
+      delivered: CheckCircle,
+      cancelled: XCircle,
+      refunded: RefreshCcw,
     };
 
-    const style = styles[statusLower] || styles.pending;
-    const Icon = style.icon;
+    const style = getStatusStyles(status);
+    const Icon = statusIcons[statusLower] || Clock;
+    const label = getStatusLabel(status, t);
 
     return (
       <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold ${style.bg} ${style.text}`}>
         <Icon size={16} />
-        {style.label}
+        {label}
       </span>
     );
   };
 
   // Format date based on language
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return t('common.notAvailable');
     const date = new Date(dateString);
     const locale = language === 'vi' ? 'vi-VN' : 'en-US';
     return date.toLocaleDateString(locale, {
@@ -154,7 +158,7 @@ export function OrdersPage() {
           <div className="space-y-6">
             {orders.map((order) => (
               <div
-                key={order._id || order.id || order.orderNumber}
+                key={getId(order) || order.orderNumber}
                 className="bg-white rounded-xl shadow-lg overflow-hidden transition hover:shadow-xl"
               >
                 {/* Order Header */}
@@ -163,7 +167,7 @@ export function OrdersPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-bold text-gray-800">
-                          {t('orders.order')} #{order.orderNumber || order._id?.slice(-8) || 'N/A'}
+                          {t('orders.order')} #{order.orderNumber || order._id?.slice(-8) || t('common.notAvailable')}
                         </h3>
                         {getStatusBadge(order.status)}
                       </div>
@@ -183,13 +187,13 @@ export function OrdersPage() {
                     </div>
 
                     <button
-                      onClick={() => toggleOrderDetails(order._id || order.id)}
+                      onClick={() => toggleOrderDetails(getId(order))}
                       className="flex items-center gap-2 px-4 py-2 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition"
                     >
                       <span className="text-sm font-medium">
-                        {expandedOrder === (order._id || order.id) ? t('orders.hideDetails') : t('orders.viewDetails')}
+                        {expandedOrder === getId(order) ? t('orders.hideDetails') : t('orders.viewDetails')}
                       </span>
-                      {expandedOrder === (order._id || order.id) ? (
+                      {expandedOrder === getId(order) ? (
                         <ChevronUp size={20} />
                       ) : (
                         <ChevronDown size={20} />
@@ -199,7 +203,7 @@ export function OrdersPage() {
                 </div>
 
                 {/* Order Details (Expandable) */}
-                {expandedOrder === (order._id || order.id) && (
+                {expandedOrder === getId(order) && (
                   <div className="p-6 bg-gray-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       {/* Shipping Address */}
@@ -209,7 +213,7 @@ export function OrdersPage() {
                           {t('orders.shippingAddress')}
                         </h4>
                         <div className="text-sm text-gray-600 space-y-1">
-                          <p className="font-semibold">{order.shippingAddress?.fullName || 'N/A'}</p>
+                          <p className="font-semibold">{order.shippingAddress?.fullName || t('common.notAvailable')}</p>
                           <p>{order.shippingAddress?.address}</p>
                           <p>
                             {order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.postalCode}

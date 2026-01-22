@@ -9,6 +9,8 @@ import { ActionsMenu } from '../components/ActionsMenu';
 import { useAdminOrders, useUpdateOrderStatus } from '../hooks/useAdminOrders';
 import { useTranslation, useLanguage } from '../../../i18n/LanguageContext';
 import { formatPrice } from '../../../utils/price';
+import { getId } from '../../../utils/getId';
+import { getStatusLabel as getStatusLabelFromConstants } from '../../../constants/orders';
 
 export function AdminOrdersPage() {
   const { t } = useTranslation();
@@ -33,7 +35,7 @@ export function AdminOrdersPage() {
 
   const handleSelectAll = useCallback((e) => {
     if (e.target.checked) {
-      setSelectedOrders(orders.map(o => o._id || o.id));
+      setSelectedOrders(orders.map(o => getId(o)));
     } else {
       setSelectedOrders([]);
     }
@@ -82,7 +84,7 @@ export function AdminOrdersPage() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return t('common.notAvailable');
     const date = new Date(dateString);
     const locale = language === 'vi' ? 'vi-VN' : 'en-US';
     return date.toLocaleDateString(locale, {
@@ -93,15 +95,7 @@ export function AdminOrdersPage() {
   };
 
   const getStatusLabel = (status) => {
-    const labels = {
-      pending: t('admin.orders.statusPending'),
-      processing: t('admin.orders.statusProcessing'),
-      shipped: t('admin.orders.statusShipped'),
-      delivered: t('admin.orders.statusDelivered'),
-      cancelled: t('admin.orders.statusCancelled'),
-      refunded: t('admin.orders.statusRefunded'),
-    };
-    return labels[status?.toLowerCase()] || status;
+    return getStatusLabelFromConstants(status, t);
   };
 
   const columns = [
@@ -116,7 +110,7 @@ export function AdminOrdersPage() {
         />
       ),
       render: (row) => {
-        const orderId = row._id || row.id;
+        const orderId = getId(row);
         return (
           <input
             type="checkbox"
@@ -143,7 +137,7 @@ export function AdminOrdersPage() {
     {
       key: 'customer',
       label: t('admin.orders.customer'),
-      render: (row) => row.user?.name || row.shippingAddress?.fullName || 'N/A'
+      render: (row) => row.user?.name || row.shippingAddress?.fullName || t('common.notAvailable')
     },
     {
       key: 'date',
@@ -170,7 +164,7 @@ export function AdminOrdersPage() {
       render: (row) => (
         <StatusBadgeDropdown
           status={row.status}
-          orderId={row._id || row.id}
+          orderId={getId(row)}
           onStatusChange={handleStatusChange}
           t={t}
           getStatusLabel={getStatusLabel}
@@ -181,7 +175,7 @@ export function AdminOrdersPage() {
       key: 'actions',
       label: t('admin.common.actions'),
       render: (row) => {
-        const orderId = row._id || row.id;
+        const orderId = getId(row);
         return (
           <div className="flex items-center gap-1">
             <button
