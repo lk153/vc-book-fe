@@ -24,6 +24,12 @@ const translations = {
             notAvailable: 'N/A',
         },
 
+        pagination: {
+            pageOf: 'Page {current} of {total}',
+            goToPage: 'Go to page',
+            booksTotal: 'books total',
+        },
+
         app: {
             failedLoadBooks: 'Failed to load books',
             failedLoadCart: 'Failed to load cart',
@@ -361,6 +367,12 @@ const translations = {
             retry: 'Thử lại',
             currencySymbol: '₫',
             notAvailable: 'N/A',
+        },
+
+        pagination: {
+            pageOf: 'Trang {current} / {total}',
+            goToPage: 'Đi đến trang',
+            booksTotal: 'sách',
         },
 
         app: {

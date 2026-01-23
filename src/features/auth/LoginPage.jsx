@@ -5,6 +5,7 @@ import { BookOpen, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-
 import { useTranslation } from '../../i18n/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { useForm } from '../../hooks/useForm';
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -12,48 +13,29 @@ export function LoginPage() {
   const { migrateGuestCart } = useCart();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    if (error) setError(null);
-  };
+  const validateLogin = (values) => {
+    const errors = {};
 
-  const validateForm = () => {
-    if (!formData.email || !formData.password) {
-      setError(t('validation.fillAllFields'));
-      return false;
+    if (!values.email || !values.password) {
+      errors.form = t('validation.fillAllFields');
+      return errors;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError(t('validation.emailInvalid'));
-      return false;
+    if (!emailRegex.test(values.email)) {
+      errors.email = t('validation.emailInvalid');
     }
 
-    return true;
+    return Object.keys(errors).length > 0 ? errors : null;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleLogin = async (values) => {
     try {
       const userData = await login({
-        email: formData.email,
-        password: formData.password,
+        email: values.email,
+        password: values.password,
       });
 
       // Migrate guest cart to user cart
@@ -65,10 +47,24 @@ export function LoginPage() {
       navigate('/');
     } catch (err) {
       const errorMsg = err.message || t('auth.invalidCredentials');
-      setError(errorMsg);
       toast.error(errorMsg);
+      throw err; // Re-throw to let useForm handle the error state
     }
   };
+
+  const {
+    values,
+    error,
+    handleChange,
+    handleSubmit,
+  } = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validate: validateLogin,
+    onSubmit: handleLogin,
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
@@ -99,8 +95,8 @@ export function LoginPage() {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  value={values.email}
+                  onChange={handleChange}
                   placeholder={t('auth.enterEmail')}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   disabled={loading}
@@ -117,8 +113,8 @@ export function LoginPage() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
+                  value={values.password}
+                  onChange={handleChange}
                   placeholder={t('auth.enterPassword')}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   disabled={loading}
@@ -152,10 +148,10 @@ export function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="animate-spin mr-2" size={20} />
-                  Signing in...
+                  {t('auth.signingIn')}
                 </>
               ) : (
-                <>{t('auth.signIn')}</>
+                <>{t('auth.signInCta')}</>
               )}
             </button>
           </form>

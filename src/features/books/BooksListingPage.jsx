@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useTranslation } from '../../i18n/LanguageContext';
 import { CATEGORIES } from '../../api/books';
 import { useBooks } from './useBooks';
 import { BookCard } from './BookCard';
 import { CategoryFilter } from './CategoryFilter';
 import { Navigation } from '../../components/Navigation';
+import { Pagination } from '../../components/Pagination';
 import { getBookDetailPath } from '../../constants/routes';
 
 export function BooksListingPage() {
@@ -26,21 +27,9 @@ export function BooksListingPage() {
     navigate(getBookDetailPath(id));
   };
 
-  const onPageChange = (newPage) => {
+  const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const onNextPage = () => {
-    if (currentPage < pagination.totalPages) {
-      onPageChange(currentPage + 1);
-    }
-  };
-
-  const onPrevPage = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
-    }
   };
 
   // Reset page when category changes
@@ -105,77 +94,15 @@ export function BooksListingPage() {
             </div>
 
             {/* Pagination Controls */}
-            {pagination && pagination.totalPages > 1 && (
-              <div className="flex flex-col items-center gap-4 mt-8 pb-8">
-                {/* Page Info */}
-                <div className="text-sm text-gray-600">
-                  Page {currentPage} of {pagination.totalPages}
-                  {pagination.totalBooks > 0 && ` (${pagination.totalBooks} books total)`}
-                </div>
-
-                {/* Pagination Buttons */}
-                <div className="flex items-center gap-2">
-                  {/* Previous Button */}
-                  <button
-                    onClick={onPrevPage}
-                    disabled={currentPage === 1}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-transparent"
-                  >
-                    <ChevronLeft size={20} />
-                    <span className="hidden sm:inline">Previous</span>
-                  </button>
-
-                  {/* Page Numbers */}
-                  <div className="flex items-center gap-2">
-                    {[...Array(pagination.totalPages)].map((_, index) => {
-                      const pageNum = index + 1;
-
-                      // Show first page, last page, current page, and pages around current
-                      const showPage =
-                        pageNum === 1 ||
-                        pageNum === pagination.totalPages ||
-                        Math.abs(pageNum - currentPage) <= 1;
-
-                      // Show ellipsis
-                      const showEllipsis =
-                        (pageNum === 2 && currentPage > 3) ||
-                        (pageNum === pagination.totalPages - 1 && currentPage < pagination.totalPages - 2);
-
-                      if (showEllipsis) {
-                        return (
-                          <span key={pageNum} className="px-2 text-gray-500">
-                            ...
-                          </span>
-                        );
-                      }
-
-                      if (!showPage) return null;
-
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => onPageChange(pageNum)}
-                          className={`w-10 h-10 rounded-lg font-medium transition ${currentPage === pageNum
-                            ? 'bg-blue-600 text-white shadow-lg'
-                            : 'bg-white text-gray-700 hover:bg-blue-50 border-2 border-gray-300 hover:border-blue-500'
-                            }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Next Button */}
-                  <button
-                    onClick={onNextPage}
-                    disabled={currentPage === pagination.totalPages}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-transparent"
-                  >
-                    <span className="hidden sm:inline">Next</span>
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
+            {pagination && (
+              <div className="mt-8 pb-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={pagination.totalPages}
+                  onPageChange={handlePageChange}
+                  totalItems={pagination.totalBooks}
+                  itemLabel={t('pagination.booksTotal')}
+                />
               </div>
             )}
           </>
