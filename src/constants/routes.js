@@ -31,6 +31,7 @@ export const ROUTES = {
   ADMIN_BOOKS: '/admin/books',
   ADMIN_BOOKS_NEW: '/admin/books/new',
   ADMIN_BOOKS_EDIT: '/admin/books/:bookId/edit',
+  ADMIN_CATEGORIES: '/admin/categories',
 };
 
 /**

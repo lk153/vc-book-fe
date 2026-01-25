@@ -195,4 +195,30 @@ export const adminAPI = {
   deleteBook: async (bookId) => {
     return adminClient.delete(`/books/${bookId}`);
   },
+
+  // Categories Management
+  getAllCategories: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+    if (filters.page) queryParams.append('page', filters.page);
+    if (filters.limit) queryParams.append('limit', filters.limit);
+    if (filters.search) queryParams.append('search', filters.search);
+    const queryString = queryParams.toString();
+    return adminClient.get(`/admin/categories${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getCategoryById: async (categoryId) => {
+    return adminClient.get(`/admin/categories/${categoryId}`);
+  },
+
+  createCategory: async (categoryData) => {
+    return adminClient.post('/admin/categories', categoryData);
+  },
+
+  updateCategory: async (categoryId, categoryData) => {
+    return adminClient.put(`/admin/categories/${categoryId}`, categoryData);
+  },
+
+  deleteCategory: async (categoryId) => {
+    return adminClient.delete(`/admin/categories/${categoryId}`);
+  },
 };

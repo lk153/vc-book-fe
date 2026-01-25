@@ -4,6 +4,7 @@ import {
   Package,
   Users,
   BookOpen,
+  FolderTree,
   LogOut,
   Home
 } from 'lucide-react';
@@ -20,6 +21,7 @@ export function AdminSidebar() {
     { path: '/admin/orders', icon: Package, label: t('admin.nav.orders') },
     { path: '/admin/users', icon: Users, label: t('admin.nav.users') },
     { path: '/admin/books', icon: BookOpen, label: t('admin.nav.books') },
+    { path: '/admin/categories', icon: FolderTree, label: t('admin.nav.categories') },
   ];
 
   const isActive = (path) => {
@@ -27,14 +29,14 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 flex flex-col">
-      <div className="p-6 border-b">
-        <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-          <BookOpen className="text-blue-600" />
+    <aside className="fixed left-0 top-0 h-full w-64 bg-ivory-100 shadow-lg z-50 flex flex-col border-r-2 border-gold-300/50">
+      <div className="p-6 border-b border-gold-200">
+        <h1 className="text-xl font-bold text-brown-800 flex items-center gap-2 font-serif">
+          <BookOpen className="text-gold-600" />
           {t('admin.title')}
         </h1>
         {admin && (
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-brown-500 mt-1">
             {admin.username || admin.name}
           </p>
         )}
@@ -47,8 +49,8 @@ export function AdminSidebar() {
             to={item.path}
             className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition ${
               isActive(item.path)
-                ? 'bg-blue-50 text-blue-600'
-                : 'text-gray-600 hover:bg-gray-50'
+                ? 'bg-gold-100 text-gold-700'
+                : 'text-brown-600 hover:bg-gold-50'
             }`}
           >
             <item.icon size={20} />
@@ -57,17 +59,17 @@ export function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t border-gold-200">
         <Link
           to="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 transition mb-2"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-brown-600 hover:bg-gold-50 transition mb-2"
         >
           <Home size={20} />
           <span className="font-medium">{t('admin.nav.backToStore')}</span>
         </Link>
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-crimson-400 hover:bg-crimson-50 transition"
         >
           <LogOut size={20} />
           <span className="font-medium">{t('admin.nav.logout')}</span>

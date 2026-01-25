@@ -4,3 +4,4 @@ export { AdminOrdersPage } from './AdminOrdersPage';
 export { AdminUsersPage } from './AdminUsersPage';
 export { AdminBooksPage } from './AdminBooksPage';
 export { AdminBookFormPage } from './AdminBookFormPage';
+export { AdminCategoriesPage } from './AdminCategoriesPage';

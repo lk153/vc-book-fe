@@ -28,6 +28,7 @@ import {
   AdminUsersPage,
   AdminBooksPage,
   AdminBookFormPage,
+  AdminCategoriesPage,
 } from './features/admin';
 
 function ProtectedRoute({ children }) {
@@ -85,16 +86,14 @@ function AppRoutes() {
       {/* Cart and Checkout Routes */}
       <Route path={ROUTES.CART} element={<CartPage />} />
       <Route path={ROUTES.CHECKOUT} element={<Navigate to={ROUTES.CART} replace />} />
-      <Route
-        path={ROUTES.SHIPPING_ADDRESS}
+      <Route path={ROUTES.SHIPPING_ADDRESS}
         element={
           <ProtectedRoute>
             <ShippingAddressPage />
           </ProtectedRoute>
         }
       />
-      <Route
-        path={ROUTES.ORDER_SUCCESS}
+      <Route path={ROUTES.ORDER_SUCCESS}
         element={
           <ProtectedRoute>
             <OrderSuccessPage />
@@ -148,6 +147,7 @@ function AppRoutes() {
       <Route path={ROUTES.ADMIN_BOOKS} element={<AdminBooksPage />} />
       <Route path={ROUTES.ADMIN_BOOKS_NEW} element={<AdminBookFormPage />} />
       <Route path={ROUTES.ADMIN_BOOKS_EDIT} element={<AdminBookFormPage />} />
+      <Route path={ROUTES.ADMIN_CATEGORIES} element={<AdminCategoriesPage />} />
 
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>

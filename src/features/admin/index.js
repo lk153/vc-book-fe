@@ -6,6 +6,7 @@ export {
   AdminUsersPage,
   AdminBooksPage,
   AdminBookFormPage,
+  AdminCategoriesPage,
 } from './pages';
 
 // Components
@@ -19,3 +20,4 @@ export { StatusBadge } from './components/StatusBadge';
 export { useAdminOrders, useAdminOrderDetail, useUpdateOrderStatus } from './hooks/useAdminOrders';
 export { useAdminUsers, useAdminUserDetail, useResetUserPassword, useToggleUserBan } from './hooks/useAdminUsers';
 export { useAdminBooks, useCreateBook, useUpdateBook, useDeleteBook } from './hooks/useAdminBooks';
+export { useAdminCategories, useAdminCategoryDetail, useCreateCategory, useUpdateCategory, useDeleteCategory } from './hooks/useAdminCategories';

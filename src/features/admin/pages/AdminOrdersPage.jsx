@@ -5,7 +5,7 @@ import { AdminLayout } from '../components/AdminLayout';
 import { DataTable } from '../components/DataTable';
 import { OrderDetailsModal } from '../components/OrderDetailsModal';
 import { StatusBadgeDropdown } from '../components/StatusBadgeDropdown';
-import { ActionsMenu } from '../components/ActionsMenu';
+import { OrderActionsMenu } from '../components/OrderActionsMenu';
 import { useAdminOrders, useUpdateOrderStatus } from '../hooks/useAdminOrders';
 import { useTranslation, useLanguage } from '../../../i18n/LanguageContext';
 import { formatPrice } from '../../../utils/price';
@@ -188,7 +188,7 @@ export function AdminOrdersPage() {
             >
               <Eye size={18} />
             </button>
-            <ActionsMenu
+            <OrderActionsMenu
               order={row}
               onView={() => setExpandedOrder(orderId)}
               t={t}

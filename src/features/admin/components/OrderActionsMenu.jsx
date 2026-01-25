@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { Eye, MoreHorizontal, FileText, Download, CreditCard } from 'lucide-react';
 import { useClickOutside } from '../../../hooks/useClickOutside';
 
-export function ActionsMenu({ order, onView, t }) {
+export function OrderActionsMenu({ order, onView, t }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 

@@ -44,40 +44,40 @@ export function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brown-700 via-brown-600 to-brown-700 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-gold-500 to-gold-600 rounded-2xl mb-4 shadow-gold-glow">
             <BookOpen className="text-white" size={32} />
           </div>
-          <h1 className="text-2xl font-bold text-white">{t('admin.auth.login')}</h1>
-          <p className="text-slate-400 mt-2">{t('admin.title')}</p>
+          <h1 className="text-2xl font-bold text-gold-400 font-serif text-gold-glow">{t('admin.auth.login')}</h1>
+          <p className="text-gold-300/70 mt-2">{t('admin.title')}</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-ivory-50 rounded-2xl shadow-xl p-8 border border-gold-200/50">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-              <AlertCircle className="text-red-500 flex-shrink-0" size={20} />
-              <p className="text-red-600 text-sm">{error}</p>
+            <div className="mb-6 p-4 bg-crimson-50 border border-crimson-200 rounded-lg flex items-center gap-3">
+              <AlertCircle className="text-crimson-400 flex-shrink-0" size={20} />
+              <p className="text-crimson-500 text-sm">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Username */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-brown-700 mb-2">
                 {t('admin.auth.username')}
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-500" size={20} />
                 <input
                   type="text"
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full pl-10 pr-4 py-3 border border-gold-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent transition bg-ivory-100"
                   placeholder="admin"
                   autoComplete="username"
                   disabled={loading}
@@ -87,17 +87,17 @@ export function AdminLoginPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-brown-700 mb-2">
                 {t('admin.auth.password')}
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-500" size={20} />
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full pl-10 pr-4 py-3 border border-gold-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent transition bg-ivory-100"
                   placeholder="••••••••"
                   autoComplete="current-password"
                   disabled={loading}
@@ -109,7 +109,7 @@ export function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white py-3 px-4 rounded-lg font-medium hover:from-gold-600 hover:to-gold-700 focus:ring-4 focus:ring-gold-200 transition disabled:bg-brown-300 disabled:cursor-not-allowed shadow-gold-soft"
             >
               {loading ? (
                 <>
@@ -124,7 +124,7 @@ export function AdminLoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-500 text-sm mt-6">
+        <p className="text-center text-gold-400/70 text-sm mt-6">
           {t('admin.title')} &copy; {new Date().getFullYear()}
         </p>
       </div>

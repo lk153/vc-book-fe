@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Save, Loader2, ArrowLeft, Image, ZoomIn } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Image, ZoomIn, Upload } from 'lucide-react';
 import { AdminLayout } from '../components/AdminLayout';
 import { ImagePreviewModal } from '../components/ImagePreviewModal';
 import { BookBasicInfoForm, BookDetailsForm } from '../components/BookBasicInfoForm';
@@ -12,6 +12,7 @@ import { useBookDetail } from '../../books/useBooks';
 import { useTranslation } from '../../../i18n/LanguageContext';
 import { CATEGORIES } from '../../../api/books';
 import { ROUTES } from '../../../constants/routes';
+import { uploadImageToGithub } from '../../../api/githubUpload';
 
 export function AdminBookFormPage() {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ export function AdminBookFormPage() {
 
   const [imagePreview, setImagePreview] = useState('');
   const [showImageModal, setShowImageModal] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (book && isEditing) {
@@ -63,6 +65,24 @@ export function AdminBookFormPage() {
 
     if (name === 'coverImage') {
       setImagePreview(value);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const result = await uploadImageToGithub(file);
+      setFormData((prev) => ({ ...prev, coverImage: result.url }));
+      setImagePreview(result.url);
+      toast.success(t('admin.books.imageUploaded'));
+    } catch (error) {
+      toast.error(error.message || t('admin.books.uploadFailed'));
+    } finally {
+      setIsUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -150,14 +170,34 @@ export function AdminBookFormPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t('admin.books.coverImageUrl')}
               </label>
-              <input
-                type="url"
-                name="coverImage"
-                value={formData.coverImage}
-                onChange={handleChange}
-                placeholder="https://example.com/image.jpg"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <div className="flex gap-3">
+                <input
+                  type="url"
+                  name="coverImage"
+                  value={formData.coverImage}
+                  onChange={handleChange}
+                  placeholder="https://example.com/image.jpg"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <label className={`flex items-center gap-2 px-4 py-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/svg+xml"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                    className="hidden"
+                  />
+                  {isUploading ? (
+                    <Loader2 className="animate-spin" size={20} />
+                  ) : (
+                    <Upload size={20} />
+                  )}
+                  <span className="text-sm font-medium text-gray-700">
+                    {isUploading ? t('admin.books.uploading') : t('admin.books.uploadImage')}
+                  </span>
+                </label>
+              </div>
+              <p className="mt-1 text-xs text-gray-500">{t('admin.books.uploadHint')}</p>
               {imagePreview && (
                 <div className="mt-4 flex items-start gap-4">
                   <button
@@ -207,18 +247,18 @@ export function AdminBookFormPage() {
             />
           </div>
 
-          <div className="mt-8 flex gap-4">
+          <div className="mt-8 flex justify-end gap-4">
             <button
               type="button"
               onClick={() => navigate(ROUTES.ADMIN_BOOKS)}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
             >
               {t('admin.common.cancel')}
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+              className="flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
             >
               {isSubmitting ? (
                 <>
