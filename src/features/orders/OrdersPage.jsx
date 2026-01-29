@@ -91,7 +91,7 @@ export function OrdersPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-antique-white">
         <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
@@ -105,7 +105,7 @@ export function OrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-antique-white">
         <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
@@ -125,7 +125,7 @@ export function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-antique-white">
       <Navigation showBackButton={true} />
 
       <div className="max-w-6xl mx-auto px-4 py-12">

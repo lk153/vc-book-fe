@@ -116,7 +116,7 @@ export function ResetPasswordPage() {
   // Success state
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-antique-white flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">
@@ -157,7 +157,7 @@ export function ResetPasswordPage() {
   // Invalid token state
   if (!tokenValid) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-antique-white flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">
@@ -197,7 +197,7 @@ export function ResetPasswordPage() {
 
   // Reset form
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-antique-white flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 text-4xl font-bold text-blue-600 mb-2">

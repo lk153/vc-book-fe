@@ -68,12 +68,12 @@ export function BookDetailPage() {
   // Loading state
   if (bookLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-ivory-100 via-ivory-50 to-ivory-200">
+      <div className="min-h-screen bg-antique-white">
         <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="animate-spin text-gold-500 mb-4" size={48} />
-            <p className="text-xl text-brown-600">{t('book.loadingDetails')}</p>
+            <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
+            <p className="text-xl text-gray-600">{t('book.loadingDetails')}</p>
           </div>
         </div>
       </div>
@@ -83,16 +83,16 @@ export function BookDetailPage() {
   // Error state
   if (bookError || !book) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-ivory-100 via-ivory-50 to-ivory-200">
+      <div className="min-h-screen bg-antique-white">
         <Navigation showBackButton={true} />
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="bg-crimson-50 border border-crimson-200 rounded-lg p-8 text-center">
-            <AlertCircle className="mx-auto text-crimson-400 mb-4" size={64} />
-            <h2 className="text-2xl font-bold text-crimson-500 mb-2 font-serif">{t('book.notFound')}</h2>
-            <p className="text-crimson-400 mb-6">{bookError?.message || t('book.bookNotExist')}</p>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+            <AlertCircle className="mx-auto text-red-500 mb-4" size={64} />
+            <h2 className="text-2xl font-bold text-red-700 mb-2">{t('book.notFound')}</h2>
+            <p className="text-red-600 mb-6">{bookError?.message || t('book.bookNotExist')}</p>
             <button
               onClick={() => navigate('/')}
-              className="bg-gold-500 text-white px-6 py-3 rounded-lg hover:bg-gold-600 transition"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               {t('nav.backToHome')}
             </button>
@@ -104,23 +104,23 @@ export function BookDetailPage() {
 
   // Main content
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ivory-100 via-ivory-50 to-ivory-200 bg-chinese-pattern">
+    <div className="min-h-screen bg-antique-white">
       <Navigation showBackButton={true} />
 
       {/* Error Popup Modal */}
       {showErrorPopup && error && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-ivory-50 rounded-xl shadow-2xl max-w-md w-full p-6 animate-bounce-in border border-crimson-200">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-bounce-in">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
-                <AlertCircle className="text-crimson-400" size={32} />
+                <AlertCircle className="text-red-500" size={32} />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-brown-800 mb-2 font-serif">Out of Stock</h3>
-                <p className="text-brown-600 mb-4">{error}</p>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Out of Stock</h3>
+                <p className="text-gray-600 mb-4">{error}</p>
                 <button
                   onClick={closeErrorPopup}
-                  className="w-full bg-crimson-400 text-white py-2 px-4 rounded-lg hover:bg-crimson-500 transition"
+                  className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition"
                 >
                   Close
                 </button>
@@ -131,13 +131,13 @@ export function BookDetailPage() {
       )}
 
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gold-200/50">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="grid md:grid-cols-2 gap-8 p-8">
             <div>
               <img
                 src={book.coverImage || book.image || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop'}
                 alt={book.title}
-                className="w-full h-96 object-contain rounded-lg shadow-lg bg-ivory-50"
+                className="w-full h-96 object-contain rounded-lg shadow-lg"
                 onError={(e) => {
                   e.target.src = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop';
                 }}
@@ -145,39 +145,39 @@ export function BookDetailPage() {
             </div>
 
             <div className="flex flex-col">
-              <span className="text-sm text-gold-600 font-medium mb-2">{book.category}</span>
-              <h1 className="text-4xl font-bold text-brown-800 mb-3 font-serif">{book.title}</h1>
-              <p className="text-xl text-brown-600 mb-6">{t('book.by')} {book.author}</p>
+              <span className="text-sm text-blue-600 font-medium mb-2">{book.category}</span>
+              <h1 className="text-4xl font-bold text-gray-800 mb-3">{book.title}</h1>
+              <p className="text-xl text-gray-600 mb-6">{t('book.by')} {book.author}</p>
 
-              <p className="text-brown-700 mb-4 leading-relaxed">
+              <p className="text-gray-700 mb-4 leading-relaxed">
                 {book.description || 'No description available'}
               </p>
 
               {book.isbn && (
-                <p className="text-sm text-brown-600 mb-2">
+                <p className="text-sm text-gray-600 mb-2">
                   <span className="font-semibold">ISBN:</span> {book.isbn}
                 </p>
               )}
               {book.publisher && (
-                <p className="text-sm text-brown-600 mb-2">
+                <p className="text-sm text-gray-600 mb-2">
                   <span className="font-semibold">Publisher:</span> {book.publisher}
                 </p>
               )}
               {book.pages && (
-                <p className="text-sm text-brown-600 mb-2">
+                <p className="text-sm text-gray-600 mb-2">
                   <span className="font-semibold">Pages:</span> {book.pages}
                 </p>
               )}
 
-              <div className="border-t border-gold-200 pt-6 mt-auto">
+              <div className="border-t border-gray-200 pt-6 mt-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-3xl font-bold text-crimson-400 font-serif">{formatPrice(book.price)}{t('common.currencySymbol')}</span>
+                  <span className="text-3xl font-bold text-blue-600">{formatPrice(book.price)}{t('common.currencySymbol')}</span>
 
                   {book.stock !== undefined && (
                     <div className={`px-4 py-2 rounded-full font-semibold text-sm ${isOutOfStock
-                      ? 'bg-crimson-100 text-crimson-500'
+                      ? 'bg-red-100 text-red-700'
                       : book.stock < 10
-                        ? 'bg-gold-100 text-gold-700'
+                        ? 'bg-yellow-100 text-yellow-700'
                         : 'bg-green-100 text-green-700'
                       }`}>
                       {isOutOfStock
@@ -192,28 +192,28 @@ export function BookDetailPage() {
 
                 {!isOutOfStock && (
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-brown-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       {t('book.quantity')} {book.stock && `(${t('book.max')}: ${book.stock})`}
                     </label>
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-10 h-10 bg-gold-100 hover:bg-gold-200 rounded-lg font-bold text-gold-700 transition"
+                        className="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-lg font-bold text-gray-700 transition"
                         disabled={quantity <= 1}
                       >
                         -
                       </button>
-                      <span className="text-xl font-semibold w-12 text-center text-brown-800">{quantity}</span>
+                      <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
                       <button
                         onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
-                        className="w-10 h-10 bg-gold-100 hover:bg-gold-200 rounded-lg font-bold text-gold-700 transition"
+                        className="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-lg font-bold text-gray-700 transition"
                         disabled={quantity >= maxQuantity}
                       >
                         +
                       </button>
                     </div>
                     {quantity >= maxQuantity && book.stock && (
-                      <p className="text-sm text-gold-600 mt-2">
+                      <p className="text-sm text-yellow-600 mt-2">
                         {t('book.maxQuantity')}
                       </p>
                     )}
@@ -223,7 +223,7 @@ export function BookDetailPage() {
                 {isOutOfStock ? (
                   <button
                     disabled
-                    className="w-full py-4 rounded-lg font-bold text-lg bg-brown-200 text-brown-500 cursor-not-allowed"
+                    className="w-full py-4 rounded-lg font-bold text-lg bg-gray-300 text-gray-500 cursor-not-allowed"
                   >
                     {t('book.outOfStock')}
                   </button>
@@ -233,8 +233,8 @@ export function BookDetailPage() {
                     disabled={addToCartLoading}
                     className={`w-full py-4 rounded-lg font-bold text-lg transition flex items-center justify-center ${addedToCart
                       ? 'bg-green-500 text-white'
-                      : 'bg-gradient-to-r from-gold-500 to-gold-600 text-white hover:from-gold-600 hover:to-gold-700 shadow-gold-soft'
-                      } disabled:bg-brown-300 disabled:cursor-not-allowed`}
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                      } disabled:bg-gray-400 disabled:cursor-not-allowed`}
                   >
                     {addToCartLoading ? (
                       <>{t('book.adding')}</>
@@ -252,7 +252,7 @@ export function BookDetailPage() {
                 {isOutOfStock && (
                   <button
                     onClick={() => toast.info(t('toast.notifyFeature'))}
-                    className="w-full mt-3 py-3 rounded-lg font-medium text-gold-600 border-2 border-gold-500 hover:bg-gold-50 transition"
+                    className="w-full mt-3 py-3 rounded-lg font-medium text-blue-600 border-2 border-blue-600 hover:bg-blue-50 transition"
                   >
                     {t('book.notifyMe')}
                   </button>

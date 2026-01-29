@@ -36,18 +36,18 @@ export function Navigation({ showBackButton = false }) {
   };
 
   return (
-    <nav className="bg-ivory-100 shadow-md sticky top-0 z-50 border-b-2 border-gold-500/30">
+    <nav className="bg-coral shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {showBackButton ? (
           <button
             onClick={() => navigate(ROUTES.HOME)}
-            className="flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium"
+            className="flex items-center gap-2 text-black hover:text-gray-700 font-medium"
           >
             <Home size={20} />
             <span>{t('nav.backToHome')}</span>
           </button>
         ) : (
-          <Link to={ROUTES.HOME} className="flex items-center gap-2 text-2xl font-bold text-gold-600 text-gold-glow cursor-pointer hover:text-gold-700 transition font-serif">
+          <Link to={ROUTES.HOME} className="flex items-center gap-2 text-2xl font-bold text-black cursor-pointer hover:text-gray-700 transition">
             <BookOpen size={32} />
             <span>{t('nav.title')}</span>
           </Link>
@@ -59,11 +59,11 @@ export function Navigation({ showBackButton = false }) {
           {/* Cart Button */}
           <button
             onClick={() => navigate(ROUTES.CHECKOUT)}
-            className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-white px-4 py-2 rounded-lg hover:from-gold-600 hover:to-gold-700 transition shadow-gold-soft"
+            className="flex items-center gap-2 bg-burgundy text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
           >
             <ShoppingCart size={20} />
             <span className="hidden sm:inline">{t('nav.cart')}</span>
-            <span className="bg-white text-gold-600 px-2 py-0.5 rounded-full text-sm font-bold">
+            <span className="bg-white text-burgundy px-2 py-0.5 rounded-full text-sm font-bold">
               {cart.length}
             </span>
           </button>
@@ -73,39 +73,39 @@ export function Navigation({ showBackButton = false }) {
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-gold-300 hover:border-gold-500 hover:bg-gold-50 transition"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-burgundy text-white hover:opacity-90 transition"
               >
                 {/* User Avatar */}
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-burgundy font-bold text-sm">
                   {getUserInitials()}
                 </div>
-                <span className="hidden md:inline text-brown-700 font-medium">
+                <span className="hidden md:inline text-white font-medium">
                   {user.name || user.fullName || 'User'}
                 </span>
                 <ChevronDown
                   size={16}
-                  className={`text-gold-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
+                  className={`text-white transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {/* Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-72 bg-ivory-50 rounded-xl shadow-2xl border border-gold-300/50 py-2 z-50 animate-slideDown">
+                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50 animate-slideDown">
                   {/* User Info Section */}
-                  <div className="px-4 py-3 border-b border-gold-200 bg-gradient-to-r from-gold-50 to-ivory-100">
+                  <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                         {getUserInitials()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-brown-800 truncate">
+                        <p className="text-sm font-bold text-gray-800 truncate">
                           {user.name || user.fullName || 'User'}
                         </p>
-                        <p className="text-xs text-brown-600 truncate">
+                        <p className="text-xs text-gray-600 truncate">
                           {user.email || 'No email'}
                         </p>
                         {user.phone && (
-                          <p className="text-xs text-brown-500 truncate">
+                          <p className="text-xs text-gray-500 truncate">
                             {user.phone}
                           </p>
                         )}
@@ -121,12 +121,12 @@ export function Navigation({ showBackButton = false }) {
                         setShowUserMenu(false);
                         navigate(ROUTES.PROFILE);
                       }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-brown-700 hover:bg-gold-50 transition flex items-center gap-3 group"
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
-                      <User size={18} className="text-brown-500 group-hover:text-gold-600" />
+                      <User size={18} className="text-gray-500 group-hover:text-blue-600" />
                       <div>
-                        <p className="font-medium group-hover:text-gold-600">{t('nav.profile')}</p>
-                        <p className="text-xs text-brown-500">{t('nav.view_edit_profile')}</p>
+                        <p className="font-medium group-hover:text-blue-600">{t('nav.profile')}</p>
+                        <p className="text-xs text-gray-500">{t('nav.view_edit_profile')}</p>
                       </div>
                     </button>
 
@@ -136,12 +136,12 @@ export function Navigation({ showBackButton = false }) {
                         setShowUserMenu(false);
                         navigate(ROUTES.ORDERS);
                       }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-brown-700 hover:bg-gold-50 transition flex items-center gap-3 group"
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
-                      <Package size={18} className="text-brown-500 group-hover:text-gold-600" />
+                      <Package size={18} className="text-gray-500 group-hover:text-blue-600" />
                       <div>
-                        <p className="font-medium group-hover:text-gold-600">{t('nav.orders')}</p>
-                        <p className="text-xs text-brown-500">{t('nav.track_orders')}</p>
+                        <p className="font-medium group-hover:text-blue-600">{t('nav.orders')}</p>
+                        <p className="text-xs text-gray-500">{t('nav.track_orders')}</p>
                       </div>
                     </button>
 
@@ -151,18 +151,18 @@ export function Navigation({ showBackButton = false }) {
                         setShowUserMenu(false);
                         navigate(ROUTES.SETTINGS);
                       }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-brown-700 hover:bg-gold-50 transition flex items-center gap-3 group"
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition flex items-center gap-3 group"
                     >
-                      <Settings size={18} className="text-brown-500 group-hover:text-gold-600" />
+                      <Settings size={18} className="text-gray-500 group-hover:text-blue-600" />
                       <div>
-                        <p className="font-medium group-hover:text-gold-600">{t('nav.settings')}</p>
-                        <p className="text-xs text-brown-500">{t('nav.account_preferences')}</p>
+                        <p className="font-medium group-hover:text-blue-600">{t('nav.settings')}</p>
+                        <p className="text-xs text-gray-500">{t('nav.account_preferences')}</p>
                       </div>
                     </button>
                   </div>
 
                   {/* Divider */}
-                  <hr className="my-2 border-gold-200" />
+                  <hr className="my-2 border-gray-200" />
 
                   {/* Logout */}
                   <button
@@ -170,12 +170,12 @@ export function Navigation({ showBackButton = false }) {
                       setShowUserMenu(false);
                       handleLogout();
                     }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-crimson-400 hover:bg-crimson-50 transition flex items-center gap-3 group"
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition flex items-center gap-3 group"
                   >
-                    <LogOut size={18} className="text-crimson-400" />
+                    <LogOut size={18} className="text-red-500" />
                     <div>
                       <p className="font-medium">{t('nav.logout')}</p>
-                      <p className="text-xs text-crimson-300">{t('nav.logout_confirmation')}</p>
+                      <p className="text-xs text-red-400">{t('nav.logout_confirmation')}</p>
                     </div>
                   </button>
                 </div>
@@ -184,7 +184,7 @@ export function Navigation({ showBackButton = false }) {
           ) : (
             <button
               onClick={() => navigate(ROUTES.LOGIN)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gold-500 text-gold-600 hover:bg-gold-500 hover:text-white transition font-medium"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-black text-black hover:bg-black hover:text-white transition font-medium"
             >
               <LogIn size={20} />
               <span>{t('nav.login')}</span>

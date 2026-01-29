@@ -70,7 +70,7 @@ export function Pagination({
     <div className="flex flex-col items-center gap-4">
       {/* Page Info */}
       {showPageInfo && (
-        <div className="text-sm text-brown-600">
+        <div className="text-sm text-gray-600">
           {t('pagination.pageOf', { current: currentPage, total: totalPages })}
           {totalItems > 0 && itemLabel && ` (${totalItems} ${itemLabel})`}
         </div>
@@ -82,7 +82,7 @@ export function Pagination({
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gold-300 hover:border-gold-500 hover:bg-gold-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gold-300 disabled:hover:bg-transparent"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-transparent"
           aria-label={t('common.previous')}
         >
           <ChevronLeft size={20} />
@@ -94,7 +94,7 @@ export function Pagination({
           {pageNumbers.map((item) => {
             if (item.type === 'ellipsis') {
               return (
-                <span key={item.key} className="px-2 text-gold-500">
+                <span key={item.key} className="px-2 text-gray-500">
                   ...
                 </span>
               );
@@ -106,8 +106,8 @@ export function Pagination({
                 onClick={() => onPageChange(item.number)}
                 className={`w-10 h-10 rounded-lg font-medium transition ${
                   currentPage === item.number
-                    ? 'bg-gold-500 text-white shadow-gold-soft'
-                    : 'bg-ivory-100 text-brown-700 hover:bg-gold-50 border-2 border-gold-300 hover:border-gold-500'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-blue-50 border-2 border-gray-300 hover:border-blue-500'
                 }`}
                 aria-label={`${t('pagination.goToPage')} ${item.number}`}
                 aria-current={currentPage === item.number ? 'page' : undefined}
@@ -122,7 +122,7 @@ export function Pagination({
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gold-300 hover:border-gold-500 hover:bg-gold-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gold-300 disabled:hover:bg-transparent"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-transparent"
           aria-label={t('common.next')}
         >
           <span className="hidden sm:inline">{t('common.next')}</span>

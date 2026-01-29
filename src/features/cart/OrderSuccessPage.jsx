@@ -39,7 +39,7 @@ export function OrderSuccessPage() {
   // If no order data, show a generic success or redirect
   if (!orderData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-antique-white">
         <nav className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <button
@@ -78,7 +78,7 @@ export function OrderSuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-antique-white">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <button

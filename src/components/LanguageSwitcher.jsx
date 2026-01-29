@@ -30,18 +30,18 @@ export default function LanguageSwitcher() {
         {/* Language Switcher Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-gold-300 hover:border-gold-500 hover:bg-gold-50 transition"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-black hover:bg-black hover:bg-opacity-10 transition"
           aria-label="Change language"
         >
-          <Globe size={18} className="text-gold-600" />
-          <span className="text-sm font-medium text-brown-700">
+          <Globe size={18} className="text-black" />
+          <span className="text-sm font-medium text-black">
             {currentLang.flag} {currentLang.code.toUpperCase()}
           </span>
         </button>
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-ivory-50 rounded-lg shadow-xl border border-gold-200 py-2 z-50 animate-slideDown" onClick={(e) => e.stopPropagation()}>
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 animate-slideDown" onClick={(e) => e.stopPropagation()}>
             {Object.values(languages).map((lang) => {
               const isSelected = language === lang.code;
 
@@ -53,14 +53,14 @@ export default function LanguageSwitcher() {
                     handleLanguageChange(lang.code);
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 transition ${isSelected
-                    ? 'bg-gold-50 text-gold-700'
-                    : 'text-brown-700 hover:bg-ivory-100'
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   <span className="text-2xl">{lang.flag}</span>
                   <span className="flex-1 text-left font-medium">{lang.name}</span>
                   {isSelected && (
-                    <Check size={18} className="text-gold-600" />
+                    <Check size={18} className="text-blue-600" />
                   )}
                 </button>
               );
@@ -76,7 +76,7 @@ export default function LanguageSwitcher() {
           onClick={() => setIsOpen(!isOpen)}
           className={`fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 ${isOpen
             ? 'bg-red-500 hover:bg-red-600'
-            : 'bg-gradient-to-br from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700'
+            : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
             }`}
           aria-label="Change language"
         >
@@ -102,14 +102,14 @@ export default function LanguageSwitcher() {
             />
 
             {/* Language Selection Modal */}
-            <div className="fixed bottom-40 right-6 w-64 bg-ivory-50 rounded-2xl shadow-2xl border border-gold-200 overflow-hidden z-50 animate-slideUp">
+            <div className="fixed bottom-40 right-6 w-64 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-slideUp">
               {/* Header */}
-              <div className="px-5 py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-white">
+              <div className="px-5 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                 <div className="flex items-center gap-2 mb-1">
                   <Globe size={20} />
                   <h3 className="font-bold text-lg">{t('nav.choose_lang')}</h3>
                 </div>
-                <p className="text-sm text-gold-100">{t('nav.select_preferred_lang')}</p>
+                <p className="text-sm text-blue-100">{t('nav.select_preferred_lang')}</p>
               </div>
 
               {/* Language Options */}
@@ -123,21 +123,21 @@ export default function LanguageSwitcher() {
                       onClick={() => handleLanguageChange(lang.code)}
                       className={`w-full flex items-center gap-4 px-5 py-4 transition ${isSelected
                         ? 'bg-blue-50'
-                        : 'hover:bg-ivory-100'
+                        : 'hover:bg-gray-50'
                         }`}
                     >
                       <span className="text-3xl">{lang.flag}</span>
                       <div className="flex-1 text-left">
-                        <div className={`font-bold text-base ${isSelected ? 'text-blue-700' : 'text-brown-800'
+                        <div className={`font-bold text-base ${isSelected ? 'text-blue-700' : 'text-gray-800'
                           }`}>
                           {lang.name}
                         </div>
-                        <div className="text-xs text-brown-500">
+                        <div className="text-xs text-gray-500">
                           {lang.code.toUpperCase()}
                         </div>
                       </div>
                       {isSelected && (
-                        <div className="w-8 h-8 bg-gold-600 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                           <Check size={18} className="text-white" />
                         </div>
                       )}
@@ -147,8 +147,8 @@ export default function LanguageSwitcher() {
               </div>
 
               {/* Footer */}
-              <div className="px-5 py-3 bg-ivory-100 border-t border-gold-200">
-                <p className="text-xs text-gold-600 text-center">
+              <div className="px-5 py-3 bg-gray-50 border-t border-gray-200">
+                <p className="text-xs text-gray-600 text-center">
                   {t('nav.lang_saved_auto')}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export default function LanguageSwitcher() {
             transform: translateY(0);
           }
         }
-        
+
         @keyframes slideUp {
           from {
             opacity: 0;
@@ -179,7 +179,7 @@ export default function LanguageSwitcher() {
             transform: translateY(0) scale(1);
           }
         }
-        
+
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -188,15 +188,15 @@ export default function LanguageSwitcher() {
             opacity: 1;
           }
         }
-        
+
         .animate-slideDown {
           animation: slideDown 0.2s ease-out;
         }
-        
+
         .animate-slideUp {
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
+
         .animate-fadeIn {
           animation: fadeIn 0.2s ease-out;
         }
@@ -212,14 +212,14 @@ export default function LanguageSwitcher() {
             opacity: 0;
           }
         }
-        
+
         /* Optional: Add pulse effect on mount */
         .fixed.bottom-24.right-6::before {
           content: '';
           position: absolute;
           inset: -4px;
           border-radius: 50%;
-          background: linear-gradient(45deg, #D4AF37, #B8860B);
+          background: linear-gradient(45deg, #3b82f6, #2563eb);
           opacity: 0;
           animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
