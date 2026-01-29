@@ -12,11 +12,11 @@ export function CartPage() {
 
   return (
     <div className="min-h-screen bg-antique-white">
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-coral shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+            className="flex items-center gap-2 text-black hover:text-gray-700 font-medium"
           >
             <Home size={20} />
             <span>{t('cart.continueShopping')}</span>
