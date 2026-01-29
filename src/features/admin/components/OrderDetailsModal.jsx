@@ -1,12 +1,13 @@
 import { Loader2, X, MapPin, Phone, DollarSign, Package } from 'lucide-react';
 import { useAdminOrderDetail } from '../hooks/useAdminOrders';
-import { getStatusBadgeClasses, getStatusLabel as getStatusLabelFromConstants } from '../../../constants/orders';
+import { getStatusStyles, getStatusLabel as getStatusLabelFromConstants } from '../../../constants/orders';
 
 export function OrderDetailsModal({ orderId, onClose, t, formatDate, formatPrice }) {
   const { order, isLoading } = useAdminOrderDetail(orderId);
 
   const getStatusColor = (status) => {
-    return getStatusBadgeClasses(status);
+    const config = getStatusStyles(status);
+    return `${config.bg} ${config.text} border ${config.border}`;
   };
 
   const getStatusLabel = (status) => {
@@ -53,7 +54,8 @@ export function OrderDetailsModal({ orderId, onClose, t, formatDate, formatPrice
               <p className="text-sm text-gray-500 mt-1">{formatDate(order.createdAt)}</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+              <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                <span className={`w-2 h-2 rounded-full ${getStatusStyles(order.status).dot}`} />
                 {getStatusLabel(order.status)}
               </span>
               <button

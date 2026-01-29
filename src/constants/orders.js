@@ -14,15 +14,15 @@ export const ORDER_STATUSES = [
 ];
 
 // Status configuration with styling for different use cases
-// Traditional Chinese theme colors
+// Using standard Tailwind colors
 export const STATUS_CONFIG = {
   pending: {
-    bg: 'bg-gold-100',
-    text: 'text-gold-700',
-    textDark: 'text-gold-800',
-    border: 'border-gold-300',
-    hover: 'hover:bg-gold-200',
-    dot: 'bg-gold-500'
+    bg: 'bg-yellow-100',
+    text: 'text-yellow-700',
+    textDark: 'text-yellow-800',
+    border: 'border-yellow-300',
+    hover: 'hover:bg-yellow-200',
+    dot: 'bg-yellow-500'
   },
   processing: {
     bg: 'bg-blue-100',
@@ -33,12 +33,12 @@ export const STATUS_CONFIG = {
     dot: 'bg-blue-500'
   },
   shipped: {
-    bg: 'bg-brown-100',
-    text: 'text-brown-600',
-    textDark: 'text-brown-700',
-    border: 'border-brown-300',
-    hover: 'hover:bg-brown-200',
-    dot: 'bg-brown-500'
+    bg: 'bg-indigo-100',
+    text: 'text-indigo-700',
+    textDark: 'text-indigo-800',
+    border: 'border-indigo-300',
+    hover: 'hover:bg-indigo-200',
+    dot: 'bg-indigo-500'
   },
   delivered: {
     bg: 'bg-green-100',
@@ -49,12 +49,12 @@ export const STATUS_CONFIG = {
     dot: 'bg-green-500'
   },
   cancelled: {
-    bg: 'bg-crimson-100',
-    text: 'text-crimson-500',
-    textDark: 'text-crimson-600',
-    border: 'border-crimson-300',
-    hover: 'hover:bg-crimson-200',
-    dot: 'bg-crimson-400'
+    bg: 'bg-red-100',
+    text: 'text-red-700',
+    textDark: 'text-red-800',
+    border: 'border-red-300',
+    hover: 'hover:bg-red-200',
+    dot: 'bg-red-500'
   },
   refunded: {
     bg: 'bg-orange-100',
